@@ -13,42 +13,33 @@
     <table class="searchContent" style="width:600px;float:left;">
       <tr>
         <td>
-          任务名称：<input type="text" name="keyword" />
+          关键字：<input type="text" name="keyword" />
         </td>
         <td>
           <select class="combox" name="province">
             <option value="">任务状态</option>
-            <option value="已接收">已接收</option>
-            <option value="执行中">执行中</option>
-            <option value="审核中">审核中</option>
+            <option value="待审核">待审核</option>
+            <option value="已审核">已审核</option>
+            <option value="已开始">已开始</option>
             <option value="已完成">已完成</option>
           </select>
         </td>
         <td>
-          日期区间：<input type="text" class="date" readonly="true" style="width:100px;" />
+          发布日期：<input type="text" class="date" readonly="true" />
         </td>
-        <td>至</td>
-        <td>
-        <input type="text" class="date" readonly="true" style="width:100px;" />
-        </td>
-        <td>
-          执行人：
-          <input type="text" value="某某某（支持输入和下拉列表）" style="width:100px;">
-        </td>
-      <td>按年重复：<input type="radio" name="mission_duplicate" value="on">是 <input type="radio" name="mission_duplicate" value="off">否
-    </td>
       </tr>
     </table>
-    <div class="subBar" style="width:100px;float:left;">
+    <div class="subBar" style="width:200px;float:right;">
       <ul>
-        <li><div class="buttonActive" ><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
+        <li><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></li>
+        <li><a class="button" href="/search" target="dialog" mask="true" title="查询框"><span>高级检索</span></a></li>
       </ul>
     </div>
   </div>
   </form>
 </div>
 <div class="pageContent">
-  <div class="panelBar">
+  <!-- <div class="panelBar">
     <ul class="toolBar">
       <li><a class="add" href="/new_mission" target="navTab"><span>添加新任务</span></a></li>
       <li><a class="delete" href="demo/common/ajaxDone.html?uid={sid_user}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></li>
@@ -56,40 +47,54 @@
       <li class="line">line</li>
       <li><a class="icon" href="#" target="dwzExport" targetType="navTab" title="实要导出这些记录吗?"><span>导出EXCEL</span></a></li>
     </ul>
-  </div>
-  <table class="table" width="100%" layoutH="138">
+  </div> -->
+  <table class="table" width="100%" layoutH="82">
     <thead>
-      <tr>
+      <tr class="center">
         <th>任务名称</th>
-        <th width="120">发布者</th>
+        <th width="100">发布者</th>
+        <th width="100">执行者</th>
         <th width="100">开始时间</th>
         <th width="100">计划完成时间</th>
-        <th width="150">实际完成时间</th>
+        <th width="100">实际完成时间</th>
         <th width="80" align="center">状态</th>
+        <th width="100">是否按年重复</th>
+        <th width="100">操作</th>
       </tr>
     </thead>
+    <!-- 添加了执行者，是否按年重复 -->
     <tbody>
       {% for m in mission_list %}
-        <tr target="sid_user"> 
+        <tr target="sid_user" class="center"> 
           <td>
             <a href="/view_mission/?mission_id={{m['mission_id']}}" target="navTab">
-                 {{m['mission_name']}}
+                 <div>{{m['mission_name']}}</div>
             </a>
           </td>
           <td>
-             {{m['mission_publisher']}}
+             <div>{{m['mission_publisher']}}</div>
           </td>
           <td>
-             {{m['mission_starttime']}}
+            <div>任务执行者</div>
           </td>
           <td>
-             {{m['mission_plan_end_time']}}
+             <div>{{m['mission_starttime']}}</div>
           </td>
           <td>
-             {{m['mission_actuall_end_time']}}
+             <div>{{m['mission_plan_end_time']}}</div>
           </td>
           <td>
-             {{m['mission_status']}}
+             <div>{{m['mission_actuall_end_time']}}</div>
+          </td>
+          <td>
+             <div>{{m['mission_status']}}</div>
+          </td>
+          <td>
+            <div>是否按年重复</div>
+          </td>
+          <td>
+            <a href="/modify_mission/?mission_id={sid_user}" style="color:rgb(0,0,225)">修改</a>
+            <a title="确认删除？" href="delete_mission/?mission_id={{mission_id}}" target="ajaxTodo" style="color:rgb(0,0,200)">删除</a>
           </td>
         </tr>
         {% endfor %}

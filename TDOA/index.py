@@ -489,8 +489,8 @@ class search(object):
 	def GET(self):
 		if session.login == 1:
 			if session.user:
-				return render.search()
-				#return render_template(level=session.level, template_name='search.html')
+				#return render.search()
+				return render_template(level=session.level, template_name='search.html')
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
