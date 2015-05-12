@@ -1,0 +1,8 @@
+/sessions/
+/uploads/
+/.idea/
+/*.pyc
+/*.py~
+*.html~
+*.gitignore~
+
