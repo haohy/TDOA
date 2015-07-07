@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50704
 File Encoding         : 65001
 
-Date: 2015-07-06 19:10:29
+Date: 2015-07-07 15:18:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,20 +34,14 @@ CREATE TABLE `account` (
   `account_power2` tinyint(1) DEFAULT NULL,
   `account_power3` tinyint(1) DEFAULT NULL,
   `account_power4` tinyint(1) DEFAULT NULL,
-  `account_power5` tinyint(1) DEFAULT NULL,
-  `account_power6` tinyint(1) DEFAULT NULL,
-  `account_power7` tinyint(1) DEFAULT NULL,
-  `account_power8` tinyint(1) DEFAULT NULL,
-  `account_power9` tinyint(1) DEFAULT NULL,
-  `account_power10` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of account
 -- ----------------------------
-INSERT INTO `account` VALUES ('1', 'admin', '15380929106', '郝鸿延', '男', '处长', 'hao-hy@hotmail.com', 'NJUPT', 'admin', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1');
-INSERT INTO `account` VALUES ('2', 'user', null, 'hhy', '女', '副教授', '2998336811@qq.com', 'njupt', 'o', null, null, null, null, null, null, null, null, null, null, null);
+INSERT INTO `account` VALUES ('1', 'admin', '15380929106', '郝鸿延', '男', '处长', 'hao-hy@hotmail.com', 'NJUPT', 'admin', '1', '1', '1', '1', '1');
+INSERT INTO `account` VALUES ('2', 'user', null, 'hhy', '女', '副教授', '2998336811@qq.com', 'njupt', 'o', null, null, null, null, null);
 
 -- ----------------------------
 -- Table structure for `file`
