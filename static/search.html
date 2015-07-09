@@ -1,0 +1,95 @@
+<form id="pagerForm" method="post" action="#rel#">
+<!--         <input type="hidden" name="status" value="${param.status}">
+        <input type="hidden" name="keywords" value="${param.keywords}" /> -->
+        <input type="hidden" name="pageNum" value="1" />
+        <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
+<!--         <input type="hidden" name="orderField" value="${param.orderField}" /> -->
+</form>
+<div class="pageHeader">
+  <form rel="pagerForm" onsubmit="return navTabSearch(this);" action="demo_page1.html" method="post" >
+  <div class="searchBar">
+    <table class="searchContent" style="width:600px;float:left;">
+      <tr>
+        <td>
+          <div class="gridCol" title="任务名">任务名：<input name="search_str" type="text" class="textInput"></div>
+        </td>
+        <td>
+            <select name="account">
+                <option value="所有人">执行人</option>
+                <option value="张三">张三</option>
+                <option value="李斯">李斯</option>
+                <option value="毛蛋">毛蛋</option>
+            </select>
+        </td>
+        <td>
+            <select name="mission_status">
+                <option value="任务状态">任务状态</option>
+                <option value="进行中">进行中</option>
+                <option value="已结束">已结束</option>
+                <option value="未审核">未审核</option>
+            </select>
+        </td>
+        <td>
+            开始时间：<input name="mission_start_time" type="text" class="date textInput readonly" readonly="true">
+        </td>
+        <td>
+            结束时间：<input name="mission_end_time" type="text" class="date textInput readonly" readonly="true">
+        </td>
+        <td>
+            <select name="mission_repeat">
+                <option value="按年重复/不重复">按年重复/不重复</option>
+                <option value="是">是</option>
+                <option value="否">否</option>
+            </select>
+        </td>
+        <td><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></td>
+      </tr>
+    </table>
+  </div>
+  </form>
+</div>
+<div class="pageContent">
+        <table class="table" width="100%" layoutH="86">
+                <thead>
+                      <tr class="center">
+                        <th>任务名称</th>
+                        <th width="100">执行者</th>
+                        <th width="100">任务状态</th>
+                        <th width="100">开始时间</th>
+                        <th width="100">结束时间</th>
+                        <th width="100">按年重复</th>
+                        <th width="100">操作</th>
+                      </tr>
+                    </thead>
+                <tbody>
+                <tr target="sid_user" rel="1" >
+                        <td class="mission_name center"><a href="/view_mission/?mission_id={任务id}" target="dialog"><div>任务名称</div></a></td>
+                        <td class="account center"><a href="{账号}" target="dialog" width="800" height="600"><div>账号</div></a></td>
+                        <td class="center"><div class="mission_status">进行中</div></td>
+                        <td class="center"><div class="mission_start_time">2015-03-02</div></td>
+                        <td class="center"><div class="mission_end_time">2015-04-06</div></td>
+                        <td class="center"><div class="mission_repeat">是</div></td>
+                        <td class="center">
+                                <a href="/modify_mission/?mission_id=35" target="navTab" style="color:rgb(0,0,255)">修改</a>
+                                <a title="确认删除？" href="delete_mission/?mission_id=35" target="ajaxTodo" style="color:rgb(0,0,200)">删除</a>
+                        </td>
+                </tr>
+
+                </tbody>
+        </table>
+        <div class="panelBar">
+                <div class="pages">
+                        <span>显示</span>
+                        <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                        </select>
+                        <span>条，共{totalCount}条</span>
+                </div>
+                
+                <div class="pagination" targetType="navTab" totalCount="200" numPerPage="20" pageNumShown="10" currentPage="1"></div>
+
+        </div>
+</div>
