@@ -1,0 +1,15 @@
+[
+{% for m in mission_list %}
+{
+    	"title": "{{m['mission_name']}}",
+    	"url": "/mission_content/?mission_id={{m['mission_id']}}",
+    	"start": "{{m['mission_start']}}",
+    	"end": "{{m['mission_plan_end']}}"
+},
+{% endfor %}
+{
+	"title": "start",
+	"start": "1999-01-01",
+	"end": "1999-01-01"
+}
+]
