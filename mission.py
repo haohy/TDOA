@@ -61,7 +61,7 @@ def mission_save(mission_name, account_name, mission_content, mission_starttime,
 	mission_publisher = cursor.fetchall()[0]['account_id']
 
 
-	cursor.execute("insert into MISSION \
+	cursor.execute("insert into mission \
 		(mission_name, mission_publisher, mission_content, mission_starttime, mission_pubtime, mission_plan_end_time, mission_status, mission_duplicate)\
 		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
 		"%(mission_name.encode('utf-8'), int(mission_publisher), mission_content.encode('utf-8'), mission_starttime.encode('utf-8'), mission_pubtime, mission_plan_end_time.encode('utf-8'), mission_status, mission_duplicate.encode('utf-8')))
@@ -73,7 +73,7 @@ def get_account_id(account_name):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("select account_id from ACCOUNT where account_name='%s';"%account_name)
+	cursor.execute("select account_id from account where account_name='%s';"%account_name)
 	id_getted = cursor.fetchall()[0]['account_id']
 	conn.close()
 	return id_getted
@@ -87,17 +87,17 @@ def mission_list(account_name, role):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 
-	cursor.execute("select account_id from ACCOUNT where account_name='%s';"%account_name)
-	account_id = cursor.fetchall()[0]['account_id']
+	# cursor.execute("select account_id from account where account_username='%s';"%account_name)
+	# account_id = cursor.fetchall()[0]['account_id']
 
-	cursor.execute("select * from MISSION where %s='%s' and mission_status!='已关闭';"%(role, account_id))
+	cursor.execute("select * from MISSION where %s='%s' and mission_status!='已关闭';"%(role, account_name))
 	m_list = cursor.fetchall()
 
 	conn.close()
 
 	m_list = list(m_list)
 	#按照starttime排序
-	m_list = sorted(m_list, key=lambda m_list: m_list['mission_starttime'])
+	m_list = sorted(m_list, key=lambda m_list: m_list['mission_start'])
 
 	return m_list
 
@@ -149,3 +149,10 @@ def mission_audit(mission_id):
 	cursor.execute("update MISSION set mission_status='已审核' where mission_id='%s'"%mission_id)
 	conn.commit()
 	conn.close()
+
+def get_mission_content(mission_id):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursors = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursors.execute("SELECT mission_name, mission_content FROM mission WHERE mission_id = '%s'" % mission_id)
+	return list(cursors.fetchall())

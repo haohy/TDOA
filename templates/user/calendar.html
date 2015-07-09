@@ -9,13 +9,6 @@
 <script type="text/javascript" src="/static/fullcalendar/fullcalendar.min.js"></script>
 <script type="text/javascript" src="/static/fullcalendar/lang-all.js"></script>
 
-<!-- HubSpot Messaging -->
-<link rel="stylesheet" type="text/css" href="/static/hubspot/build/css/messenger.css">
-<link rel="stylesheet" type="text/css" href="/static/hubspot/build/css/messenger-Air.css">
-<script type="text/javascript" src="/static/hubspot/build/js/messenger.min.js"></script>
-<script type="text/javascript" src="/static/hubspot/build/js/messenger-theme-future.js"></script>
-
-
 <script>
 
 	$(document).ready(function() {
@@ -24,15 +17,14 @@
 			header: {
 				left: 'prev,next today',
 				center: 'title',
-				// right: 'month,agendaWeek,agendaDay'
-				right: 'month'
+				right: 'month,agendaWeek,agendaDay'
 			},
 			height: 500,
 			lang: 'zh-cn',
 			editable: false,
 			eventLimit: true, // allow "more" link when too many events
 			events: {
-				url: '/calendar?account=this',
+				url: '/calendar_data/?account={{account_username}}',
 				error: function() {
 					$('#script-warning').show();
 				}
@@ -41,17 +33,19 @@
 				if(event.url){
 					Messenger.options = {
 					    extraClasses: 'messenger-fixed messenger-on-top',
-					    theme: 'air'
+					    theme: 'flat'
 					};
 					Messenger().run({
 					  errorMessage: "This did not go well."
 					}, {
 					  url: event.url,
-					  success: function() {}
+					  success: function(content) {
+					  	Messenger().post({message:content, showCloseButton:true})
+					  }
 					});
 					return false;
 				}	
-			}
+			},
 			loading: function(bool) {
 				$('#loading').toggle(bool);
 			}
@@ -111,5 +105,9 @@
 </body>
 
 
-
+<!-- HubSpot Messaging -->
+<link rel="stylesheet" type="text/css" href="/static/hubspot/build/css/messenger.css">
+<link rel="stylesheet" type="text/css" href="/static/hubspot/build/css/messenger-theme-flat.css">
+<script type="text/javascript" src="/static/hubspot/build/js/messenger.min.js"></script>
+<script type="text/javascript" src="/static/hubspot/build/js/messenger-theme-future.js"></script>
 </html>

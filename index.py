@@ -19,11 +19,13 @@ web.config.debug = False
 #render = web.template.render('templates/')
 
 urls= (
+	#######登陆
 	'/', 'login',
 	'/index', 'index',
 	'/login', 'login',
 	'/login_dialog.html','login_dialog',
 	'/logout', 'logout',
+	#######一般用户
 	'/search', 'search',
 	'/new_mission', 'new_mission',
 	'/my_mission', 'my_mission',
@@ -34,6 +36,12 @@ urls= (
 	'/mission_audit/(.*)','mission_audit',
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
+	'/calendar/(.*)', 'calendar',							#日历
+	'/calendar_data/(.*)', 'calendar_data',
+	'/mission_content/(.*)', 'mission_content',
+	#######admin账号
+	'/new_account', 'new_account',
+	'/account_list', 'account_list',
 	)
 
 '''
@@ -49,13 +57,14 @@ urls= (
 	'/modify_mission/(.*)',  'modify_mission',
 	'/apply_modify_mission', 'apply_modify_mission',
 	'/delete_mission','delete_mission',
+
 	)
 '''
 app = web.application(urls, globals())
 
 #session config
 session = web.session.Session(app, web.session.DiskStore('sessions'),\
-    initializer={'login':'', 'user':'', 'level':''})
+    initializer={'login':'', 'user':'', 'type':''})
 
 w = app.wsgifunc(StaticMiddleware)
 #gunicorn
@@ -68,19 +77,19 @@ def logged():
 	else:
 		return False
 
-def creat_render(level):
+def creat_render(type):
 	if session.login == 1 :
-		if level == 1:
+		if type == 1:
 			render = render_jinja(
 				'templates/user',
 				encoding = 'utf-8',
 				)
-		elif level == 2:
+		elif type == 2:
 			render = web.template.render(
 				'template/admin',
 				encoding = 'utf-8',
 				)
-		elif level == 3:
+		elif type == 3:
 			render = web.template.render(
 				'template/super_admin',
 				encoding = 'utf-8',
@@ -95,23 +104,18 @@ def creat_render(level):
 
 render = web.template.render('templates/')
 
-def render_template(level, template_name, **context):
+def render_template(type, template_name, **context):
 	extensions = context.pop('extensions', [])
 	globals = context.pop('globals', {})
 
-	if level==1:
+	if type=='user':
 		jinja_env = Environment(
 			loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates/user'), encoding ='utf-8'),
 			extensions=extensions,
 			)
-	elif level==2 :
+	elif type=='admin':
 		jinja_env = Environment(
 			loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates/admin'),encoding ='utf-8'),
-			extensions=extensions,
-			)
-	elif level==3 :
-		jinja_env = Environment(
-			loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates/super_admin'),encoding ='utf-8'),
 			extensions=extensions,
 			)
 	else:
@@ -130,27 +134,27 @@ class index(object):
 	def GET(self):
 		if session.login==1:
 			if session.user:
-				#render = creat_render(level=session.level)
-				return render_template(level=session.level,template_name='index.html',user=session.user)
+				#render = creat_render(type=session.type)
+				return render_template(type=session.type,template_name='index.html',user=session.user)
 			else:
-				#render = creat_render(level=0)
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#render = creat_render(type=0)
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
-			#render = creat_render(level=0)
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#render = creat_render(type=0)
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
 class login(object):
 	"""登陆"""
 	def GET(self):
 		if session.login==1:
-			#render = creat_render(level=session.level)
+			#render = creat_render(type=session.type)
 			raise web.seeother('/index')
-			#return render_template(level=session.level,template_name='index.html',user=session.user)
+			#return render_template(type=session.type,template_name='index.html',user=session.user)
 		else:
-			#render = creat_render(level=0)
-			return render_template(level=0,template_name='login.html',error="")
+			#render = creat_render(type=0)
+			return render_template(type=0,template_name='login.html',error="")
 	def POST(self):
 		user = web.input().user
 		#md5加密存储密码
@@ -160,56 +164,57 @@ class login(object):
 		try:
 			if len(ident)==0 :
 				session.login = 0
-				#render = creat_render(level=0)
-				return render_template(level=0,template_name='login.html',error="用户名不存在")
+				#render = creat_render(type=0)
+				return render_template(type=0,template_name='login.html',error="用户名不存在")
 				#return render.login(error="用户名不存在")
 			elif passwd == ident[0]['account_password']:
 				session.login = 1
 				session.user = user
-				session.level = ident[0]['POWER_power_level']
-				#render = creat_render(session.level)
-				return render_template(level=session.level,template_name='index.html',user=session.user)
+				session.type = ident[0]['account_name']
+				#render = creat_render(session.type)
+				return render_template(type=session.type,template_name='index.html',user=session.user)
 				#return render.index(session.user)
 			else:
 				session.login = 0
-				#render = creat_render(level=0)
+				#render = creat_render(type=0)
 				#return render.login(error="密码错误")
-				return render_template(level=0,template_name='login.html',error="密码错误")
-		except :
+				return render_template(type=0,template_name='login.html',error="密码错误")
+		except Exception, e:
+			print 'loging error', e
 			session.login = 0
-			#render = creat_render(level=0)
+			#render = creat_render(type=0)
 			#return render.login(error="系统错误")
-			return render_template(level=0,template_name='login.html',error="系统错误")
+			return render_template(type=0,template_name='login.html',error="系统错误")
 
 class login_dialog(object):
 	"""登陆"""
 	def GET(self):
 		if session.login==1:
-			return render_template(level=session.level,template_name='index.html',user=session.user)
+			return render_template(type=session.type,template_name='index.html',user=session.user)
 		else:
-			return render_template(level=0,template_name='login_dialog.html')
+			return render_template(type=0,template_name='login_dialog.html')
 	def POST(self):
 		user = web.input().user
 		#md5加密存储密码
 		passwd = data.md5(web.input().passwd)
 		ident = data.checkin(user)
-
+		print 'passwd is ' + passwd + 'and' + ident[0]['account_password']
 		try:
 			if len(ident)==0 :
 				session.login = 0
-				return render_template(level=0,template_name='login.html',error="用户名不存在")
+				return render_template(type=0,template_name='login.html',error="用户名不存在")
 			elif passwd == ident[0]['account_password']:
 				session.login = 1
 				session.user = user
-				session.level = ident[0]['POWER_power_level']
-				#return render_template(level=session.level,template_name='index.html',user=session.user)
+				session.type = ident[0]['account_name']
+				#return render_template(type=session.type,template_name='index.html',user=session.user)
 				return json.dumps({"statusCode":"200", "message":"登录成功", "callbackType":"closeCurrent"})
 			else:
 				session.login = 0
-				return render_template(level=0,template_name='login.html',error="密码错误")
+				return render_template(type=0,template_name='login.html',error="密码错误")
 		except :
 			session.login = 0
-			return render_template(level=0,template_name='login.html',error="系统错误")
+			return render_template(type=0,template_name='login.html',error="系统错误")
 
 
 
@@ -218,7 +223,7 @@ class logout(object):
 	def GET(self):
 		session.login=0
 		session.kill()
-		return render_template(level=0,template_name='login.html', error="请重新登录")
+		return render_template(type=0,template_name='login.html', error="请重新登录")
 
 
 class my_mission(object):
@@ -227,17 +232,17 @@ class my_mission(object):
 		if session.login == 1:
 			if session.user:
 				#找到当前账户所有任务
-				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
-				#render = creat_render(level=session.level)
+				mission_list = mission.mission_list(account_name=session.user, role='mission_doer')
+				#render = creat_render(type=session.type)
 				#return render.my_mission(session.user, mission_list)
-				return render_template(level=session.level, template_name='my_mission.html', 
+				return render_template(type=session.type, template_name='my_mission.html', 
 					user=session.user, mission_list=mission_list)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 		
 
 class new_mission(object):
@@ -245,17 +250,17 @@ class new_mission(object):
 	def GET(self):
 		if session.login==1:
 			if session.user:
-				#render = creat_render(level=session.level)
+				#render = creat_render(type=session.type)
 				#return render.new_mission(session.user,"","","","","")
-				return render_template(level=session.level, template_name='new_mission.html', 
+				return render_template(type=session.type, template_name='new_mission.html', 
 					user=session.user,mission_name="",mission_content="",mission_starttime="",
 					mission_plan_end_time="",error="")
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 
 	def POST(self):
 		#登陆控制
@@ -279,18 +284,18 @@ class new_mission(object):
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
 					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, mission_duplicate)
-					mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
+					mission_list = mission.mission_list(account_name=session.user, role='mission_doer')
 
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
-					#return render_template(level=session.level, template_name='my_mission.html', 
+					#return render_template(type=session.type, template_name='my_mission.html', 
 					#user=session.user, mission_list=mission_list)
 
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面
 				"""
 				else:
 					return render_template(
-						level=session.level, template_name='new_mission.html', 
+						type=session.type, template_name='new_mission.html', 
 						user=session.user, 
 						mission_name=mission_name, 
 						mission_content=mission_content, 
@@ -301,10 +306,10 @@ class new_mission(object):
 				"""
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 
 
 class delete_mission(object):
@@ -315,14 +320,14 @@ class delete_mission(object):
 			if session.user:
 				result = mission.mission_delete(mission_id)
 				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
-				return render_template(level=session.level, template_name='my_mission.html', 
+				return render_template(type=session.type, template_name='my_mission.html', 
 					user=session.user, mission_list=mission_list)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 
 
 class modify_mission(object):
@@ -335,10 +340,10 @@ class modify_mission(object):
 				arg = web.input()
 				m = mission.mission_view(arg.mission_id)
 
-				#render = creat_render(level=session.level)
+				#render = creat_render(type=session.type)
 				#return render.modify_mission(session.user,m,"")
 				return render_template(
-					level=session.level,
+					type=session.type,
 					template_name='modify_mission.html',
 					user=session.user,
 					mission_view=m,
@@ -346,10 +351,10 @@ class modify_mission(object):
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 		
 	def POST(self):
 		"""接收mission_id,"""
@@ -358,18 +363,18 @@ class modify_mission(object):
 				try:
 					m = mission.mission_view(web.input().mission_id)
 					return render_template(
-					level=session.level,
+					type=session.type,
 					template_name='modify_mission.html',
 					user=session.user,
 					mission_view=m,
 					error="修改任务")
 				except Exception, e:
-					#render = creat_render(level=session.level)
+					#render = creat_render(type=session.type)
 					#return render.modify_mission(session.user,)
 					print e
 
 					return render_template(
-					level=session.level,
+					type=session.type,
 					template_name='modify_mission.html',
 					user=session.user,
 					mission_view=m,
@@ -381,10 +386,10 @@ class modify_mission(object):
 
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 
 
 class apply_modify_mission(object):
@@ -427,10 +432,10 @@ class apply_modify_mission(object):
 						mission_plan_end_time=web.input().mission_plan_end_time, \
 						mission_id=mission_id)
 					
-					#render = creat_render(level=session.level)
+					#render = creat_render(type=session.type)
 					#return render.modify_mission(session.user, m, result)
 					return render_template(
-					level=session.level,
+					type=session.type,
 					template_name='modify_mission.html',
 					user=session.user,
 					mission_view=m,
@@ -445,17 +450,17 @@ class apply_modify_mission(object):
 				finally:
 					mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
 
-					#render = creat_render(level=session.level)
+					#render = creat_render(type=session.type)
 					#return render.my_mission(session.user, mission_list)
-					return render_template(level=session.level, template_name='my_mission.html', 
+					return render_template(type=session.type, template_name='my_mission.html', 
 					user=session.user, mission_list=mission_list)
 				"""
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 
 
 class view_mission(object):
@@ -469,19 +474,19 @@ class view_mission(object):
 				arg = web.input()
 				m = mission.mission_view(arg.mission_id)
 
-				#render = creat_render(level=session.level)
+				#render = creat_render(type=session.type)
 				#return render.view_mission(session.user,m)
 				return render_template(
-					level=session.level,template_name='view_mission.html',
+					type=session.type,template_name='view_mission.html',
 					user=session.user,
 					mission_view=m)
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-			#return render_template(level=0,template_name='login.html',error="请重新登录")
+			#return render_template(type=0,template_name='login.html',error="请重新登录")
 
 class search(object):
 	"""搜索
@@ -490,7 +495,7 @@ class search(object):
 		if session.login == 1:
 			if session.user:
 				#return render.search()
-				return render_template(level=session.level, template_name='search.html')
+				return render_template(type=session.type, template_name='search.html')
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
@@ -508,7 +513,7 @@ class mission_audit(object):
 				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
 				#ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
 				#return json.dumps(ajax_result)
-				return render_template(level=session.level, template_name='my_mission.html', 
+				return render_template(type=session.type, template_name='my_mission.html', 
 					user=session.user, mission_list=mission_list)
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -518,7 +523,7 @@ class upload(object):
 	def GET(self,arg):
 		arg = web.input()
 		m = arg.mission_id
-		return render_template(level=session.level, template_name='upload.html', mission_id=m)
+		return render_template(type=session.type, template_name='upload.html', mission_id=m)
 		
 	def POST(self,arg):
 		x = web.input(myfile={})
@@ -545,15 +550,65 @@ class upload_files(object):
 		if session.login == 1:
 			if session.user:
 				list = file.file_list(type=file_type)
-				#render = creat_render(level=session.level)
-				return render_template(level=session.level, template_name='upload_files.html',file_list=list)
+				#render = creat_render(type=session.type)
+				return render_template(type=session.type, template_name='upload_files.html',file_list=list)
 
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-				#return render_template(level=0,template_name='login.html',error="请重新登录")
+				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		
+
+class calendar(object):
+	"""docstring for calendar"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()
+			if data.permission_check(session.user, arg.account, 'calendar'):
+				return render_template(
+					type = session.type,
+					template_name = 'calendar.html',
+					account_username = arg.account
+					)
+
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		
+class calendar_data(object):
+	"""docstring for calendar_data"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()
+			if data.permission_check(session.user, arg.account, 'calendar'):
+				calendar_data = data.get_calendar_data(arg)
+				return render_template(type = session.type,
+					template_name='calendar.json',\
+					mission_list = calendar_data)
+		
+class mission_content(object):
+	"""docstring for mission_content"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()	
+			mission_content = mission.get_mission_content(arg.mission_id)
+			return '任务名称：%s 任务内容：%s'%(mission_content[0]['mission_name'],mission_content[0]['mission_content'])
+
+######################## admin 账号 #####################################
+class new_account(object):
+	"""docstring for new_account"""
+	def GET(self):
+		if session.login == 1:
+			return render_template(type = session.type,\
+				template_name = 'new_account.html',\
+				account_username = '')
+
+class account_list(object):
+	"""docstring for account_list"""
+	def GET(self):
+		if session.login == 1:
+			return render_template(type = session.type,\
+				template_name = 'account_list.html',\
+				)
 		
 
 if __name__ == "__main__":
