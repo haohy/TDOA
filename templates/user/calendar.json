@@ -2,7 +2,7 @@
 {% for m in mission_list %}
 {
     	"title": "{{m['mission_name']}}",
-    	"url": "http://google.com/",
+    	"url": "/mission_content/?mission_id={{m['mission_id']}}",
     	"start": "{{m['mission_start']}}",
     	"end": "{{m['mission_plan_end']}}"
 },

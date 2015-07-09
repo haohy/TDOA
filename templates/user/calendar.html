@@ -29,6 +29,23 @@
 					$('#script-warning').show();
 				}
 			},
+			eventClick:function(event){
+				if(event.url){
+					Messenger.options = {
+					    extraClasses: 'messenger-fixed messenger-on-top',
+					    theme: 'flat'
+					};
+					Messenger().run({
+					  errorMessage: "This did not go well."
+					}, {
+					  url: event.url,
+					  success: function(content) {
+					  	Messenger().post({message:content, showCloseButton:true})
+					  }
+					});
+					return false;
+				}	
+			},
 			loading: function(bool) {
 				$('#loading').toggle(bool);
 			}
@@ -88,5 +105,9 @@
 </body>
 
 
-
+<!-- HubSpot Messaging -->
+<link rel="stylesheet" type="text/css" href="/static/hubspot/build/css/messenger.css">
+<link rel="stylesheet" type="text/css" href="/static/hubspot/build/css/messenger-theme-flat.css">
+<script type="text/javascript" src="/static/hubspot/build/js/messenger.min.js"></script>
+<script type="text/javascript" src="/static/hubspot/build/js/messenger-theme-future.js"></script>
 </html>

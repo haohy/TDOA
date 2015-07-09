@@ -38,7 +38,7 @@ urls= (
 	'/upload_files/(.*)','upload_files',
 	'/calendar/(.*)', 'calendar',							#日历
 	'/calendar_data/(.*)', 'calendar_data',
-
+	'/mission_content/(.*)', 'mission_content',
 	#######admin账号
 	'/new_account', 'new_account',
 	'/account_list', 'account_list',
@@ -585,6 +585,13 @@ class calendar_data(object):
 					template_name='calendar.json',\
 					mission_list = calendar_data)
 		
+class mission_content(object):
+	"""docstring for mission_content"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()	
+			mission_content = mission.get_mission_content(arg.mission_id)
+			return '任务名称：%s 任务内容：%s'%(mission_content[0]['mission_name'],mission_content[0]['mission_content'])
 
 ######################## admin 账号 #####################################
 class new_account(object):

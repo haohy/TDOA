@@ -149,3 +149,10 @@ def mission_audit(mission_id):
 	cursor.execute("update MISSION set mission_status='已审核' where mission_id='%s'"%mission_id)
 	conn.commit()
 	conn.close()
+
+def get_mission_content(mission_id):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursors = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursors.execute("SELECT mission_name, mission_content FROM mission WHERE mission_id = '%s'" % mission_id)
+	return list(cursors.fetchall())
