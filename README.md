@@ -1,5 +1,2 @@
-This is TDOA repository, 
-Everyone create a branch named by your name's initial,
-And send me your SSH key on QQ.                      
-Warning: We operate on dev(branch),
-Not change master until we have made it a better TDOA.
+南邮通达OA系统
+基于Python框架web.py，开发语言为Python，数据库:MySQL
