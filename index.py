@@ -37,7 +37,7 @@ urls= (
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
 	'/calendar/(.*)', 'calendar',							#日历
-	'/calendar_json/(.*)', 'calendar_json',
+	'/calendar_data/(.*)', 'calendar_data',
 
 	#######admin账号
 	'/new_account', 'new_account',
@@ -565,19 +565,25 @@ class calendar(object):
 	def GET(self, arg):
 		if session.login == 1:
 			arg = web.input()
-			if arg.account == 'this':
-				return render_template(type=session.type, \
-					template_name='calendar.html', \
-					account_username='this')
+			if data.permission_check(session.user, arg.account, 'calendar'):
+				return render_template(
+					type = session.type,
+					template_name = 'calendar.html',
+					account_username = arg.account
+					)
+
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		
-class calendar_json(object):
-	"""docstring for calendar_json"""
+class calendar_data(object):
+	"""docstring for calendar_data"""
 	def GET(self, arg):
 		if session.login == 1:
 			arg = web.input()
-			calendar_data = data.get_calendar_data(arg)
-			return data
+			if data.permission_check(session.user, arg.account, 'calendar'):
+				calendar_data = data.get_calendar_data(arg)
+				return render_template(type = session.type,
+					template_name='calendar.json',\
+					mission_list = calendar_data)
 		
 
 ######################## admin 账号 #####################################

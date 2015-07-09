@@ -24,7 +24,7 @@
 			editable: false,
 			eventLimit: true, // allow "more" link when too many events
 			events: {
-				url: '/calendar_json?account={{account_username}}',
+				url: '/calendar_data/?account={{account_username}}',
 				error: function() {
 					$('#script-warning').show();
 				}
