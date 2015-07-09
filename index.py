@@ -19,11 +19,13 @@ web.config.debug = False
 #render = web.template.render('templates/')
 
 urls= (
+	#######登陆
 	'/', 'login',
 	'/index', 'index',
 	'/login', 'login',
 	'/login_dialog.html','login_dialog',
 	'/logout', 'logout',
+	#######一般用户
 	'/search', 'search',
 	'/new_mission', 'new_mission',
 	'/my_mission', 'my_mission',
@@ -34,6 +36,12 @@ urls= (
 	'/mission_audit/(.*)','mission_audit',
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
+	'/calendar/(.*)', 'calendar',							#日历
+	'/calendar_json/(.*)', 'calendar_json',
+
+	#######admin账号
+	'/new_account', 'new_account',
+	'/account_list', 'account_list',
 	)
 
 '''
@@ -49,6 +57,7 @@ urls= (
 	'/modify_mission/(.*)',  'modify_mission',
 	'/apply_modify_mission', 'apply_modify_mission',
 	'/delete_mission','delete_mission',
+
 	)
 '''
 app = web.application(urls, globals())
@@ -275,7 +284,7 @@ class new_mission(object):
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
 					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, mission_duplicate)
-					mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
+					mission_list = mission.mission_list(account_name=session.user, role='mission_doer')
 
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
@@ -550,6 +559,43 @@ class upload_files(object):
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		
+
+class calendar(object):
+	"""docstring for calendar"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()
+			if arg.account == 'this':
+				return render_template(type=session.type, \
+					template_name='calendar.html', \
+					account_username='this')
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		
+class calendar_json(object):
+	"""docstring for calendar_json"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()
+			calendar_data = data.get_calendar_data(arg)
+			return data
+		
+
+######################## admin 账号 #####################################
+class new_account(object):
+	"""docstring for new_account"""
+	def GET(self):
+		if session.login == 1:
+			return render_template(type = session.type,\
+				template_name = 'new_account.html',\
+				account_username = '')
+
+class account_list(object):
+	"""docstring for account_list"""
+	def GET(self):
+		if session.login == 1:
+			return render_template(type = session.type,\
+				template_name = 'account_list.html',\
+				)
 		
 
 if __name__ == "__main__":

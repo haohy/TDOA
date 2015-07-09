@@ -28,6 +28,12 @@ def md5(passwd):
 	m.update(passwd)
 	return m.hexdigest()
 
+def get_calendar_data(arg):
+	pass
+
+
+def permission_check():
+	pass
 """
 def mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time):
 	check_result = []

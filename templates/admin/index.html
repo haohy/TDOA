@@ -27,7 +27,7 @@
   <!-- svg图表  supports Firefox 3.0+, Safari 3.0+, Chrome 5.0+, Opera 9.5+ and Internet Explorer 6.0+ -->
   <script type="text/javascript" src="/static/dwz/chart/raphael.js"></script>
   <script type="text/javascript" src="/static/dwz/chart/g.raphael.js"></script>
-  <script type="text/javascript" src="/static/dwz/chart/g.bar.js"></script>
+  <script type="text/javascript" src="/static//dwz/chart/g.bar.js"></script>
   <script type="text/javascript" src="/static/dwz/chart/g.line.js"></script>
   <script type="text/javascript" src="/static/dwz/chart/g.pie.js"></script>
   <script type="text/javascript" src="/static/dwz/chart/g.dot.js"></script>
@@ -145,28 +145,45 @@ $(function(){
       </div>
 
       <div class="accordion" fillSpace="sidebar">
+<!--         <div class="accordionHeader">
+            <h2><span>Folder</span>常用功能</h2>
+        </div> -->
         <div class="accordionContent">
           <ul class="tree treeFolder">
             <li>
-              <a href="http://www.tdxy.com.cn/html/jwc/" target="navTab" rel="baidu">通达学院教务处</a>
+              <a href="/new_account" target="navTab" rel="new_account">新建帐号</a>
             </li>
             <li>
-              <a href="/new_mission" target="navTab" rel="new_mission">新建任务</a>
+              <a href="/account_list?type=all" target="navTab" rel="all_account">所有帐号</a>
             </li>
             <li>
-              <a href="/my_mission" target="navTab">我的任务</a>
+              <a href="/account_list?type=" target="navTab" rel="account">教务管理科</a>
             </li>
             <li>
-            <a href="/static/mission_state.html" target="navTab">任务动态</a>
+              <a href="/account_list" target="navTab" rel="accountl_list">考试中心</a>
             </li>
             <li>
-              <a href="/static/search.html" target="navTab" rel="search">高级检索</a>
+              <a href="/account_list" target="navTab" rel="account_list">教学研究科</a>
             </li>
             <li>
-              <a href="/static/download.html" target="navTab">常用下载</a>
+              <a href="/account_list" target="navTab" rel="account_list">实践教学科</a>
+            </li>
+            <li>
+              <a href="/account_list" target="navTab" rel="account_list">综合管理科</a>
+            </li>
+            <li>
+              <a href="/account_list" target="navTab" rel="account_list">教师教学发展中心办公室</a>
             </li>
           </ul>
         </div>
+<!--         <div class="accordionHeader">
+            <h2><span>Folder</span>按科室管理帐号</h2>
+        </div> -->
+<!--         <div class="accordionContent">
+          <ul class="tree treeFolder">
+            
+          </ul>
+        </div> -->
 
       </div>
     </div>
@@ -195,13 +212,90 @@ $(function(){
       </div>
       <ul class="tabsMoreList">
         <li>
-          <a href="javascript:;">我的主页</a>
+          <a href="javascript:;">所有帐号</a>
         </li>
       </ul>
       <div class="navTab-panel tabsPageContent layoutBox">
 
         <div class="page unitBox">
-          <iframe src="calendar/?account=this" style="height:600px; width:100%" scrolling="no"></iframe>
+          
+          <form id="pagerForm" method="post" action="demo_page1.html">
+            <input type="hidden" name="status" value="${param.status}">
+            <input type="hidden" name="keywords" value="${param.keywords}" />
+            <input type="hidden" name="pageNum" value="1" />
+            <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
+            <input type="hidden" name="orderField" value="${param.orderField}" />
+          </form>
+          <div class="pageContent">
+            <table class="table" width="100%" layoutH="26">
+              <thead>
+                <tr class="center">
+                  <th>账号</th>
+                  <th>职位</th>
+                  <th>电话</th>
+                  <th>邮箱</th>
+                  <th width="100">查看任务权限</th>
+                  <th width="140">查看日程权限</th>
+                  <th width="140" >已完成任务修改权限</th>
+                  <th width="100">附件管理权限</th>
+                  <th width="100">操作</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for m in mission_list %}
+                  <tr target="sid_user" class="center"> 
+                    <td>
+                      <a href="/view_mission/?mission_id={{m['mission_id']}}" target="navTab">
+                           <div>{{m['mission_name']}}</div>
+                      </a>
+                    </td>
+                    <td>
+                       <div>{{m['mission_publisher']}}</div>
+                    </td>
+                    <td>
+                      <div>{{m['mission_doer']}}</div>
+                    </td>
+                    <td>
+                       <div>{{m['mission_start']}}</div>
+                    </td>
+                    <td>
+                       <div>{{m['mission_plan_end']}}</div>
+                    </td>
+          <!--           <td>
+                       <div>{{m['mission_actuall_end_time']}}</div>
+                    </td> -->
+                    <td>
+                       <div>{{m['mission_status']}}</div>
+                    </td>
+                    <td>
+                      <div>{{m['mission_appendix']}}</div>
+                    </td>
+                    <td>
+                      <a href="/modify_mission/?mission_id={sid_user}" style="color:rgb(0,0,225)">修改</a>
+                      <a title="确认删除？" href="delete_mission/?mission_id={{mission_id}}" target="ajaxTodo" style="color:rgb(0,0,200)">删除</a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+            <div class="panelBar">
+              <div class="pages">
+                <span>显示</span>
+                <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="200">200</option>
+                </select>
+                <span>条，共${totalCount}条</span>
+              </div>
+              
+              <div class="pagination" targetType="navTab" totalCount="200" numPerPage="20" pageNumShown="10" currentPage="1"></div>
+
+            </div>
+          </div>
+
 
         </div>
 
