@@ -5,13 +5,7 @@ import re
 
 def SQLconn():
 	#SQL连接参数
-<<<<<<< HEAD
-	#conn = {"host":"127.0.0.1", "user":"root", "passwd":"lihang", "charset":"utf8", "db":"tdoa_tdoa"}
-	conn = {"host":"127.0.0.1", "user":"root", "passwd":"root", "charset":"utf8", "db":"tdoa_tdoa"}
-	#conn = {cc}
-=======
 	conn = {"host":"127.0.0.1", "user":"root", "passwd":"root", "charset":"utf8", "db":"tdoa_ws"}
->>>>>>> hhy
 	return conn
 
 def checkin(user):
@@ -32,7 +26,7 @@ def md5(passwd):
 	m.update(passwd)
 	return m.hexdigest()
 
-<<<<<<< HEAD
+
 """
 def mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time):
 	check_result = []
@@ -47,7 +41,7 @@ def mission_check(mission_name, mission_content, mission_starttime, mission_plan
 def mission_save(mission_name, mission_content, mission_starttime, mission_plan_end_time):
 	pass
 """
-=======
+
 def get_calendar_data(arg):
   	c = SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
@@ -112,4 +106,3 @@ def permission_check(user, account, type):
 		if user_power['account_power']%10 == 1:
 			return True
 		return False
->>>>>>> hhy
