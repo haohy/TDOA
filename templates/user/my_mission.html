@@ -6,48 +6,7 @@
   <input type="hidden" name="orderField" value="${param.orderField}" />
 </form>
 
-
-<!-- <div class="pageHeader">
-  <form onsubmit="return navTabSearch(this);" action="demo_page1.html" method="post">
-  <div class="searchBar">
-    <table class="searchContent" style="width:600px;float:left;">
-      <tr>
-        <td>
-          关键字：<input type="text" name="keyword" />
-        </td>
-        <td>
-          <select class="combox" name="province">
-            <option value="">任务状态</option>
-            <option value="待审核">待审核</option>
-            <option value="已审核">已审核</option>
-            <option value="已开始">已开始</option>
-            <option value="已完成">已完成</option>
-          </select>
-        </td>
-        <td>
-          发布日期：<input type="text" class="date" readonly="true" />
-        </td>
-      </tr>
-    </table>
-    <div class="subBar" style="width:200px;float:right;">
-      <ul>
-        <li><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></li>
-        <li><a class="button" href="/search" target="dialog" mask="true" title="查询框"><span>高级检索</span></a></li>
-      </ul>
-    </div>
-  </div>
-  </form>
-</div> -->
 <div class="pageContent">
-  <!-- <div class="panelBar">
-    <ul class="toolBar">
-      <li><a class="add" href="/new_mission" target="navTab"><span>添加新任务</span></a></li>
-      <li><a class="delete" href="demo/common/ajaxDone.html?uid={sid_user}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></li>
-      <li><a class="edit" href="/modify_mission/?mission_id={sid_user}" target="navTab"><span>修改</span></a></li>
-      <li class="line">line</li>
-      <li><a class="icon" href="#" target="dwzExport" targetType="navTab" title="实要导出这些记录吗?"><span>导出EXCEL</span></a></li>
-    </ul>
-  </div> -->
   <table class="table" width="100%" layoutH="48">
     <thead>
       <tr class="center">
@@ -78,10 +37,10 @@
             <div>{{m['mission_doer']}}</div>
           </td>
           <td>
-             <div>{{m['mission_start']}}</div>
+             <div>{{m['mission_starttime']}}</div>
           </td>
           <td>
-             <div>{{m['mission_plan_end']}}</div>
+             <div>{{m['mission_plan_end_time']}}</div>
           </td>
 <!--           <td>
              <div>{{m['mission_actuall_end_time']}}</div>
@@ -93,7 +52,7 @@
             <div>{{m['mission_appendix']}}</div>
           </td>
           <td>
-            <a href="/modify_mission/?mission_id={sid_user}" style="color:rgb(0,0,225)">修改</a>
+            <a href="/modify_mission/?mission_id={{m['mission_id']}}" target="navTab" style="color:rgb(0,0,225)">修改</a>
             <a title="确认删除？" href="delete_mission/?mission_id={{mission_id}}" target="ajaxTodo" style="color:rgb(0,0,200)">删除</a>
           </td>
         </tr>
@@ -109,7 +68,7 @@
         <option value="100">100</option>
         <option value="200">200</option>
       </select>
-      <span>条，共${totalCount}条</span>
+      <span>条，共{{totalCount}}条</span>
     </div>
     
     <div class="pagination" targetType="navTab" totalCount="200" numPerPage="20" pageNumShown="10" currentPage="1"></div>

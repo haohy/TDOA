@@ -5,9 +5,7 @@ import re
 
 def SQLconn():
 	#SQL连接参数
-	conn = {"host":"127.0.0.1", "user":"root", "passwd":"root", "charset":"utf8", "db":"tdoa"}
-	#conn = {"host":"127.0.0.1", "user":"root", "passwd":"root", "charset":"utf8", "db":"tdoa_tdoa"}
-	#conn = {cc}
+	conn = {"host":"127.0.0.1", "user":"root", "passwd":"root", "charset":"utf8", "db":"tdoa_ws"}
 	return conn
 
 def checkin(user):
@@ -34,10 +32,10 @@ def get_calendar_data(arg):
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	# print "connect mysql"
 	print arg.account, arg.start, arg.end
-	cursor.execute("SELECT mission_name, mission_id, mission_start, mission_plan_end FROM MISSION\
-		WHERE mission_doer = '%s' AND mission_start BETWEEN '%s' AND '%s' OR mission_plan_end\
-		 BETWEEN '%s' AND '%s'"%\
-		(arg.account, arg.start, arg.end, arg.start, arg.end))
+	cursor.execute("SELECT mission_name, mission_id, mission_starttime, mission_plan_end_time FROM MISSION\
+		WHERE mission_doer = '%s' AND mission_starttime BETWEEN '%s' AND '%s' OR mission_plan_end_time\
+		 BETWEEN '%s' AND '%s'"\
+		 %(arg.account, arg.start, arg.end, arg.start, arg.end))
 	calendar_data = cursor.fetchall()
 	calendar_list = list(calendar_data)
 	# print calendar_list
@@ -57,7 +55,7 @@ def permission_check(user, account, type):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	cursors.execute(
-		"SELECT account_department, account_power1, account_power2, account_power3, account_power4\
+		"SELECT account_department, account_power\
 		FROM ACCOUNT WHERE account_username = '%s'" % user
 		)
 	user_power = list(cursor.fetchall())
@@ -67,38 +65,28 @@ def permission_check(user, account, type):
 	account_department = list(cursor.fetchall())
 
 	if type == 'mission':
-		if user_power['account_power1'] == 2:
+		#account_power1 == account_power/1000
+		if user_power['account_power']/1000 == 2:
 			return True
 		if user_power['account_department'] == account_department:
 			return true
 		else:
 			return False
 	if type == 'calendar':
-		if user_power['account_power2'] == 2:
+		#account_power2 == account_power%1000/100
+		if user_power['account_power']%1000/100 == 2:
 			return True
 		if user_power['account_department'] == account_department:
 			return True
 		else:
 			return False
 	if type == 'history_mission_modify':
-		if user_power['account_power3'] == 1:
+		#account_power3 == account_power%100/10
+		if user_power['account_power']%100/10 == 1:
 			return True
 		return False
 	if type == 'file_manage':
-		if user_power['account_power4'] == 1:
+		#account_power4 == account_power%10
+		if user_power['account_power']%10 == 1:
 			return True
 		return False
-"""
-def mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time):
-	check_result = []
-	if len(mission_name)>200 or len(mission_name)==0:
-		check_result.append("任务名字不为空，且小于200字")
-		return check_result
-	elif len(mission_content)>10000 or len(mission_content)==0:
-		check_result.append("任务内容不超过1万字，且不能为空")
-		return check_result
-
-
-def mission_save(mission_name, mission_content, mission_starttime, mission_plan_end_time):
-	pass
-"""
