@@ -1,9 +1,16 @@
 <div class="pageContent">
-	<form method="post" action="/new_account" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+	<form method="post" action="/apply_modify_account" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		{% if error != "" %}
+                <div class="alert alert-danger alert-dismissable">
+                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>错误!</strong>
+                {{error}}
+                </div>
+            {% endif %}
 		<div class="pageFormContent" layoutH="56">
+				<input type="text" name="account_id" value="{{account_view[0]['account_id']}}" style="display: none">
 			<p>
 				<label>账号权限</label>
-				<select name="account_name" class="required">
+			<!-- 	<select name="account_name" class="required" value="{{account_view[0]['account_name']}}"> -->								<select name="account_name" class="required">
 					<option value="0">请选择</option>
 					<option value="user">user</option>
 					<option value="admin">admin</option>
@@ -11,27 +18,27 @@
 			</p>
 			<p>
 				<label>账号名</label>
-				<input type="text" size="30" name="account_username" class="textInput valid">
+				<input type="text" size="30" name="account_username" class="textInput valid" value="{{account_view[0]['account_username']}}">
 			</p>
 			<p>
 				<label>工号</label>
-				<input type="text" size="30" name="account_work" class="textInput valid">
+				<input type="text" size="30" name="account_work" class="textInput valid" value="{{account_view[0]['account_work']}}">
 			</p>
 			<p>
 				<label>邮箱</label>
-				<input type="text" size="30" name="account_email" class="textInput valid">
+				<input type="text" size="30" name="account_email" class="textInput valid" value="{{account_view[0]['account_email']}}">
 			</p>
 			<p>
 				<label>手机号</label>
-				<input type="text" size="30" name="account_phone" class="textInput valid">
+				<input type="text" size="30" name="account_phone" class="textInput valid" value="{{account_view[0]['account_phone']}}">
 			</p>
 			<p>
 				<label>职位</label>
-				<input type="text" size="30" name="account_position" class="textInput valid">
+				<input type="text" size="30" name="account_position" class="textInput valid" value="{{account_view[0]['account_position']}}">
 			</p>
 			<p>
 				<label>所属科室</label>
-				<select name="account_department" class="required">
+				<select name="account_department" class="required" value="{{account_view[0]['account_department']}}">
 					<option value="0">请选择</option>
 					<option value="1">教务管理科</option>
 					<option value="2">考试中心</option>
@@ -43,7 +50,7 @@
 			</p>
 			<p>
 				<label>查看任务权限：</label>
-				<select name="account_power1" class="required">
+				<select name="account_power1" class="required" value="{{account_view[0]['account_power']//1000}}">
 					<option value="0">请选择</option>
 					<option value="1">只能查看自己的任务</option>
 					<option value="2">可以查看同科室其他人任务</option>
@@ -53,7 +60,7 @@
 			</p>
 			<p>
 				<label>查看日程权限</label>
-				<select name="account_power2" class="required">
+				<select name="account_power2" class="required" value="{{account_view[0]['account_power']%1000//100}}">
 					<option value="0">请选择</option>
 					<option value="1">只能查看自己的日程表</option>
 					<option value="2">可以查看同科室其他人日程表</option>
@@ -63,7 +70,7 @@
 			</p>
 			<p>
 				<label>修改已保存任务权限</label>
-				<select name="account_power3" class="required">
+				<select name="account_power3" class="required" value="{{account_view[0]['account_power']%100//10}}">
 					<option value="0">请选择</option>
 					<option value="1">允许修改</option>
 					<option value="2">不允许修改</option>
@@ -72,7 +79,7 @@
 			</p>
 			<p>
 				<label>附件管理权限</label>
-				<select name="account_power4" class="required">
+				<select name="account_power4" class="required" value="{{account_view[0]['account_power']/10}}">
 					<option value="0">请选择</option>
 					<option value="1">不能操作</option>
 					<option value="2">允许操作</option>

@@ -45,9 +45,8 @@ def mission_check(mission_name, mission_content, mission_starttime, mission_plan
 		check_result = "no error"
 		return check_result
 	return "未知错误"
-
-
-def mission_save(mission_name, account_name, mission_content, mission_starttime, mission_plan_end_time, mission_duplicate):
+	
+def mission_save(mission_name, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, mission_duplicate):
 	#存储任务信息
 	mission_pubtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 	mission_status = "待审核"
@@ -57,14 +56,14 @@ def mission_save(mission_name, account_name, mission_content, mission_starttime,
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 
-	cursor.execute("select * from ACCOUNT where account_name='%s'"%(account_name))
-	mission_publisher = cursor.fetchall()[0]['account_id']
-
+	# cursor.execute("select * from ACCOUNT where account_name='%s'"%(account_name))
+	# mission_publisher = cursor.fetchall()[0]['account_id']
+	
 
 	cursor.execute("insert into mission \
 		(mission_name, mission_publisher, mission_content, mission_starttime, mission_pubtime, mission_plan_end_time, mission_status, mission_duplicate)\
 		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
-		"%(mission_name.encode('utf-8'), int(mission_publisher), mission_content.encode('utf-8'), mission_starttime.encode('utf-8'), mission_pubtime, mission_plan_end_time.encode('utf-8'), mission_status, mission_duplicate.encode('utf-8')))
+		"%(mission_name.encode('utf-8'), mission_publisher.encode('utf-8'), mission_content.encode('utf-8'), mission_starttime.encode('utf-8'), mission_pubtime, mission_plan_end_time.encode('utf-8'), mission_status, mission_duplicate.encode('utf-8')))
 	conn.commit()
 	conn.close()
 
@@ -97,7 +96,7 @@ def mission_list(account_name, role):
 
 	m_list = list(m_list)
 	#按照starttime排序
-	m_list = sorted(m_list, key=lambda m_list: m_list['mission_start'])
+	m_list = sorted(m_list, key=lambda m_list: m_list['mission_starttime'])
 
 	return m_list
 

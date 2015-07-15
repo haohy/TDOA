@@ -7,7 +7,7 @@
   <input type="hidden" name="orderField" value="${param.orderField}" />
 </form>
 <div class="pageContent">
-  <table class="table" width="100%" layoutH="26">
+  <table class="table" width="100%" layoutH="48">
     <thead>
       <tr class="center">
         <th>账号</th>
@@ -23,37 +23,37 @@
     </thead>
 
     <tbody>
-      {% for m in mission_list %}
+      {% for a in account_list %}
         <tr target="sid_user" class="center"> 
           <td>
-            <a href="/view_mission/?mission_id={{m['mission_id']}}" target="navTab">
-                 <div>{{m['mission_name']}}</div>
+            <a href="/view_account/?account_id={{a['account_id']}}" target="navTab">
+                 <div>{{a['account_username']}}</div>
             </a>
           </td>
           <td>
-             <div>{{m['mission_publisher']}}</div>
+             <div>{{a['account_position']}}</div>
           </td>
           <td>
-            <div>{{m['mission_doer']}}</div>
+            <div>{{a['account_phone']}}</div>
           </td>
           <td>
-             <div>{{m['mission_start']}}</div>
+             <div>{{a['account_email']}}</div>
           </td>
           <td>
-             <div>{{m['mission_plan_end']}}</div>
-          </td>
-<!--           <td>
-             <div>{{m['mission_actuall_end_time']}}</div>
-          </td> -->
-          <td>
-             <div>{{m['mission_status']}}</div>
+             <div>{{a['account_power']//1000}}</div>
           </td>
           <td>
-            <div>{{m['mission_appendix']}}</div>
+             <div>{{a['account_power']%1000//100}}</div>
           </td>
           <td>
-            <a href="/modify_mission/?mission_id={sid_user}" style="color:rgb(0,0,225)">修改</a>
-            <a title="确认删除？" href="delete_mission/?mission_id={{mission_id}}" target="ajaxTodo" style="color:rgb(0,0,200)">删除</a>
+             <div>{{a['account_power']%100//10}}</div>
+          </td>
+          <td>
+              <div>{{a['account_power']%10}}</div>
+          </td>
+          <td>
+            <a href="/modify_account/?account_id={{a['account_id']}}" target="navTab" style="color:rgb(0,0,225)">修改</a>
+            <a title="确认删除？" href="/delete_account/?account_id={{a['account_id']}}" target="ajaxTodo" style="color:rgb(0,0,200)">删除</a>
           </td>
         </tr>
         {% endfor %}
@@ -68,7 +68,7 @@
         <option value="100">100</option>
         <option value="200">200</option>
       </select>
-      <span>条，共${totalCount}条</span>
+      <span>条，共{{length}}条</span>
     </div>
     
     <div class="pagination" targetType="navTab" totalCount="200" numPerPage="20" pageNumShown="10" currentPage="1"></div>
