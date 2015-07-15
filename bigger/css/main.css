@@ -1,0 +1,78 @@
+body{
+	margin: 0px;
+	padding: 0px;
+}
+.index_img{
+	background: url(../images/001.png);
+	background-repeat: no-repeat;
+	width: 1280px;
+	height: 800px;
+	margin: auto;
+}
+.nav{
+	position: absolute;
+	left: 860px;
+	top: 35px;
+	height: 30px;
+	width: 720px;
+	text-align: center;
+	line-height: 30px;
+	font-size: 1.4em;
+	font-family: Microsoft Yahei light;
+}
+.nav_font{
+	float: left;
+	height: 30px;
+	width: 170px;
+	
+}
+.nav_f{
+	float: left;
+	color: #fff;
+}
+.nav a{
+	color: #fff;
+	text-decoration: none;
+}
+.iphone_btn{
+	position: absolute;
+	top: 437px;
+	left: 933px;
+	height: 57px;
+	width: 172px;
+}
+.android_btn{
+	position: absolute;
+	top: 509px;
+	left: 933px;
+	height: 57px;
+	width: 172px;
+}
+#index_img002{
+	background: url(../images/002.png);
+	background-repeat: no-repeat;
+	width: 1280px;
+	height: 800px;
+	margin: auto;
+}
+#index_img003{
+	background: url(../images/003.png);
+	background-repeat: no-repeat;
+	width: 1280px;
+	height: 800px;
+	margin: auto;
+}
+#index_img004{
+	background: url(../images/004.png);
+	background-repeat: no-repeat;
+	width: 1280px;
+	height: 800px;
+	margin: auto;
+}
+#index_img005{
+	background: url(../images/005.png);
+	background-repeat: no-repeat;
+	width: 1280px;
+	height: 800px;
+	margin: auto;
+}
