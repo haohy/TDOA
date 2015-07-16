@@ -17,7 +17,6 @@
         <th width="100">计划完成时间</th>
 <!--         <th width="100">实际完成时间</th> -->
         <th width="80" align="center">状态</th>
-        <th width="100">是否按年重复</th>
         <th width="100">操作</th>
       </tr>
     </thead>
@@ -26,7 +25,7 @@
       {% for m in mission_list %}
         <tr target="sid_user" class="center"> 
           <td>
-            <a href="/view_mission/?mission_id={{m['mission_id']}}" target="navTab">
+            <a href="/view_mission/?mission_id={{m['mission_id']}}&type=mission_publisher" target="navTab">
                  <div>{{m['mission_name']}}</div>
             </a>
           </td>
@@ -49,11 +48,8 @@
              <div>{{m['mission_status']}}</div>
           </td>
           <td>
-            <div>{{m['mission_appendix']}}</div>
-          </td>
-          <td>
             <a href="/modify_mission/?mission_id={{m['mission_id']}}" target="navTab" style="color:rgb(0,0,225)">修改</a>
-            <a title="确认删除？" href="delete_mission/?mission_id={{mission_id}}" target="ajaxTodo" style="color:rgb(0,0,200)">删除</a>
+            <a href="/delete_mission/?mission_id={{m['mission_id']}}" target="navTab" style="color:rgb(0,0,225)">删除</a>
           </td>
         </tr>
         {% endfor %}

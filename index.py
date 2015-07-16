@@ -236,15 +236,16 @@ class mission_state(object):
 				mission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已发布')
 				zission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='执行中')
 				sission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已提交')
+				wission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='未通过')
 				yission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已完成')
-				print mission_list, zission_list, sission_list, yission_list
 				return render_template(type=session.type, \
 					template_name='mission_state.html', \
 					user=session.user, \
 					mission_list = mission_list, \
 					zission_list = zission_list, \
 					sission_list = sission_list, \
-					yission_list = yission_list)
+					yission_list = yission_list, \
+					role = web.input().type)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
