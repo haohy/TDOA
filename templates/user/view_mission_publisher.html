@@ -59,6 +59,12 @@
 	
   </div>
   <div class="formBar">
+    <ul>
+      <li><div class="buttonActive"><div><a class="edit" href="/modify_mission/?mission_id={{mission_view[0]['mission_id']}}" target="navTab"><span>修改任务</span></a></d	iv></div></li>
+      <li><div class="button"><div><a class="delete" href="/delete_mission/?mission_id={{mission_view[0]['mission_id']}}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></div></div></li>
+      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='已完成'" target="navTab"><span>审核通过</span></a></div></div></li>
+      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='未通过'" target="navTab"><span>不通过</span></a></div></div></li>
+    </ul>
   </div>  
 
 </div>

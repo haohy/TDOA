@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import web
 from web.httpserver import StaticMiddleware
+from urllib import unquote
 import json
 import re
 import os
@@ -29,8 +30,9 @@ urls= (
 	#######一般用户
 	'/search', 'search',
 	'/new_mission', 'new_mission',
-	'/my_mission', 'my_mission',
+	'/my_mission/(.*)', 'my_mission',
 	'/view_mission/(.*)', 'view_mission',
+	'/change_mission_sta/(.*)', 'change_mission_sta',
 	'/modify_mission/(.*)',  'modify_mission',
 	'/apply_modify_mission', 'apply_modify_mission',
 	'/delete_mission','delete_mission',
@@ -40,7 +42,7 @@ urls= (
 	'/calendar/(.*)', 'calendar',							#日历
 	'/calendar_data/(.*)', 'calendar_data',
 	'/mission_content/(.*)', 'mission_content',
-	'/mission_state','mission_state',
+	'/mission_state/(.*)','mission_state',
 	#######admin账号
 	'/new_account', 'new_account',
 	'/account_list/(.*)', 'account_list',
@@ -132,8 +134,7 @@ def render_template(type, template_name, **context):
 			)
 	jinja_env.globals.update(globals)
 	return jinja_env.get_template(template_name).render(context)
-
-
+	
 class index(object):
 	"""首页"""
 	def GET(self):
@@ -216,12 +217,12 @@ class logout(object):
 
 class my_mission(object):
 	"""任务列表"""
-	def GET(self):
+	def GET(self, args):
 		if session.login == 1:
 			if session.user:
 				#找到当前账户所有任务
-				mission_list = mission.mission_list(account_name=session.user, role='mission_doer')
-				return render_template(type=session.type, template_name='my_mission.html', 
+				mission_list = mission.mission_list(account_name=session.user, role=web.input().type)
+				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
 					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -229,10 +230,26 @@ class my_mission(object):
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 class mission_state(object):
 	"""docstring for mission_state"""
-	def GET(self):
+	def GET(self ,args):
 		if session.login == 1:
 			if session.user:
-				mission_list = mission.mission_list(account_name = session.user, role='mission_doer')
+				mission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已发布')
+				zission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='执行中')
+				sission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已提交')
+				wission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='未通过')
+				yission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已完成')
+				return render_template(type=session.type, \
+					template_name='mission_state.html', \
+					user=session.user, \
+					mission_list = mission_list, \
+					zission_list = zission_list, \
+					sission_list = sission_list, \
+					yission_list = yission_list, \
+					role = web.input().type)
+			else:
+				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:
+			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		
 		
 
@@ -439,6 +456,23 @@ class view_mission(object):
 				arg = web.input()
 				m = mission.mission_view(arg.mission_id)
 				return render_template(
+					type=session.type,template_name='view_'+arg.type+'.html',
+					user=session.user,
+					mission_view=m)
+				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
+			else:
+				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:
+			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+class change_mission_sta(object):
+	def GET(self, args):
+		if session.login == 1:
+			if session.user:
+				args = web.input()
+				print args.mission_id, unquote(args.mission_status)
+				mission.mission_sta_change(args.mission_id, unquote(args.mission_status))
+				m = mission.mission_view(args.mission_id)
+				return render_template(
 					type=session.type,template_name='view_mission.html',
 					user=session.user,
 					mission_view=m)
@@ -447,7 +481,6 @@ class view_mission(object):
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-
 class search(object):
 	"""搜索
 	"""
@@ -470,7 +503,7 @@ class mission_audit(object):
 				mission.mission_audit(mission_id)
 
 				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
-				return render_template(type=session.type, template_name='my_mission.html', 
+				return render_template(type=session.type, template_name='my_mission_publisher.html', 
 					user=session.user, mission_list=mission_list)
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})

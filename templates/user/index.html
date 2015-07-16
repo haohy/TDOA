@@ -92,7 +92,7 @@ $(function(){
               <a href="/new_mission" target="navTab" rel="new_mission">新建任务</a>
             </li>
             <li>
-              <a href="/my_mission" target="navTab">我的任务</a>
+              <a href="/my_mission/?type=mission_doer" target="navTab" rel="my_mission_do">我的任务</a>
             </li>
              <li>
               <a href="/my_mission" target="navTab">已建任务</a>
@@ -102,12 +102,25 @@ $(function(){
             </li>
             <li>
             <a href="/static/mission_state.html" target="navTab">已建任务动态</a>
+              <a href="/my_mission/?type=mission_publisher" target="navTab" rel="my_mission_pub">已建任务</a>
+            </li>
+            <!-- <li>
+            <a href="/mission_state/?type=mission_doer" target="navTab" rel="mission_state_do">任务动态</a>
+            </li> -->
+            <li>
+            <a href="/mission_state/?type=mission_doer" target="navTab" rel="mission_state_do">我的任务动态</a>
+            </li>
+            <li>
+            <a href="/mission_state/?type=mission_publisher" target="navTab" rel="mission_state_pub">已建任务动态</a>
             </li>
             <li>
               <a href="/static/search.html" target="navTab" rel="search">高级检索</a>
             </li>
             <li>
-              <a href="/static/download.html" target="navTab">常用下载</a>
+              <a href="/static/download.html" target="navTab" rel="download">常用下载</a>
+            </li>
+            <li>
+              <a href="http://mail.njupt.edu.cn/" target="navTab" rel="my_email">我的邮箱</a>
             </li>
              <li>
               <a href="http://mail.njupt.edu.cn/" target="navTab" rel="baidu">我的邮箱</a>
@@ -161,7 +174,7 @@ $(function(){
 <div id="footer">
   Copyright &copy; 2014
   <a href="tdoa_team.html" target="dialog">TDOA团队</a>
-  京ICP备05019125号-10
+  京ICP备xxxxxxxxxx号-xx
 </div>
 
 </body>
