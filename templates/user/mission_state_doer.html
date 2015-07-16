@@ -48,7 +48,7 @@
 								</tr>
 							</thead>
 							<tbody>
-							{% for z in zisssion_list %}
+							{% for z in zission_list %}
 								<tr>
 									<td><a href="/view_mission/?mission_id={{z['mission_id']}}" target="dialog"><div>任务名称</div></td>
 									<td>{{z['mission_publisher']}}</td>
@@ -63,7 +63,7 @@
 	</div>
 
 	<div class="panel close collapse" minH="100" defH="150">
-		<h1>审核中</h1>
+		<h1>已提交</h1>
 		<div>
 			<table class="list" width="98%">
 							<thead>
@@ -83,6 +83,7 @@
 									<td>{{s['mission_doer']}}</td>
 									<td>{{s['mission_starttime']}}</td>
 									<td>{{s['mission_plan_end_time']}}</td>
+									<td>{{s['mission_duplicate']}}</td>
 								</tr>
 							{% endfor %}
 							</tbody>

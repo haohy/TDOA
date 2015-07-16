@@ -15,19 +15,17 @@
 						<th width="100">执行者</th>
 						<th width="110">开始日期</th>
 						<th width="110">预计结束日期</th>
-						<th width="100">是否按年重复</th>
 						<th width="80">任务状态</th>
 					</tr>
 				</thead>
 				<tbody>
 				{% for m in mission_list %}
 					<tr>
-						<td><a href="/view_mission/?mission_id={{m['missino_name']}}" target="dialog"><div>任务名称</div></a></td>
+						<td><a href="/view_mission/?mission_id={{m['mission_id']}}&type={{role}}" target="dialog"><div>{{m['mission_name']}}</div></a></td>
 						<td>{{m['mission_publisher']}}</td>
 						<td>{{m['mission_doer']}}</td>
 						<td>{{m['mission_starttime']}}</td>
 						<td>{{m['mission_plan_end_time']}}</td>
-						<td>{{m['mission_duplicate']}}</td>
 						<td>{{m['mission_status']}}</td>
 					</tr>
 				{% endfor %}
@@ -47,18 +45,16 @@
 									<th width="100">执行者</th>
 									<th width="110">开始日期</th>
 									<th width="110">预计结束日期</th>
-									<th width="100">是否按年重复</th>
 								</tr>
 							</thead>
 							<tbody>
-							{% for z in zisssion_list %}
+							{% for z in zission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_id={{z['mission_id']}}" target="dialog"><div>任务名称</div></td>
+									<td><a href="/view_mission/?mission_id={{z['mission_id']}}&type={{role}}" target="dialog"><div>{{z['mission_name']}}</div></td>
 									<td>{{z['mission_publisher']}}</td>
 									<td>{{z['mission_doer']}}</td>
 									<td>{{z['mission_starttime']}}</td>
 									<td>{{z['mission_plan_end_time']}}</td>
-									<td>{{z['mission_duplicate']}}</td>
 								</tr>
 							{% endfor %}
 							</tbody>
@@ -67,7 +63,7 @@
 	</div>
 
 	<div class="panel close collapse" minH="100" defH="150">
-		<h1>审核中</h1>
+		<h1>已提交</h1>
 		<div>
 			<table class="list" width="98%">
 							<thead>
@@ -77,18 +73,43 @@
 									<th width="100">执行者</th>
 									<th width="110">开始日期</th>
 									<th width="110">预计结束日期</th>
-									<th width="100">是否按年重复</th>
 								</tr>
 							</thead>
 							<tbody>
 							{% for s in sission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_id={{s['mission_id']}}" target="dialog"><div>任务名称</div></td>
+									<td><a href="/view_mission/?mission_id={{s['mission_id']}}&type={{role}}" target="dialog"><div>{{s['mission_name']}}</div></td>
 									<td>{{s['mission_publisher']}}</td>
 									<td>{{s['mission_doer']}}</td>
 									<td>{{s['mission_starttime']}}</td>
 									<td>{{s['mission_plan_end_time']}}</td>
-									<td>{{s['mission_duplicate']}}</td>
+								</tr>
+							{% endfor %}
+							</tbody>
+						</table>
+		</div>
+	</div>
+	<div class="panel close collapse" minH="100" defH="150">
+		<h1>未通过</h1>
+		<div>
+			<table class="list" width="98%">
+							<thead>
+								<tr>
+									<th>任务名称</th>
+									<th width="100">发布者</th>
+									<th width="100">执行者</th>
+									<th width="110">开始日期</th>
+									<th width="110">预计结束日期</th>
+								</tr>
+							</thead>
+							<tbody>
+							{% for w in wission_list %}
+								<tr>
+									<td><a href="/view_mission/?mission_id={{w['mission_id']}}&type={{role}}" target="dialog"><div>{{w['mission_name']}}</div></td>
+									<td>{{w['mission_publisher']}}</td>
+									<td>{{w['mission_doer']}}</td>
+									<td>{{w['mission_starttime']}}</td>
+									<td>{{w['mission_plan_end_time']}}</td>
 								</tr>
 							{% endfor %}
 							</tbody>
@@ -107,18 +128,16 @@
 									<th width="100">执行者</th>
 									<th width="110">开始日期</th>
 									<th width="110">预计结束日期</th>
-									<th width="100">是否按年重复</th>
 								</tr>
 							</thead>
 							<tbody>
 							{% for y in yission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_id={{y['mission_id']}}" target="dialog"><div>任务名称</div></td>
+									<td><a href="/view_mission/?mission_id={{y['mission_id']}}&type={{role}}" target="dialog"><div>{{y['mission_name']}}</div></td>
 									<td>{{y['mission_publisher']}}</td>
 									<td>{{y['mission_doer']}}</td>
 									<td>{{y['mission_starttime']}}</td>
 									<td>{{y['mission_plan_end_time']}}</td>
-									<td>{{y['mission_duplicate']}}</td>
 								</tr>
 							{% endfor %}
 							</tbody>
