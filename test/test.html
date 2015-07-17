@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Test select mutiple</title>
+	<style>
+	ul{
+		display: none;
+		list-style: none outside none;
+	}
+	</style>
+	
+</head>
+<body>
+	<div id="multiple">
+		<div>
+			<input type="text" name="choose" id="choose">
+		</div>
+		<div id="box">
+			<ul>
+				<li>
+					<input type="checkbox" value="1">南京
+				</li>
+				<li>
+					<input type="checkbox" value="2">上海
+				</li>
+				<li>
+					<input type="checkbox" value="3">北京
+				</li>
+				<li>
+					<input type="checkbox" value="4">广州
+				</li>
+				<li>
+					<input type="checkbox" value="5">海南
+				</li>
+			</ul>
+		</div>
+	</div>
+	<script>
+		var choose = document.getElementById("choose");
+		var multiple = document.getElementById("multiple");
+		function showBox(){
+			document.getElementsByTagName("ul")[0].style.display="block";
+		}
+		function disappearBox(){
+			document.getElementsByTagName("ul")[0].style.display="none";
+		}
+		choose.addEventListener('focus', showBox);
+		multiple.addEventListener('blur', disappearBox);
+	</script>
+</body>
+</html>
