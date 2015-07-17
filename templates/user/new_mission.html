@@ -26,62 +26,47 @@
         <a href="javascript:void(0)" class="inputDateButton">选择</a>
       </dd>
     </dl>
-    <dl>
+    <!-- <dl>
       <dt>是否按年重复发生：</dt><dd><input type="radio" name="mission_duplicate" value="on">是 <input type="radio" name="mission_duplicate" value="off">否</dd>
-    </dl>
-    <dl>
-      <dt>执行人1：</dt>
+    </dl> -->
+   <!--  <dl>
+      <dt>执行人：</dt>
+          <p>
+            <input id="hfddlList" type="hidden" name="hfddlList" value="{k:1,v:&quot;大大南京&quot;}|{k:2,v:&quot;上海&quot;}|{k:3,v:&quot;扬州&quot;}|{k:4,v:&quot;苏州&quot;}|{k:5,v:&quot;无锡&quot;}|{k:6,v:&quot;常州&quot;}|{k:7,v:&quot;盐城&quot;}|{k:8,v:&quot;徐州&quot;}|{k:9,v:&quot;泰州&quot;}|{k:10,v:&quot;淮安&quot;}" />
+          </p>
+          <div class="testContainer">
+            <div>
+                <input id="txtTest" style="width: 150px; margin: 1px; padding: 0px;" type="text" name="txtTest" />
+                <input id="hfTest" type="hidden" name="hfTest" value="0" />
+            </div>
+        </div>
+        
+    </dl> -->
+    <!-- <dl>
+      <dt>执行人：</dt>
       <dd>
-        <select name="mission_performer_1">
-          <option value="自己账号">自己账号</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
+        <select name="choose" id="choose">
+          {% for a in account_list %}
+          <option value="{{a['account_username']}}">{{a['account_username']}}</option>
+          {% endfor %}
         </select>
       </dd>
-    </dl>
-    <dl>
-      <dt>执行人2：</dt>
+    </dl> -->
+    <dl id="mission_doerselect">
+      <dt>执行人：</dt>
       <dd>
-        <select name="mission_performer_2" multiple="multiple">
-          <option value="无">无</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-        </select>
+        <input type="text" name="doers" id="doers">
       </dd>
-    </dl>
-    <dl>
-      <dt>执行人3：</dt>
-      <dd>
-        <select name="mission_performer_3">
-          <option value="无">无</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-        </select>
-      </dd>
-    </dl>
-    <dl>
-      <dt>执行人4：</dt>
-      <dd>
-        <select name="mission_performer_4">
-          <option value="无">无</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-        </select>
-      </dd>
-    </dl>
-    <dl>
-      <dt>执行人5：</dt>
-      <dd>
-        <select name="mission_performer_5">
-          <option value="无">无</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-          <option value="他人账号">他人账号</option>
-        </select>
+      <br>
+        <div id="dddoer">
+          <ul id="doerlist">
+          {% for a in account_list %}
+          <li style="width: 150px; height: 25px">
+            <input type="checkbox" value="{{a['account_username']}}">{{a['account_username']}}
+          </li>
+          {% endfor %}
+          </ul>
+        </div>
       </dd>
     </dl>
   </div>
@@ -95,3 +80,7 @@
 
 </div>
 </form>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/diy.js" type="text/javascript"></script>
+
+    

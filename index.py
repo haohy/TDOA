@@ -258,9 +258,16 @@ class new_mission(object):
 	def GET(self):
 		if session.login==1:
 			if session.user:
-				return render_template(type=session.type, template_name='new_mission.html', 
-					user=session.user,mission_name="",mission_content="",mission_starttime="",
-					mission_plan_end_time="",error="")
+				account_list = account.account_list(account_department = '*')
+				return render_template(type=session.type, \
+					template_name='new_mission.html', \
+					user=session.user, \
+					mission_name="", \
+					mission_content="", \
+					mission_starttime="", \
+					mission_plan_end_time="", \
+					error="", \
+					account_list = account_list)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
@@ -274,10 +281,11 @@ class new_mission(object):
 				mission_content = web.input().mission_content
 				mission_starttime = web.input().mission_starttime
 				mission_plan_end_time = web.input().mission_plan_end_time
-				try:
-					mission_duplicate = web.input().mission_duplicate
-				except:
-					mission_duplicate = "off"
+				missions_doers = web.input().doers
+				# try:
+				# 	mission_duplicate = web.input().mission_duplicate
+				# except:
+				# 	mission_duplicate = "off"
 
 				#检查任务信息是否合法
 				result = mission.mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time)
@@ -287,7 +295,7 @@ class new_mission(object):
 
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
-					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, mission_duplicate)
+					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, missions_doers)
 					mission_list = mission.mission_list(account_name=session.user, role='mission_doer')
 
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
