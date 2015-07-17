@@ -57,10 +57,9 @@ def mission_save(mission_name, mission_publisher, mission_content, mission_start
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 
 	cursor.execute("insert into mission \
-		(mission_name, mission_publisher, mission_content, mission_starttime, mission_pubtime, mission_plan_end_time, mission_status)\
-		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s');\
-		"%(mission_name.encode('utf-8'), mission_publisher.encode('utf-8'), mission_content.encode('utf-8'), mission_starttime.encode('utf-8'), mission_pubtime, mission_plan_end_time.encode('utf-8'), mission_status))
-	cursor.execute()
+		(mission_name, mission_publisher, mission_content, mission_starttime, mission_pubtime, mission_plan_end_time, mission_status, mission_doer)\
+		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
+		"%(mission_name.encode('utf-8'), mission_publisher.encode('utf-8'), mission_content.encode('utf-8'), mission_starttime.encode('utf-8'), mission_pubtime, mission_plan_end_time.encode('utf-8'), mission_status, missions_doers.encode('utf-8')))
 	conn.commit()
 	conn.close()
 

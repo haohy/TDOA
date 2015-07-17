@@ -282,10 +282,7 @@ class new_mission(object):
 				mission_starttime = web.input().mission_starttime
 				mission_plan_end_time = web.input().mission_plan_end_time
 				missions_doers = web.input().doers
-				# try:
-				# 	mission_duplicate = web.input().mission_duplicate
-				# except:
-				# 	mission_duplicate = "off"
+				
 
 				#检查任务信息是否合法
 				result = mission.mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time)
@@ -295,7 +292,7 @@ class new_mission(object):
 
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
-					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, missions_doers)
+					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, missions_doers.rstrip(','))
 					mission_list = mission.mission_list(account_name=session.user, role='mission_doer')
 
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
