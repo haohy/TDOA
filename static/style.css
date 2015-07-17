@@ -1,0 +1,26 @@
+#dddoer{
+    height: 200px;
+    width: 167px;
+    display: block;
+    overflow: auto;
+    background:none repeat scroll 0 0;
+    margin-left: 130px;
+}
+#doers{
+    width: 161px;
+}
+ul#doerlist{
+    display: none;
+    background-color: #eee;
+    width: 150px;
+    list-style:none outside none; 
+    margin-top: 0px;
+    padding-top: 10px;
+}
+ul#doerlist li{
+    width: 155px;
+}
+ul#doerlist li:hover{
+    background: rgb(15,122,200);
+}
+
