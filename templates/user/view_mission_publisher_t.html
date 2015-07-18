@@ -26,12 +26,6 @@
 			{{mission_view[0]['mission_actuall_end_time']}}
 		  </dd>
 		</dl>
-		<dl class="nowrap">
-		  <dt>任务状态：</dt>
-		  <dd>
-			{{mission_view[0]['mission_status']}}
-		  </dd>
-		</dl>
 	</div>
 	
     <div class="divider"></div>
@@ -52,26 +46,32 @@
 			<div>
 			</div>
 		</div>
-		<div class="tabs">
-			<div class="tabsHeader">
-				<div class="tabsHeaderContent">
-					<ul><li><span>留言</span></li></ul>
-				</div>
+		<!-- 留言模块 -->
+	<div class="panel collapse">
+		<div class="panelHeader">
+			<div class="panelHeaderContent">
+				<h1 style="cursor: move">留言</h1>
 			</div>
-			<div class="tabsContent">
-				<textarea name="msg" id="msg" cols="100" rows="1" placeholder="说点什么吧。。。"></textarea>
-				<br>
-				<div>
-					{{mission_view[0]['mission_publisher']}}:
-				</div>
-				<div>好好干！</div>
-				<!-- <dt>
-				{{mission_view[0]['mission_publisher']}}:
-				  </dt>
-				  <dd>
-				  	好好干！
-				  </dd> -->
-			</div>
+		</div>
+		<div class="panelContent">
+			<textarea name="msg" id="msg" cols="100" rows="2" placeholder="说点什么吧。。。"></textarea>
+			<dl class="nowrap">
+				<dt>
+					<p>{{mission_view[0]['mission_publisher']}}:</p>
+			  	</dt>
+			  	<dd>
+			  		<p>好好干！</p>
+			  	</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>
+					{{mission_view[0]['mission_doer']}}:
+			  	</dt>
+			  	<dd>
+			  		好的！
+			  	</dd>
+			</dl>
+		</div>
 	</div>
 	</div>
 	
