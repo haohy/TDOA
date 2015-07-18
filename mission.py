@@ -46,26 +46,37 @@ def mission_check(mission_name, mission_content, mission_starttime, mission_plan
 		return check_result
 	return "未知错误"
 	
-def mission_save(mission_name, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, mission_duplicate):
-	#存储任务信息
+def mission_save(mission_name, mission_content, mission_starttime, mission_plan_end_time, mission_publisher, mission_doers):
+	#规范时间格式
 	mission_pubtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-	mission_status = "已发布"
-
+	# mission_starttime = time.strftime('%Y-%m-%d', mission_starttime)
+	# mission_plan_end_time = time.strftime('%Y-%m-%d', mission_plan_end_time)
+	#任务在刚存储时是“待接受”状态的
+	mission_status = "待接受"
 
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-
-	# cursor.execute("select * from ACCOUNT where account_name='%s'"%(account_name))
-	# mission_publisher = cursor.fetchall()[0]['account_id']
-	
-
+	#向mission插入任务信息
 	cursor.execute("insert into mission \
-		(mission_name, mission_publisher, mission_content, mission_starttime, mission_pubtime, mission_plan_end_time, mission_status, mission_duplicate)\
-		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
-		"%(mission_name.encode('utf-8'), mission_publisher.encode('utf-8'), mission_content.encode('utf-8'), mission_starttime.encode('utf-8'), mission_pubtime, mission_plan_end_time.encode('utf-8'), mission_status, mission_duplicate.encode('utf-8')))
+		(mission_name, mission_content, mission_pubtime, mission_starttime, mission_plan_end_time, mission_publisher)\
+		value ('%s', '%s', '%s', '%s', '%s', '%s');\
+		"%(mission_name.encode('utf-8'), mission_content.encode('utf-8'), mission_pubtime, mission_starttime.encode('utf-8'), mission_plan_end_time.encode('utf-8'), mission_publisher.encode('utf-8')))
 	conn.commit()
+
+	#向missions_doers中插入信息
+	cursor.execute("select max(mission_id) from mission ;")
+	mission_id = int(cursor.fetchall())
+	doers = mission_doers.split(',')
+	for doer in doers:
+		cursor.execute("insert into mission \
+		(mission_id, mission_doer ,mission_status)\
+		value ('%s', '%s' ,'%s');\
+		"%(mission_id, doer.encode('utf-8'), mission_status.encode('utf-8')))
+	conn.commit()
+
 	conn.close()
+
 
 def get_account_id(account_name):
 	#获取任务id

@@ -4,7 +4,7 @@ import re
 import data
 
 #检查新建帐户信息是否合法
-def account_check(account_name, account_username, account_work, account_email, account_phone,account_position,account_department, account_power):
+def account_check(account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power):
 	check_result = ""
 	if len(account_username)==0:
 		check_result = "请填写 账号名"
@@ -15,14 +15,17 @@ def account_check(account_name, account_username, account_work, account_email, a
 	elif len(account_work)==0:
 		check_result = "请填写 工号"
 		return check_result
-	elif len(account_email)<8 or re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", account_email) == None:
-		check_result = "请检查邮箱格式是否正确"
+	elif len(account_position)==0:
+		check_result = "请填写职位"
 		return check_result
 	elif len(account_phone)!=11 or re.match("[0-9]{11}",account_phone) == None:
 		check_result = "请检查手机号"
 		return check_result
-	elif len(account_position)==0:
-		check_result = "请填写职位"
+	elif len(account_address) == 0:
+		check_result = "请输入住址"
+		return check_result
+	elif len(account_email)<8 or re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", account_email) == None:
+		check_result = "请检查邮箱格式是否正确"
 		return check_result
 	elif account_department == 0:
 		check_result = "请选择所属科室"
@@ -44,7 +47,7 @@ def account_check(account_name, account_username, account_work, account_email, a
 		return check_result
 	return "未知错误"
 
-def account_save(account_name, account_username, account_work, account_email, account_phone, account_position, account_department, account_power):
+def account_save(account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power):
 	#存储账号信息
 	#设置默认密码user:123456, admin: admin
 	if account_name == 'user':
@@ -55,9 +58,9 @@ def account_save(account_name, account_username, account_work, account_email, ac
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	cursor.execute("insert into account \
-		(account_password, account_username, account_name, account_work, account_email, account_phone, account_position, account_department, account_power)\
-		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
-		"%(account_password, account_username.encode('utf-8'), account_name.encode('utf-8'), account_work.encode('utf-8'), account_email.encode('utf-8'), account_phone.encode('utf-8'), account_position.encode('utf-8'), account_department.encode('utf-8'), account_power))
+		(account_password, account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power)\
+		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
+		"%(account_password, account_name.encode('utf-8'), account_sex.encode('utf-8'), account_username.encode('utf-8'), account_work.encode('utf-8'), account_position.encode('utf-8'), account_phone.encode('utf-8'),account_address.encode('utf-8'),account_email.encode('utf-8'),account_department,account_power))
 	conn.commit()
 	conn.close()
 def account_list(account_department = '*'):

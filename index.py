@@ -258,9 +258,17 @@ class new_mission(object):
 	def GET(self):
 		if session.login==1:
 			if session.user:
-				return render_template(type=session.type, template_name='new_mission.html', 
-					user=session.user,mission_name="",mission_content="",mission_starttime="",
-					mission_plan_end_time="",error="")
+				#返回给多选执行者下拉条
+				account_list = account.account_list(account_department ='*')
+				return render_template(type=session.type, \
+					template_name='new_mission.html', \
+					user=session.user,\
+					mission_name="",\
+					mission_content="",\
+					mission_starttime="",\
+					mission_plan_end_time="",\
+					account_list=account_list,\
+					error="")
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
@@ -274,29 +282,22 @@ class new_mission(object):
 				mission_content = web.input().mission_content
 				mission_starttime = web.input().mission_starttime
 				mission_plan_end_time = web.input().mission_plan_end_time
-				try:
-					mission_duplicate = web.input().mission_duplicate
-				except:
-					mission_duplicate = "off"
-
+				mission_doers = web.input().mission_doers
 				#检查任务信息是否合法
 				result = mission.mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time)
 				ajax_result = {"statusCode":"300", "message":result}
 				web.header('Content-Type', 'application/json')
-
-
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
-					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, mission_duplicate)
-					mission_list = mission.mission_list(account_name=session.user, role='mission_doer')
-
+					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, mission_doers)
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面
 				"""
 				else:
 					return render_template(
-						type=session.type, template_name='new_mission.html', 
+						type=session.type, 
+						template_name='new_mission.html', 
 						user=session.user, 
 						mission_name=mission_name, 
 						mission_content=mission_content, 
@@ -592,15 +593,17 @@ class new_account(object):
 				template_name = 'new_account.html',\
 				account_username = '')
 	def POST(self):
-		#登录控制
+		#添加新用户
 		if session.login == 1:
 			if session.user:
 				account_name = web.input().account_name
+				account_sex = web.input().account_sex
 				account_username = web.input().account_username
 				account_work = web.input().account_work
-				account_email = web.input().account_email
-				account_phone = web.input().account_phone
 				account_position = web.input().account_position
+				account_phone = web.input().account_phone
+				account_address = web.input().account_address
+				account_email = web.input().account_email
 				account_department = web.input().account_department
 				account_power1 = web.input().account_power1
 				account_power2 = web.input().account_power2
@@ -608,11 +611,13 @@ class new_account(object):
 				account_power4 = web.input().account_power4
 				account_power = int(account_power1)*1000+int(account_power2)*100+int(account_power3)*10+int(account_power4)
 				#检查账号信息是否合法
-				result = account.account_check(account_name, account_username, account_work, account_email, account_phone,account_position,account_department, account_power)
+				result = account.account_check(account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power)
 				ajax_result = {"statusCode":"300", "message":result}
 				web.header('Content-Type', 'application/json')
 				if result == "no error":
-					account.account_save(account_name,account_username, account_work, account_email, account_phone, account_position, account_department, account_power)
+					#将用户信息存储到数据库中
+					account.account_save(account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power)
+					#这里account_list是干啥的？
 					account_list = account.account_list(account_department = '*')
 					ajax_result = {"statusCode":"200", "message":"账号添加成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
