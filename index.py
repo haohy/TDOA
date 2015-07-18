@@ -39,7 +39,8 @@ urls= (
 	'/mission_audit/(.*)','mission_audit',
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
-	'/calendar/(.*)', 'calendar',							#日历
+	'/calendar/(.*)', 'calendar',
+	#日历
 	'/calendar_data/(.*)', 'calendar_data',
 	'/mission_content/(.*)', 'mission_content',
 	'/mission_state/(.*)','mission_state',
@@ -71,12 +72,11 @@ urls= (
 '''
 app = web.application(urls, globals())
 
-#session config
+#session config，定义session能存储login,user,type三个值
 session = web.session.Session(app, web.session.DiskStore('sessions'),\
     initializer={'login':'', 'user':'', 'type':''})
 
 w = app.wsgifunc(StaticMiddleware)
-#gunicorn
 
 
 """
@@ -116,7 +116,8 @@ render = web.template.render('templates/')
 def render_template(type, template_name, **context):
 	extensions = context.pop('extensions', [])
 	globals = context.pop('globals', {})
-
+	#os.path.dirname(__file__)的作用是输出当前脚本的完整路径，这里os.path.dirname(__file__)就等于E://git/TDOA
+	#合成路径文件名，此处合成结果为E://git/TDOA/templates/user
 	if type=='user':
 		jinja_env = Environment(
 			loader=FileSystemLoader(os.path.join(os.path.dirname(__file__), 'templates/user'), encoding ='utf-8'),
@@ -289,7 +290,7 @@ class new_mission(object):
 				web.header('Content-Type', 'application/json')
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
-					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, mission_doers)
+					mission.mission_save(mission_name, mission_content, mission_starttime, mission_plan_end_time, session.user, mission_doers)
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面

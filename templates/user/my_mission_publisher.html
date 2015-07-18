@@ -11,29 +11,27 @@
     <thead>
       <tr class="center">
         <th>任务名称</th>
-        <th width="100">发布者</th>
         <th width="100">执行者</th>
         <th width="100">开始时间</th>
         <th width="100">计划完成时间</th>
-<!--         <th width="100">实际完成时间</th> -->
         <th width="80" align="center">状态</th>
         <th width="100">操作</th>
       </tr>
     </thead>
-    <!-- 添加了执行者，是否按年重复 -->
     <tbody>
       {% for m in mission_list %}
         <tr target="sid_user" class="center"> 
           <td>
-            <a href="/view_mission/?mission_id={{m['mission_id']}}&type=mission_publisher" target="navTab">
+            <a href="/view_mission/?mission_id={{m['mission_id']}}&type=mission_publisher&mission_sta=t" target="navTab">
                  <div>{{m['mission_name']}}</div>
             </a>
           </td>
           <td>
-             <div>{{m['mission_publisher']}}</div>
-          </td>
-          <td>
-            <div>{{m['mission_doer']}}</div>
+            <div>
+            {% for m_doer in m.mission_doer %}
+              {{m_doer}}
+            {% endfor %}
+            </div>
           </td>
           <td>
              <div>{{m['mission_starttime']}}</div>
@@ -41,9 +39,6 @@
           <td>
              <div>{{m['mission_plan_end_time']}}</div>
           </td>
-<!--           <td>
-             <div>{{m['mission_actuall_end_time']}}</div>
-          </td> -->
           <td>
              <div>{{m['mission_status']}}</div>
           </td>

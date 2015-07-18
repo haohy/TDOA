@@ -56,6 +56,7 @@ def mission_save(mission_name, mission_content, mission_starttime, mission_plan_
 
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	#使查询结果返回字典类型
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	#向mission插入任务信息
 	cursor.execute("insert into mission \
@@ -66,10 +67,13 @@ def mission_save(mission_name, mission_content, mission_starttime, mission_plan_
 
 	#向missions_doers中插入信息
 	cursor.execute("select max(mission_id) from mission ;")
-	mission_id = int(cursor.fetchall())
+	m_id = cursor.fetchall()
+	mission_id = int(m_id[0]['max(mission_id)'])
 	doers = mission_doers.split(',')
+	#删除列表doers中最后一个逗号后的元素
+	doers.pop()
 	for doer in doers:
-		cursor.execute("insert into mission \
+		cursor.execute("insert into missions_doers \
 		(mission_id, mission_doer ,mission_status)\
 		value ('%s', '%s' ,'%s');\
 		"%(mission_id, doer.encode('utf-8'), mission_status.encode('utf-8')))
@@ -90,22 +94,59 @@ def get_account_id(account_name):
 
 def mission_list(account_name, role):
 	#当前账户任务信息
-
 	#account_id = get_account_id(account_name)
-	
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("select * from MISSION where %s='%s' and mission_status!='已关闭';"%(role, account_name))
-	m_list = cursor.fetchall()
+	if str(role) == 'mission_doer':
+		cursor.execute("select mission.mission_name,mission.mission_publisher,mission.mission_starttime,mission.mission_plan_end_time,missions_doers.mission_status \
+			from missions_doers,mission \
+			where missions_doers.mission_doer='%s' and missions_doers.mission_status='待接受' and missions_doers.mission_id = mission.mission_id;"%(account_name))
+		global m_list 
+		m_list_user = cursor.fetchall()
+		conn.close()
+		m_list_user = list(m_list_user)
+		m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_starttime'])
+		return m_list_user
+	elif str(role) == 'mission_publisher':
+		cursor.execute("select distinct mission.mission_id,mission.mission_name,mission.mission_starttime,mission.mission_plan_end_time,missions_doers.mission_status \
+	from mission,missions_doers where missions_doers.mission_id = mission.mission_id and missions_doers.mission_status = '执行中' and mission.mission_publisher = '%s';"%(account_name))
+		m_list_mission = cursor.fetchall()
+		cursor.execute("select distinct mission.mission_id from mission,missions_doers \
+			where missions_doers.mission_id = mission.mission_id and missions_doers.mission_status = '执行中' and mission.mission_publisher = '%s';"%(account_name))
+		m_list_id = cursor.fetchall()
+		list_id = []
+		for i in range(len(m_list_id)):
+			list_id.append(m_list_id[i]['mission_id'])
+		doerDirct = {}
+		for i in list_id:
+			cursor.execute("select mission_doer from missions_doers where mission_status = '执行中' and mission_id = %s"%(i))
+			m_list_doers = cursor.fetchall()
+			m_list_doers_list = []
+			for j in range(len(m_list_doers)):
+				m_list_doers_list.append(m_list_doers[j]['mission_doer'])
+			doerDirct[i]=m_list_doers_list
+		print doerDirct
+		for i in range(len(m_list_mission)):
+			m_list_mission[i]['mission_doer']=doerDirct[m_list_mission[i]['mission_id']]
+		m_list_publisher = m_list_mission
+		print m_list_publisher
+		conn.close()
+		m_list_publisher = list(m_list_publisher)
+		m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_starttime'])
+		return m_list_publisher
+	else:
+		print "no user and no publisher"+"role="+role
+		return 0
 
-	conn.close()
 
-	m_list = list(m_list)
-	#按照starttime排序
-	m_list = sorted(m_list, key=lambda m_list: m_list['mission_starttime'])
+	# conn.close()
+	# #将sql操作得到的tuple
+	# m_list = list(m_list)
+	# #按照starttime排序
+	# m_list = sorted(m_list, key=lambda m_list: m_list['mission_starttime'])
 
-	return m_list
+	#return m_list
 def mission_list_type(account_name, role, mission_status):
 	#根据所需任务状态返回对应的list
 	c = data.SQLconn()
