@@ -221,7 +221,7 @@ class my_mission(object):
 		if session.login == 1:
 			if session.user:
 				#找到当前账户所有任务
-				mission_list = mission.mission_list(account_name=session.user, role=web.input().type)
+				mission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='执行中')
 				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
 					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
 			else:
@@ -234,7 +234,6 @@ class mission_state(object):
 		if session.login == 1:
 			if session.user:
 				mission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已发布')
-				zission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='执行中')
 				sission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已提交')
 				wission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='未通过')
 				yission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已完成')
@@ -242,8 +241,8 @@ class mission_state(object):
 					template_name='mission_state.html', \
 					user=session.user, \
 					mission_list = mission_list, \
-					zission_list = zission_list, \
 					sission_list = sission_list, \
+					wission_list = wission_list, \
 					yission_list = yission_list, \
 					role = web.input().type)
 			else:
@@ -461,7 +460,7 @@ class view_mission(object):
 				arg = web.input()
 				m = mission.mission_view(arg.mission_id)
 				return render_template(
-					type=session.type,template_name='view_'+arg.type+'.html',
+					type=session.type,template_name='view_'+arg.type+'_'+arg.mission_sta+'.html',
 					user=session.user,
 					mission_view=m)
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等

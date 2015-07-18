@@ -21,7 +21,7 @@
 				<tbody>
 				{% for m in mission_list %}
 					<tr>
-						<td><a href="/view_mission/?mission_id={{m['mission_id']}}&type={{role}}" target="dialog"><div>{{m['mission_name']}}</div></a></td>
+						<td><a href="/view_mission/?mission_id={{m['mission_id']}}&type={{role}}&mission_sta=j" target="dialog"><div>{{m['mission_name']}}</div></a></td>
 						<td>{{m['mission_publisher']}}</td>
 						<td>{{m['mission_doer']}}</td>
 						<td>{{m['mission_starttime']}}</td>
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 	
-	<div class="panel close collapse" defH="150">
+	<!-- <div class="panel close collapse" defH="150">
 		<h1>执行中</h1>
 		<div>
 			<table class="list" width="98%">
@@ -61,7 +61,7 @@
 						</table>
 		</div>
 	</div>
-
+ -->
 	<div class="panel close collapse" minH="100" defH="150">
 		<h1>已提交</h1>
 		<div>
@@ -78,7 +78,7 @@
 							<tbody>
 							{% for s in sission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_id={{s['mission_id']}}&type={{role}}" target="dialog"><div>{{s['mission_name']}}</div></td>
+									<td><a href="/view_mission/?mission_id={{s['mission_id']}}&type={{role}}&mission_sta=m" target="dialog"><div>{{s['mission_name']}}</div></td>
 									<td>{{s['mission_publisher']}}</td>
 									<td>{{s['mission_doer']}}</td>
 									<td>{{s['mission_starttime']}}</td>
@@ -105,7 +105,7 @@
 							<tbody>
 							{% for w in wission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_id={{w['mission_id']}}&type={{role}}" target="dialog"><div>{{w['mission_name']}}</div></td>
+									<td><a href="/view_mission/?mission_id={{w['mission_id']}}&type={{role}}&mission_sta=j" target="dialog"><div>{{w['mission_name']}}</div></td>
 									<td>{{w['mission_publisher']}}</td>
 									<td>{{w['mission_doer']}}</td>
 									<td>{{w['mission_starttime']}}</td>
@@ -133,7 +133,7 @@
 							<tbody>
 							{% for y in yission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_id={{y['mission_id']}}&type={{role}}" target="dialog"><div>{{y['mission_name']}}</div></td>
+									<td><a href="/view_mission/?mission_id={{y['mission_id']}}&type=mission_doer&mission_sta=m" target="dialog"><div>{{y['mission_name']}}</div></td>
 									<td>{{y['mission_publisher']}}</td>
 									<td>{{y['mission_doer']}}</td>
 									<td>{{y['mission_starttime']}}</td>
