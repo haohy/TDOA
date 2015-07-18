@@ -291,7 +291,7 @@ class new_mission(object):
 
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
-					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, missions_doers.rstrip(','))
+					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, missions_doers)
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面
