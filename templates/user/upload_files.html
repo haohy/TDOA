@@ -8,8 +8,8 @@
 		</tr>
 	</thead>
 	<tbody>
+		{% for m in file_list %}
 		<tr>
-			{% for m in file_list %}
 				<td>
 					     {{m['file_id']}}
 				  </td>	
@@ -21,7 +21,7 @@
 				  <td>
 					     {{m['file_upload_time']}}
 				  </td>		  
-			{% endfor %}
 		</tr>
+		{% endfor %}
 	</tbody>
 </table>

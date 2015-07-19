@@ -47,14 +47,16 @@
 		<div class="tabsHeader">
 			<div class="tabsHeaderContent">
 				<ul>
-					<li><a href="/upload_files/?type=2" class="j-ajax"><span>历史任务参考</span></a></li>
-					<li><a href="/upload_files/?type=0" class="j-ajax"><span>初始参考附件</span></a></li>
-					<li><a href="/upload_files/?type=1" class="j-ajax"><span>任务完成提交附件</span></a></li>
+					<li><a href="/upload_files/?type=2&mission_name={{mission_view[0]['mission_name']}}" class="j-ajax"><span>历史任务参考</span></a></li>
+					<li><a href="/upload_files/?type=0&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_publisher']}}" class="j-ajax"><span>初始参考附件</span></a></li>
+					<li><a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{user}}" class="j-ajax"><span>任务完成提交附件</span></a></li>
 					<li><a href="/upload/?mission_id={{mission_view[0]['mission_id']}}" target="dialog"><span>上传附件</span></a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="tabsContent" style="height:150px;">
+			<div>
+			</div>
 			<div>
 			</div>
 			<div>

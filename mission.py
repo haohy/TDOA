@@ -46,9 +46,9 @@ def mission_check(mission_name, mission_content, mission_starttime, mission_plan
 		return check_result
 	return "未知错误"
 	
-def mission_save(mission_name, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, missions_doers):
+def mission_save(mission_name, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, missions_doers, mission_pubtime):
 	#存储任务信息
-	mission_pubtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+	
 	mission_status = "已发布"
 	mission_publisher = mission_publisher+','
 
@@ -63,6 +63,23 @@ def mission_save(mission_name, mission_publisher, mission_content, mission_start
 		"%(mission_name.encode('utf-8'), mission_publisher.encode('utf-8'), mission_content.encode('utf-8'), mission_starttime.encode('utf-8'), mission_pubtime, mission_plan_end_time.encode('utf-8'), mission_status, missions_doers.encode('utf-8')))
 	conn.commit()
 	conn.close()
+def mission_id_get(mission_publisher, mission_pubtime):
+	name = mission_publisher.split(',')
+	reg=''
+	for i in name:
+		reg = reg +i+'{1}'
+	reg = reg+',{1}'
+	Reg = reg.strip()
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursor.execute("select mission_id from mission where mission_publisher REGEXP '%s' AND mission_pubtime = '%s';\
+		"%(Reg, mission_pubtime))
+	id_getted = cursor.fetchall()[0]['mission_id']
+	conn.close()
+	return id_getted
+
+
 
 def get_account_id(account_name):
 	#获取任务id

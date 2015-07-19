@@ -29,7 +29,7 @@ urls= (
 	'/logout', 'logout',
 	#######一般用户
 	'/search', 'search',
-	'/new_mission', 'new_mission',
+	'/new_mission/', 'new_mission',
 	'/my_mission/(.*)', 'my_mission',
 	'/view_mission/(.*)', 'view_mission',
 	'/change_mission_sta/(.*)', 'change_mission_sta',
@@ -276,11 +276,12 @@ class new_mission(object):
 		#登陆控制
 		if session.login == 1:
 			if session.user:
-				mission_name = web.input().mission_name
-				mission_content = web.input().mission_content
-				mission_starttime = web.input().mission_starttime
-				mission_plan_end_time = web.input().mission_plan_end_time
-				missions_doers = web.input().doers
+				x = web.input(myfile={})
+				mission_name = x.mission_name
+				mission_content = x.mission_content
+				mission_starttime = x.mission_starttime
+				mission_plan_end_time = x.mission_plan_end_time
+				missions_doers = x.doers
 				
 
 				#检查任务信息是否合法
@@ -291,9 +292,24 @@ class new_mission(object):
 
 				#如果任务合法，将任务信息存储进MISSION表
 				if result == "no error":
-					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, missions_doers)
-					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
-					return json.dumps(ajax_result)
+					mission_pubtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+					mission.mission_save(mission_name, session.user, mission_content, mission_starttime, mission_plan_end_time, missions_doers, mission_pubtime)
+					mission_id = mission.mission_id_get(session.user, mission_pubtime)#获取到mission_id的值
+					file_type = 0
+					user = session.user
+					filedir = 'uploads/'+user # change this to the directory you want to store the file in.
+					file.create_dir(filedir) #create dir if the dir is not exist
+					if 'myfile' in x:
+						file_url=x.myfile.filename.replace('\\','/')
+						file_name=file_url.split('/')[-1] # splits the and chooses the last part (the filename with extension)
+						file_url = './uploads/'+user+'/'+file_name
+						fout = open(filedir +'/'+ file_name,'wb') # creates the file where the uploaded file should be stored
+						fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.
+						fout.close() # closes the file, upload complete.
+						file_upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+						file.upload(mission_id,file_name,file_url, user,file_upload_time,file_type)
+						ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
+						return json.dumps(ajax_result)
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面
 				"""
 				else:
@@ -520,7 +536,7 @@ class upload(object):
 	def POST(self,arg):
 		x = web.input(myfile={})
 		mission_id = web.input().mission_id
-		file_type = web.input().file_type
+		file_type = 1
 		user = session.user
 		filedir = 'uploads/'+user # change this to the directory you want to store the file in.
 		file.create_dir(filedir) #create dir if the dir is not exist
@@ -542,9 +558,18 @@ class upload_files(object):
 		file_type = arg.type
 		if session.login == 1:
 			if session.user:
-				list = file.file_list(type=file_type)
-				#render = creat_render(type=session.type)
-				return render_template(type=session.type, template_name='upload_files.html',file_list=list)
+				print file_type
+				if file_type == '0' or file_type == '1':
+					mission_id = arg.mission_id
+					role = arg.role.rstrip(',')
+					list = file.file_list(file_type, role, mission_id)
+					return render_template(type=session.type, template_name='upload_files.html',file_list=list)
+
+				elif file_type == '2':
+					mission_name = arg.mission_name
+					#这里需要从mission表中搜索与mission_name类似的mission_id
+					#再带着mission_id搜索file表
+					return json.dumps({"statusCode":"200","message":"历史任务参考搜索算法没定"})
 
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})

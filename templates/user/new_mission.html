@@ -1,5 +1,5 @@
 <h2 class="contentTitle">创建新任务</h2>
-<form method="post" action="/new_mission" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone)">
+<form method="post" enctype="multipart/form-data" action="/new_mission/" class="pageForm required-validate" onsubmit="return iframeCallback(this);">
 <div class="pageContent">
   
   <div class="pageFormContent" layoutH="97">
@@ -26,32 +26,6 @@
         <a href="javascript:void(0)" class="inputDateButton">选择</a>
       </dd>
     </dl>
-    <!-- <dl>
-      <dt>是否按年重复发生：</dt><dd><input type="radio" name="mission_duplicate" value="on">是 <input type="radio" name="mission_duplicate" value="off">否</dd>
-    </dl> -->
-   <!--  <dl>
-      <dt>执行人：</dt>
-          <p>
-            <input id="hfddlList" type="hidden" name="hfddlList" value="{k:1,v:&quot;大大南京&quot;}|{k:2,v:&quot;上海&quot;}|{k:3,v:&quot;扬州&quot;}|{k:4,v:&quot;苏州&quot;}|{k:5,v:&quot;无锡&quot;}|{k:6,v:&quot;常州&quot;}|{k:7,v:&quot;盐城&quot;}|{k:8,v:&quot;徐州&quot;}|{k:9,v:&quot;泰州&quot;}|{k:10,v:&quot;淮安&quot;}" />
-          </p>
-          <div class="testContainer">
-            <div>
-                <input id="txtTest" style="width: 150px; margin: 1px; padding: 0px;" type="text" name="txtTest" />
-                <input id="hfTest" type="hidden" name="hfTest" value="0" />
-            </div>
-        </div>
-        
-    </dl> -->
-    <!-- <dl>
-      <dt>执行人：</dt>
-      <dd>
-        <select name="choose" id="choose">
-          {% for a in account_list %}
-          <option value="{{a['account_username']}}">{{a['account_username']}}</option>
-          {% endfor %}
-        </select>
-      </dd>
-    </dl> -->
     <dl id="mission_doerselect">
       <dt>执行人：</dt>
       <dd>
@@ -67,6 +41,11 @@
           {% endfor %}
           </ul>
         </div>
+    </dl>
+    <dl>
+      <dt>上传参考文件：</dt>
+      <dd>
+        <input type="file" name="myfile"/>
       </dd>
     </dl>
   </div>

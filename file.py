@@ -13,20 +13,13 @@ def create_dir(file_dir):
 		os.mkdir(file_dir)
 
 
-
-
-
-
-
-
-def file_list(type):
+def file_list(file_type, role, mission_id):
 	#附件列表
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-
-	cursor.execute("select * from FILE where file_type='%s';"%type)
-
+	cursor.execute("select * from FILE WHERE file_type = '%s' and file_uploader = '%s' and mission_id = '%s';\
+		"%(file_type, role, mission_id))
 	file_list = cursor.fetchall()
 
 	conn.close()
@@ -49,7 +42,7 @@ def upload(mission_id,file_name,file_url,file_uploader,file_upload_time,file_typ
 	cursor.execute("insert into FILE \
 		(mission_id, file_name, file_url, file_uploader, file_upload_time, file_type)\
 		value ('%s', '%s', '%s', '%s', '%s', '%s');\
-		"%(int(mission_id), file_name.encode('utf-8'), file_url.encode('utf-8'), file_uploader.encode('utf-8'), file_upload_time,int(file_type)))
+		"%(int(mission_id), file_name.encode('utf-8'), file_url.encode('utf-8'), file_uploader.encode('utf-8'), file_upload_time.encode('utf-8'),int(file_type)))
 	conn.commit()
 	conn.close()
 	
