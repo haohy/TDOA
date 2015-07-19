@@ -222,7 +222,8 @@ class my_mission(object):
 		if session.login == 1:
 			if session.user:
 				#找到当前账户所有任务
-				mission_list = mission.mission_list(account_name=session.user, role=web.input().type)
+				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
+				print web.input().type
 				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
 					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
 			else:
@@ -234,16 +235,15 @@ class mission_state(object):
 	def GET(self ,args):
 		if session.login == 1:
 			if session.user:
-				mission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已发布')
-				zission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='执行中')
-				sission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已提交')
-				wission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='未通过')
-				yission_list = mission.mission_list_type(account_name = session.user, role=web.input().type, mission_status='已完成')
+				mission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='待接受')
+				sission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='已提交')
+				wission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='未通过')
+				yission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='已完成')
 				return render_template(type=session.type, \
 					template_name='mission_state.html', \
 					user=session.user, \
 					mission_list = mission_list, \
-					zission_list = zission_list, \
+					wission_list = wission_list, \
 					sission_list = sission_list, \
 					yission_list = yission_list, \
 					role = web.input().type)
@@ -289,8 +289,9 @@ class new_mission(object):
 				ajax_result = {"statusCode":"300", "message":result}
 				web.header('Content-Type', 'application/json')
 				#如果任务合法，将任务信息存储进MISSION表
+				mission_pubtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 				if result == "no error":
-					mission.mission_save(mission_name, mission_content, mission_starttime, mission_plan_end_time, session.user, mission_doers)
+					mission.mission_save(mission_name, mission_content, mission_starttime, mission_plan_end_time, session.user, mission_doers,mission_pubtime)
 					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面

@@ -10,8 +10,8 @@
 			<table class="list" width="98%">
 				<thead>
 					<tr>
-						<th>任务名称</th>
-						<th width="100">发布者</th>
+						<th width="200">任务名称</th>
+       					<th width="120">发布者</th>
 						<th width="100">执行者</th>
 						<th width="110">开始日期</th>
 						<th width="110">预计结束日期</th>
@@ -23,7 +23,11 @@
 					<tr>
 						<td><a href="/view_mission/?mission_id={{m['mission_id']}}&type={{role}}&mission_sta=j" target="dialog"><div>{{m['mission_name']}}</div></a></td>
 						<td>{{m['mission_publisher']}}</td>
-						<td>{{m['mission_doer']}}</td>
+						<td>
+						{% for m_doer in m.mission_doer %}
+			            	{{m_doer}}
+			            {% endfor %}
+			            </td>
 						<td>{{m['mission_starttime']}}</td>
 						<td>{{m['mission_plan_end_time']}}</td>
 						<td>{{m['mission_status']}}</td>
@@ -39,8 +43,8 @@
 			<table class="list" width="98%">
 							<thead>
 								<tr>
-									<th>任务名称</th>
-									<th width="100">发布者</th>
+									<th width="200">任务名称</th>
+       								<th width="120">发布者</th>
 									<th width="100">执行者</th>
 									<th width="110">开始日期</th>
 									<th width="110">预计结束日期</th>
@@ -51,7 +55,11 @@
 								<tr>
 									<td><a href="/view_mission/?mission_id={{s['mission_id']}}&type={{role}}&mission_sta=m" target="dialog"><div>{{s['mission_name']}}</div></td>
 									<td>{{s['mission_publisher']}}</td>
-									<td>{{s['mission_doer']}}</td>
+									<td>
+									{% for m_doer in s.mission_doer %}
+						            	{{m_doer}}
+						            {% endfor %}
+						            </td>
 									<td>{{s['mission_starttime']}}</td>
 									<td>{{s['mission_plan_end_time']}}</td>
 								</tr>
@@ -66,8 +74,8 @@
 			<table class="list" width="98%">
 							<thead>
 								<tr>
-									<th>任务名称</th>
-									<th width="100">发布者</th>
+									<th width="200">任务名称</th>
+       								<th width="120">发布者</th>
 									<th width="100">执行者</th>
 									<th width="110">开始日期</th>
 									<th width="110">预计结束日期</th>
@@ -78,7 +86,11 @@
 								<tr>
 									<td><a href="/view_mission/?mission_id={{w['mission_id']}}&type={{role}}&mission_sta=j" target="dialog"><div>{{w['mission_name']}}</div></td>
 									<td>{{w['mission_publisher']}}</td>
-									<td>{{w['mission_doer']}}</td>
+									<td>
+									{% for m_doer in w.mission_doer %}
+						            	{{m_doer}}
+						            {% endfor %}
+						            </td>
 									<td>{{w['mission_starttime']}}</td>
 									<td>{{w['mission_plan_end_time']}}</td>
 								</tr>
@@ -94,8 +106,8 @@
 			<table class="list" width="98%">
 							<thead>
 								<tr>
-									<th>任务名称</th>
-									<th width="100">发布者</th>
+									<th width="200">任务名称</th>
+       								<th width="120">发布者</th>
 									<th width="100">执行者</th>
 									<th width="110">开始日期</th>
 									<th width="110">预计结束日期</th>
@@ -106,7 +118,11 @@
 								<tr>
 									<td><a href="/view_mission/?mission_id={{y['mission_id']}}&type=mission_doer&mission_sta=m" target="dialog"><div>{{y['mission_name']}}</div></td>
 									<td>{{y['mission_publisher']}}</td>
-									<td>{{y['mission_doer']}}</td>
+									<td>
+									{% for m_doer in y.mission_doer %}
+						            	{{m_doer}}
+						            {% endfor %}
+						            </td>
 									<td>{{y['mission_starttime']}}</td>
 									<td>{{y['mission_plan_end_time']}}</td>
 								</tr>
