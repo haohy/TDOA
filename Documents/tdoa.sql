@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50704
 File Encoding         : 65001
 
-Date: 2015-07-18 15:39:16
+Date: 2015-07-19 14:46:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -33,7 +33,7 @@ CREATE TABLE `account` (
   `account_power` int(15) DEFAULT NULL,
   `account_password` varchar(128) NOT NULL,
   PRIMARY KEY (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of account
@@ -118,7 +118,7 @@ CREATE TABLE `mission` (
   `mission_publisher` varchar(50) NOT NULL,
   `mission_appendix` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`mission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of mission
@@ -133,6 +133,12 @@ INSERT INTO `mission` VALUES ('7', '7', 'tenthcontent 执行中', '2015-07-16', 
 INSERT INTO `mission` VALUES ('8', '8', 'fourthcontent 已提交', '2015-07-16', '2015-07-17', '2015-07-23', null, '王松', null);
 INSERT INTO `mission` VALUES ('9', '9', 'sixthcontent 未通过', '2015-07-18', '2015-07-19', '2015-07-24', null, '王松', null);
 INSERT INTO `mission` VALUES ('10', '10', 'thirdcontent 已完成', '2015-07-14', '2015-07-15', '2015-07-17', '2015-07-19', '王松', null);
+INSERT INTO `mission` VALUES ('11', '11', '测试m_list_id会输出什么', '2015-07-18', '2015-07-22', '2015-07-30', null, '郝鸿延', null);
+INSERT INTO `mission` VALUES ('17', '测试my_mission', 'my_mission', '2015-07-18', '2015-07-18', '2015-07-21', null, '王松', null);
+INSERT INTO `mission` VALUES ('18', 'my_mission2', 'my_mission2', '2015-07-18', '2015-07-20', '2015-07-23', null, '郝鸿延', null);
+INSERT INTO `mission` VALUES ('19', '1:19测试', '测试更改后的mission_list好使不', '2015-07-19', '2015-07-20', '2015-07-22', null, '郝鸿延', null);
+INSERT INTO `mission` VALUES ('20', '测试1', '测试1', '2015-07-19', '2015-07-20', '2015-07-22', null, '郝鸿延', null);
+INSERT INTO `mission` VALUES ('21', 'mission_pubtime', 'mission_pubtime<span style=\"white-space:pre\">	</span>', '2015-07-19', '2015-07-21', '2015-07-28', null, '郝鸿延', null);
 
 -- ----------------------------
 -- Table structure for `missions_doers`
@@ -144,7 +150,7 @@ CREATE TABLE `missions_doers` (
   `mission_doer` varchar(100) NOT NULL,
   `mission_status` varchar(20) NOT NULL,
   PRIMARY KEY (`mission_do_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of missions_doers
@@ -153,9 +159,27 @@ INSERT INTO `missions_doers` VALUES ('1', '1', '王松', '待接受');
 INSERT INTO `missions_doers` VALUES ('2', '1', '李杭', '待接受');
 INSERT INTO `missions_doers` VALUES ('3', '2', '王松', '执行中');
 INSERT INTO `missions_doers` VALUES ('4', '2', '李杭', '执行中');
-INSERT INTO `missions_doers` VALUES ('5', '3', '王松', '已提交');
+INSERT INTO `missions_doers` VALUES ('5', '3', '王松', '执行中');
 INSERT INTO `missions_doers` VALUES ('6', '3', '李杭', '已提交');
 INSERT INTO `missions_doers` VALUES ('7', '4', '王松', '未通过');
 INSERT INTO `missions_doers` VALUES ('8', '4', '李杭', '未通过');
 INSERT INTO `missions_doers` VALUES ('9', '5', '王松', '已完成');
 INSERT INTO `missions_doers` VALUES ('10', '5', '李杭', '已完成');
+INSERT INTO `missions_doers` VALUES ('13', '17', '郝鸿延', '待接受');
+INSERT INTO `missions_doers` VALUES ('14', '17', '李杭', '待接受');
+INSERT INTO `missions_doers` VALUES ('15', '18', 'user2', '执行中');
+INSERT INTO `missions_doers` VALUES ('16', '18', '郝鸿延', '执行中');
+INSERT INTO `missions_doers` VALUES ('17', '18', '王松', '执行中');
+INSERT INTO `missions_doers` VALUES ('18', '19', 'user3', '待接受');
+INSERT INTO `missions_doers` VALUES ('19', '19', '郝鸿延', '待接受');
+INSERT INTO `missions_doers` VALUES ('20', '19', '王松', '待接受');
+INSERT INTO `missions_doers` VALUES ('21', '19', '李杭', '待接受');
+INSERT INTO `missions_doers` VALUES ('22', '20', '郝鸿延', '未通过');
+INSERT INTO `missions_doers` VALUES ('23', '20', 'user2', '待接受');
+INSERT INTO `missions_doers` VALUES ('24', '20', 'user1', '待接受');
+INSERT INTO `missions_doers` VALUES ('25', '20', '王松', '待接受');
+INSERT INTO `missions_doers` VALUES ('26', '20', '李杭', '待接受');
+INSERT INTO `missions_doers` VALUES ('27', '21', 'user1', '待接受');
+INSERT INTO `missions_doers` VALUES ('28', '21', 'admin', '待接受');
+INSERT INTO `missions_doers` VALUES ('29', '21', '郝鸿延', '已提交');
+INSERT INTO `missions_doers` VALUES ('30', '21', '王松', '待接受');
