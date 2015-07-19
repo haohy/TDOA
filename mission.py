@@ -50,6 +50,7 @@ def mission_save(mission_name, mission_publisher, mission_content, mission_start
 	#存储任务信息
 	mission_pubtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 	mission_status = "已发布"
+	mission_publisher = mission_publisher+','
 
 
 	c = data.SQLconn()
@@ -75,13 +76,17 @@ def get_account_id(account_name):
 
 def mission_list(account_name, role):
 	#当前账户任务信息
-
-	#account_id = get_account_id(account_name)
-	
+	name = account_name.split(',')
+	reg=''
+	for i in name:
+		reg = reg +i+'{1}'
+	reg = reg+',{1}'
+	Reg = reg.strip()
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("select * from MISSION where %s='%s' and mission_status!='已关闭';"%(role, account_name))
+	cursor.execute("select * from MISSION where %s REGEXP '%s' and mission_status!='已关闭';"%(role, account_name))
+	# cursor.execute("select * from MISSION where %s='%s' and mission_status!='已关闭';"%(role, account_name))
 	m_list = cursor.fetchall()
 
 	conn.close()
@@ -93,11 +98,19 @@ def mission_list(account_name, role):
 	return m_list
 def mission_list_type(account_name, role, mission_status):
 	#根据所需任务状态返回对应的list
+	name = account_name.split(',')
+	reg=''
+	for i in name:
+		reg = reg +i+'{1}'
+	reg = reg+',{1}'
+	Reg = reg.strip()
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("select * from MISSION where %s='%s' and mission_status = '%s';\
-		"%(role, account_name, mission_status.encode('utf-8')))
+	cursor.execute("select * from MISSION where %s REGEXP '%s' and mission_status = '%s';\
+		"%(role, Reg, mission_status.encode('utf-8')))
+	# cursor.execute("select * from MISSION where %s='%s' and mission_status = '%s';\
+	# 	"%(role, account_name, mission_status.encode('utf-8')))
 	m_list = cursor.fetchall()
 	conn.close()
 	m_list = list(m_list)
