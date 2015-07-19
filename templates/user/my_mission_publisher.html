@@ -22,7 +22,7 @@
       {% for m in mission_list %}
         <tr target="sid_user" class="center"> 
           <td>
-            <a href="/view_mission/?mission_id={{m['mission_id']}}&type=mission_publisher&mission_sta=t" target="navTab">
+            <a href="/view_mission/?type=mission_publisher&mission_status=执行中&mission_sta=t" target="navTab">
                  <div>{{m['mission_name']}}</div>
             </a>
           </td>
@@ -43,7 +43,6 @@
              <div>{{m['mission_status']}}</div>
           </td>
           <td>
-            <a href="/modify_mission/?mission_id={{m['mission_id']}}" target="navTab" style="color:rgb(0,0,225)">修改</a>
             <a href="/delete_mission/?mission_id={{m['mission_id']}}" target="navTab" style="color:rgb(0,0,225)">删除</a>
           </td>
         </tr>

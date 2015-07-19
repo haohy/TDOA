@@ -32,8 +32,8 @@ def get_calendar_data(arg):
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	# print "connect mysql"
 	print arg.account, arg.start, arg.end
-	cursor.execute("SELECT mission_name, mission_id, mission_starttime, mission_plan_end_time FROM MISSION\
-		WHERE mission_doer = '%s' AND mission_starttime BETWEEN '%s' AND '%s' OR mission_plan_end_time\
+	cursor.execute("SELECT mission.mission_name, mission.mission_id, mission.mission_starttime, mission.mission_plan_end_time FROM mission,missions_doers\
+		WHERE missions_doers.mission_doer = '%s' AND mission.mission_id = missions_doers.mission_id AND mission.mission_starttime BETWEEN '%s' AND '%s' OR mission.mission_plan_end_time\
 		 BETWEEN '%s' AND '%s'"\
 		 %(arg.account, arg.start, arg.end, arg.start, arg.end))
 	calendar_data = cursor.fetchall()

@@ -223,7 +223,7 @@ class my_mission(object):
 			if session.user:
 				#找到当前账户所有任务
 				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
-				print web.input().type
+				print "my_mission()"
 				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
 					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
 			else:
@@ -317,17 +317,17 @@ class delete_mission(object):
 	"""删除任务"""
 	def POST(self):
 		mission_id = web.input().mission_id
+		print mission_id
 		if session.login==1:
 			if session.user:
 				result = mission.mission_delete(mission_id)
-				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
+				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher',mission_status='执行中')
 				return render_template(type=session.type, template_name='my_mission.html', 
 					user=session.user, mission_list=mission_list)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-
 
 class modify_mission(object):
 	"""修改任务 ,modify_mission.html跟new_mission.html相同, 
@@ -456,10 +456,15 @@ class view_mission(object):
 	def GET(self,arg):
 		if session.login == 1:
 			if session.user:
-				arg = web.input()
-				m = mission.mission_view(arg.mission_id)
+				account_name = session.user
+				mission_status = web.input().mission_status
+				role = web.input().type
+				mission_sta = web.input().mission_sta
+				m = mission.mission_view(account_name,role,mission_status)
+				print "this is m : "
+				print  m
 				return render_template(
-					type=session.type,template_name='view_'+arg.type+'.html',
+					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
 					mission_view=m)
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
