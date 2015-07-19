@@ -126,11 +126,9 @@ def mission_list(account_name, role):
 			for j in range(len(m_list_doers)):
 				m_list_doers_list.append(m_list_doers[j]['mission_doer'])
 			doerDirct[i]=m_list_doers_list
-		print doerDirct
 		for i in range(len(m_list_mission)):
 			m_list_mission[i]['mission_doer']=doerDirct[m_list_mission[i]['mission_id']]
 		m_list_publisher = m_list_mission
-		print m_list_publisher
 		conn.close()
 		m_list_publisher = list(m_list_publisher)
 		m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_starttime'])

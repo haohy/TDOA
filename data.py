@@ -38,6 +38,7 @@ def get_calendar_data(arg):
 		 %(arg.account, arg.start, arg.end, arg.start, arg.end))
 	calendar_data = cursor.fetchall()
 	calendar_list = list(calendar_data)
+	conn.close()
 	# print calendar_list
 	return calendar_data
 	
