@@ -2,13 +2,25 @@
 import MySQLdb
 import re
 import time
-
+import os
 import data
+
+
+
+def create_dir(file_dir):
+	#创建目录
+	if os.path.exists(file_dir) == False:
+		os.mkdir(file_dir)
+
+
+
+
+
+
+
 
 def file_list(type):
 	#附件列表
-
-	
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
