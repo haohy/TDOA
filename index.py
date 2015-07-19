@@ -519,19 +519,18 @@ class upload(object):
 		
 	def POST(self,arg):
 		x = web.input(myfile={})
-		print x
 		mission_id = web.input().mission_id
+		print mission_id
 		file_type = web.input().file_type
 		filedir = './uploads' # change this to the directory you want to store the file in.
 		if 'myfile' in x:
 			file_url=x.myfile.filename.replace('\\','/')
 			file_name=file_url.split('/')[-1] # splits the and chooses the last part (the filename with extension)
-			fout = open(filedir +'/'+ file_name,'w') # creates the file where the uploaded file should be stored
+			fout = open(filedir +'/'+ file_name,'wb') # creates the file where the uploaded file should be stored
 			fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.
 			fout.close() # closes the file, upload complete.
 			file_upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-			mission_id = 1
-			file.upload(mission_id,file_name,file_url,file_upload_time,file_type)
+			file.upload(mission_id,file_name,file_url,session.user,file_upload_time,file_type)
 		return json.dumps({"statusCode":"200", "message":"文件上传成功"})
 		
 
