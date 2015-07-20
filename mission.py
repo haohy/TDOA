@@ -195,6 +195,6 @@ def mission_sta_change(mission_id ,mission_status):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("update mission set mission_status = %s where mission_id = '%s';"%(mission_status.encode('utf-8'), mission_id))
+	cursor.execute("update mission set mission_status = '%s' where mission_id = '%s';"%(mission_status.encode('utf-8'), mission_id))
 	conn.commit()
 	conn.close()

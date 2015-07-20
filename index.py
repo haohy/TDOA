@@ -488,10 +488,9 @@ class change_mission_sta(object):
 			if session.user:
 				args = web.input()
 				mission.mission_sta_change(args.mission_id, unquote(args.mission_status))
-				if unquote(args.mission_status) == '已完成':
-					print 'come in'
+				#当状态是已完成时，将file_type改为2
+				if args.mission_status == ('已完成').decode('utf-8'):
 					file.file_type_change(args.mission_id)
-					print args.mission_id
 				m = mission.mission_view(args.mission_id)
 				return render_template(
 					type=session.type,template_name='view_mission.html',
