@@ -45,5 +45,14 @@ def upload(mission_id,file_name,file_url,file_uploader,file_upload_time,file_typ
 		"%(int(mission_id), file_name.encode('utf-8'), file_url.encode('utf-8'), file_uploader.encode('utf-8'), file_upload_time.encode('utf-8'),int(file_type)))
 	conn.commit()
 	conn.close()
+
+def file_type_change(mission_id):
+	#任务状态改为已完成时，将对应mission_id的file_type改为2
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursor.execute("update file set file_type = '2' WHERE mission_id = '%s';"%mission_id)
+	conn.commit()
+	conn.close()
 	
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import web
 from web.httpserver import StaticMiddleware
-from urllib import unquote
+from urllib import unquote,quote
 import json
 import re
 import os
@@ -487,8 +487,11 @@ class change_mission_sta(object):
 		if session.login == 1:
 			if session.user:
 				args = web.input()
-				print args.mission_id, unquote(args.mission_status)
 				mission.mission_sta_change(args.mission_id, unquote(args.mission_status))
+				if unquote(args.mission_status) == '已完成':
+					print 'come in'
+					file.file_type_change(args.mission_id)
+					print args.mission_id
 				m = mission.mission_view(args.mission_id)
 				return render_template(
 					type=session.type,template_name='view_mission.html',
