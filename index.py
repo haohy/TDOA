@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import web
 from web.httpserver import StaticMiddleware
-from urllib import unquote,quote
+import urllib
 import json
 import re
 import os
@@ -39,6 +39,7 @@ urls= (
 	'/mission_audit/(.*)','mission_audit',
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
+	'/download_file/(.*)','download_file',
 	'/calendar/(.*)', 'calendar',							#日历
 	'/calendar_data/(.*)', 'calendar_data',
 	'/mission_content/(.*)', 'mission_content',
@@ -578,7 +579,35 @@ class upload_files(object):
 				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-		
+class download_file(object):
+	def GET(self,arg):
+		if session.login == 1:
+			if session.user:
+				file_url = web.input().file_url
+				file_name = web.input().file_name				
+				try:
+					file_obj = open(file_url,'rb')
+					web.header('Content-Type','application/octet-stream')
+					web.header('Content-disposition','attachment;filename="%s"'%file_name)
+					f = file_obj.read()
+					return f
+				except:
+					print 'error'
+				finally:
+					file_obj.close()
+				#大文件下载使用下面方法
+				# 	while True:
+				# 		BUF_SIZE = 1024
+				# 		c = file_obj.read(BUF_SIZE)
+				# 		if c:
+				# 			yield c
+				# 		else:
+				# 			break
+				# except Exception, e:
+				# 	print e
+				# 	yield 'Error'
+				# finally:
+				# 	file_obj.close()
 
 class calendar(object):
 	"""docstring for calendar"""
