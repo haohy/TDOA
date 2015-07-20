@@ -166,12 +166,27 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if str(role) == 'mission_doer':
-		cursor.execute("select mission.mission_name, mission.mission_publisher, mission.mission_content, mission.mission_starttime, mission.mission_plan_end_time, missions_doers.mission_status \
+		cursor.execute("select mission.mission_name,missions_doers.mission_id, mission.mission_publisher, mission.mission_content, mission.mission_starttime, mission.mission_plan_end_time, missions_doers.mission_status \
 			from missions_doers, mission \
 			where missions_doers.mission_doer = '%s' and missions_doers.mission_status = '%s' and missions_doers.mission_id = mission.mission_id;\
 			"%(account_name, mission_status))
 		m_list_user = cursor.fetchall()
 		print m_list_user
+		list_id = []
+		for i in range(len(m_list_user)):
+			list_id.append(m_list_user[i]['mission_id'])
+		#将missions_doers中与mission中相同id对应的多执行者放到一个字典doerDict中，key为id，value为doers
+		doerDict = {}
+		for i in list_id:
+			cursor.execute("select mission_doer from missions_doers where mission_id = %s ;"%i)
+			m_list_doers = cursor.fetchall()
+			m_list_doers_list = []
+			for j in range(len(m_list_doers)):
+				m_list_doers_list.append(m_list_doers[j]['mission_doer'])
+			doerDict[i]=m_list_doers_list
+		#将doerDict和之前只缺少doers信息的m_list_mission合并起来，构成最后返回的m_list_user
+		for i in range(len(m_list_user)):
+			m_list_user[i]['mission_doer']=doerDict[m_list_user[i]['mission_id']]
 		conn.close()
 		m_list_user = list(m_list_user)
 		m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_starttime'])
@@ -185,7 +200,8 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 		m_list_mission = cursor.fetchall()
 		#读取missions_doers,mission中相同的id,并保存到list_id中
 		cursor.execute("select distinct mission.mission_id from mission,missions_doers \
-			where missions_doers.mission_id = mission.mission_id and missions_doers.mission_status = '%s' and mission.mission_publisher = '%s';"%(mission_status,account_name))
+			where missions_doers.mission_id = mission.mission_id and missions_doers.mission_status = '%s' and mission.mission_publisher = '%s';"\
+			%(mission_status,account_name))
 		m_list_id = cursor.fetchall()
 		list_id = []
 		for i in range(len(m_list_id)):
@@ -237,10 +253,11 @@ def get_mission_content(mission_id):
 	cursors = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	cursors.execute("SELECT mission_name, mission_content FROM mission WHERE mission_id = '%s'" % mission_id)
 	return list(cursors.fetchall())
-def mission_sta_change(mission_id ,mission_status):
+def mission_sta_change(mission_id ,mission_status,mission_doer):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("update mission set mission_status = %s where mission_id = '%s';"%(mission_status.encode('utf-8'), mission_id))
+	cursor.execute("update missions_doers set mission_status = '%s' WHERE mission_id = '%s' AND mission_doer = '%s' ;"%(mission_status.encode('utf-8'), mission_id,mission_doer))
+	print mission_status
 	conn.commit()
 	conn.close()

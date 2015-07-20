@@ -235,10 +235,10 @@ class mission_state(object):
 	def GET(self ,args):
 		if session.login == 1:
 			if session.user:
-				mission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='待接受')
-				sission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='已提交')
-				wission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='未通过')
-				yission_list = mission.mission_list(account_name = session.user, role=web.input().type, mission_status='已完成')
+				mission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='待接受')
+				sission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已提交')
+				wission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='未通过')
+				yission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已完成')
 				return render_template(type=session.type, \
 					template_name='mission_state.html', \
 					user=session.user, \
@@ -477,13 +477,16 @@ class change_mission_sta(object):
 		if session.login == 1:
 			if session.user:
 				args = web.input()
+				# role = web.input().type
+				# mission_status = web.input().mission_status
+				# account_name = session.user
 				print args.mission_id, unquote(args.mission_status)
-				mission.mission_sta_change(args.mission_id, unquote(args.mission_status))
-				m = mission.mission_view(args.mission_id)
-				return render_template(
-					type=session.type,template_name='view_mission.html',
-					user=session.user,
-					mission_view=m)
+				#更改任务动态
+				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),session.user)
+				#更改后跳转
+				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
+				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
+					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
