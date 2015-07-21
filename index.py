@@ -489,11 +489,6 @@ class view_mission(object):
 				print role
 				print mission_status
 				print mission_id
-<<<<<<< HEAD
-				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
-=======
-				#m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
->>>>>>> cb47ca53a21db8251b3dfb6659e5d1c5dd6f80c2
 				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
 				print "m is :"
 				print m
