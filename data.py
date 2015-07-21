@@ -5,7 +5,7 @@ import re
 
 def SQLconn():
 	#SQL连接参数
-	conn = {"host":"127.0.0.1", "user":"root", "passwd":"root", "charset":"utf8", "db":"tdoa"}
+	conn = {"host":"127.0.0.1", "user":"root", "passwd":"lihang", "charset":"utf8", "db":"tdoa"}
 	return conn
 
 def checkin(user):
@@ -32,11 +32,22 @@ def get_calendar_data(arg):
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	# print "connect mysql"
 	print arg.account, arg.start, arg.end
-	cursor.execute("SELECT mission.mission_name, mission.mission_id, mission.mission_starttime, mission.mission_plan_end_time FROM mission,missions_doers\
-		WHERE missions_doers.mission_doer = '%s' AND mission.mission_id = missions_doers.mission_id AND mission.mission_starttime BETWEEN '%s' AND '%s' OR mission.mission_plan_end_time\
-		 BETWEEN '%s' AND '%s'"\
-		 %(arg.account, arg.start, arg.end, arg.start, arg.end))
+	cursor.execute("SELECT mission.mission_name, mission.mission_id, mission.mission_starttime,\
+							mission.mission_plan_end_time\
+	 				FROM mission JOIN missions_doers\
+	 				ON mission.mission_id=missions_doers.mission_id\
+					WHERE missions_doers.mission_doer = '%s'\
+					AND (mission.mission_starttime BETWEEN '%s' AND '%s'\
+					OR mission.mission_plan_end_time BETWEEN '%s' AND '%s')"\
+		 			%(arg.account, arg.start, arg.end, arg.start, arg.end))
 	calendar_data = cursor.fetchall()
+	cursor.execute("SELECT mission_name, mission_id, mission_starttime, mission_endtime\
+	 				FROM history_mission\
+					WHERE mission_doer = '%s'\
+					AND (mission_starttime BETWEEN '%s' AND '%s'\
+					OR mission_endtime BETWEEN '%s' AND '%s')"\
+		 			%(arg.account, arg.start, arg.end, arg.start, arg.end))
+	calendar_data += cursor.fetchall()
 	calendar_list = list(calendar_data)
 	conn.close()
 	# print calendar_list

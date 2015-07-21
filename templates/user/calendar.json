@@ -4,7 +4,11 @@
     	"title": "{{m['mission_name']}}",
     	"url": "/mission_content/?mission_id={{m['mission_id']}}",
     	"start": "{{m['mission_starttime']}}",
-    	"end": "{{m['mission_plan_end_time']}}"
+    	{% if 'mission_plan_end_time' %}
+    		"end": "{{m['mission_plan_end_time']}}"
+    	{% else %}
+    		"end": "{{m['mission_endtime']}}"
+    	{% endif %}
 },
 {% endfor %}
 {

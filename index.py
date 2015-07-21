@@ -29,6 +29,7 @@ urls= (
 	'/logout', 'logout',
 	#######一般用户
 	'/search', 'search',
+	'/search_view_mission/(.*)', 'search_view_mission',
 	'/new_mission', 'new_mission',
 	'/my_mission/(.*)', 'my_mission',
 	'/view_mission/(.*)', 'view_mission',
@@ -40,6 +41,8 @@ urls= (
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
 	'/calendar/(.*)', 'calendar',
+	'/calendar_view/(.*)', 'calendar_view',
+
 	#日历
 	'/calendar_data/(.*)', 'calendar_data',
 	'/mission_content/(.*)', 'mission_content',
@@ -557,6 +560,19 @@ class search(object):
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
+
+class search_view_mission(object):
+	"""docstring for search_view_mission"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()
+			return render_template(
+					type = session.type,
+					template_name = 'search_view_mission.html',
+					mission_view = mission.get_mission_content(arg.mission_id, arg.mission_doer)
+				)
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 class mission_audit(object):
 	"""docstring for mission_audit"""
 	def GET(self,arg):
@@ -642,6 +658,22 @@ class calendar(object):
 					)
 
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
+
+class calendar_view(object):
+	"""docstring for calendar_view"""
+	def GET(self, arg):
+		if session.login == 1:
+			arg = web.input()
+			if data.permission_check(session.user, arg.account, 'calendar'):
+				return render_template(
+					type = session.type,
+					template_name = 'calendar_dialog.html',
+					user = arg.account
+					)
+
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		
 		
 class calendar_data(object):
 	"""docstring for calendar_data"""
@@ -654,6 +686,7 @@ class calendar_data(object):
 					template_name='calendar.json',\
 					mission_list = calendar_data)
 		
+
 class mission_content(object):
 	"""docstring for mission_content"""
 	def GET(self, arg):

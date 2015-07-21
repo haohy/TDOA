@@ -77,9 +77,9 @@
                 <tbody>
                 {% for m in mission_list %}
                     <tr target="sid_user" rel="1" >
-                        <td class="mission_name center"><a href="/view_mission/?mission_id={{m['mission_id']}}&mission_status={{m['mission_status']}}&type=mission_publisher&mission_sta=m" target="dialog"><div>{{m['mission_name']}}</div></a></td>
-                        <td class="account center"><a href="{账号}" target="dialog" width="800" height="600"><div>{{m['mission_publisher']}}</div></a></td>
-                        <td class="account center"><a href="{账号}" target="dialog" width="800" height="600"><div>{{m['mission_doer']}}</div></a></td>
+                        <td class="mission_name center"><a href="/search_view_mission/?mission_id={{m['mission_id']}}&mission_doer={{m['mission_doer']}}" target="dialog" width="600" height="400"><div>{{m['mission_name']}}</div></a></td>
+                        <td class="account center"><a href="/calendar_view/?account={{m['mission_publisher']}}" target="dialog" width="800" height="600"><div>{{m['mission_publisher']}}</div></a></td>
+                        <td class="account center"><a href="/calendar_view/?account={{m['mission_doer']}}" target="dialog" width="800" height="600"><div>{{m['mission_doer']}}</div></a></td>
                         <td class="center"><div class="mission_status">{{m['mission_status']}}</div></td>
                         <td class="center"><div class="mission_start_time">{{m['mission_starttime']}}</div></td>
                         <td class="center"><div class="mission_end_time">{{m['mission_plan_end_time']}}</div></td>

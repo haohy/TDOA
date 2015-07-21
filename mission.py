@@ -361,14 +361,14 @@ def mission_search_list(user, arg):
 	search_list = []
 	for i in account_list:
 		cursor.execute("SELECT mission_name, mission_publisher, mission_doer, mission_status,\
-						mission_starttime, mission_plan_end_time\
+						mission_starttime, mission_plan_end_time, mission.mission_id\
 						FROM mission JOIN missions_doers\
 						ON mission.mission_id=missions_doers.mission_id\
 						WHERE mission_doer='%s' OR mission_publisher='%s'"%\
 						(i['account_username'],i['account_username']))
 		search_list += list(cursor.fetchall())
 		cursor.execute("SELECT mission_name, mission_publisher, mission_doer,\
-						mission_starttime, mission_plan_end_time\
+						mission_starttime, mission_plan_end_time, mission_id\
 						FROM history_MISSION\
 						WHERE (mission_doer='%s' or mission_publisher='%s')"\
 						%(i['account_username'], i['account_username']))
@@ -398,3 +398,19 @@ def mission_search_list(user, arg):
 
 
 	return mlist
+
+def get_mission_content(mission_id, mission_doer):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+
+	cursor.execute("SELECT *\
+	 				FROM mission JOIN missions_doers\
+	 				ON mission.mission_id=missions_doers.mission_id\
+					WHERE mission_doer = '%s' AND mission.mission_id='%s'"%(mission_doer, mission_id))
+	mission = list(cursor.fetchall())
+	cursor.execute("SELECT *\
+	 				FROM history_mission\
+					WHERE mission_doer = '%s' AND mission_id='%s'"%(mission_doer, mission_id))
+	mission += list(cursor.fetchall())
+	return mission
