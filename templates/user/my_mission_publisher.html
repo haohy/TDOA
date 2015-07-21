@@ -22,7 +22,7 @@
       {% for m in mission_list %}
         <tr target="sid_user" class="center"> 
           <td>
-            <a href="/view_mission/?type=mission_publisher&mission_status=执行中&mission_sta=t" target="navTab">
+            <a href="/view_mission/?type=mission_publisher&mission_id={{m['mission_id']}}&mission_status=执行中&mission_sta=t" target="navTab">
                  <div>{{m['mission_name']}}</div>
             </a>
           </td>

@@ -475,11 +475,14 @@ class view_mission(object):
 				mission_status = web.input().mission_status
 				role = web.input().type
 				mission_sta = web.input().mission_sta
+				mission_id = web.input().mission_id
+				print "index.py.view_mission(object)"
 				print account_name
 				print role
 				print mission_status
+				print mission_id
 				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
-				m = mission.mission_view(account_name,role,mission_status)
+				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
 				print "m is :"
 				print m
 				return render_template(
@@ -598,6 +601,7 @@ class upload_files(object):
 					mission_id = arg.mission_id
 					role = arg.role.rstrip(',')
 					print "role = arg.role.rstrip(',')   :"+role
+					print mission_id
 					list = file.file_list(file_type, mission_id, role)
 					print "list = file.file_list(file_type, mission_id, role)    :"
 					print  list 
