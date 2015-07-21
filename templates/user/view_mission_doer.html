@@ -9,9 +9,21 @@
 		  </dd>
 		</dl>
 		<dl class="nowrap">
-		  <dt>任务创建者：</dt>
+		  <dt>任务发布者：</dt>
 		  <dd>
 			{{mission_view[0]['mission_publisher']}}
+		  </dd>
+		</dl>
+		<dl class="nowrap">
+		  <dt>任务执行者：</dt>
+		  <dd>
+			<tbody>
+				<tr>
+				{% for doer in mission_view[0]['mission_doer']%}
+					<a href="#">{{doer}}</a>
+				{%endfor%}
+				</tr>
+			</tbody>
 		  </dd>
 		</dl>
 		<dl class="nowrap">
@@ -21,9 +33,9 @@
 		  </dd>
 		</dl>
 		<dl class="nowrap">
-		  <dt>任务实际完成时间：</dt>
+		  <dt>任务完成时间：</dt>
 		  <dd>
-			{{mission_view[0]['mission_actuall_end_time']}}
+			{{mission_view[0]['mission_plan_end_time']}}
 		  </dd>
 		</dl>
 		<dl class="nowrap">
@@ -40,6 +52,7 @@
 		<div class="tabsHeader">
 			<div class="tabsHeaderContent">
 				<ul>
+					<li><a href="/upload_files/?type=2" class="j-ajax"><span>历史任务参考</span></a></li>
 					<li><a href="/upload_files/?type=0" class="j-ajax"><span>初始参考附件</span></a></li>
 					<li><a href="/upload_files/?type=1" class="j-ajax"><span>任务完成提交附件</span></a></li>
 					<li><a href="/upload/?mission_id={{mission_view[0]['mission_id']}}" target="dialog"><span>上传附件</span></a></li>
@@ -56,11 +69,26 @@
 			<div class="tabsFooterContent"></div>
 		</div>
 	</div>
-	
+	<div class="tabs">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul><li><span>留言</span></li></ul>
+			</div>
+		</div>
+		<div class="tabsContent">
+			<textarea name="msg" id="msg" cols="100" rows="1" placeholder="说点什么吧。。。"></textarea>
+			<dt style="display: block">
+			{{mission_view[0]['mission_publisher']}}:
+			  </dt>
+			  <dd style="display: block">
+			  	好好干！
+			  </dd>
+		</div>
+	</div>
   </div>
   <div class="formBar">
     <ul>
-      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='已提交'" target="navTab"><span>提交</span></a></div></div></li>
+      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&type=mission_doer&mission_status=已提交" target="navTab" rel="my_mission_do"><span>提交</span></a></div></div></li>
     </ul>
   </div>  
 

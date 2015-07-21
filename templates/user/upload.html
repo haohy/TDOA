@@ -1,8 +1,8 @@
 <form method="POST" enctype="multipart/form-data" action="/upload/" class="pageForm required-validate" onsubmit="return iframeCallback(this);">
 
 	<div class="pageFormContent" layoutH="97">
-		<input type="text" name="mission_id"  style="display:none;"><br/>
-		<dl>
+		<input type="text" name="mission_id" value="{{mission_id}}" style="display:none;"><br/>
+		<!-- <dl>
 			<dt>附件类型：</dt>
 			<dd>
 				<select name="file_type">
@@ -11,8 +11,7 @@
 				<option value="1">任务参考附件</option>
 				</select>
 			</dd>
-		</dl>
-
+		</dl> -->
 		<dl>
 			<dt>选择文件：</dt>
 			<dd>

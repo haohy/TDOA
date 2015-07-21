@@ -10,12 +10,10 @@
   <table class="table" width="100%" layoutH="48">
     <thead>
       <tr class="center">
-        <th>任务名称</th>
-        <th width="100">发布者</th>
-        <th width="100">执行者</th>
+        <th width="200">任务名称</th>
+        <th width="120">发布者</th>
         <th width="100">开始时间</th>
         <th width="100">计划完成时间</th>
-<!--         <th width="100">实际完成时间</th> -->
         <th width="80" align="center">状态</th>
         <th width="100">操作</th>
       </tr>
@@ -25,7 +23,7 @@
       {% for m in mission_list %}
         <tr target="sid_user" class="center"> 
           <td>
-            <a href="/view_mission/?mission_id={{m['mission_id']}}&type=mission_doer" target="navTab">
+            <a href="/view_mission/?type=mission_doer&mission_id={{m['mission_id']}}&mission_status=执行中&mission_sta=t" target="navTab">
                  <div>{{m['mission_name']}}</div>
             </a>
           </td>
@@ -33,22 +31,16 @@
              <div>{{m['mission_publisher']}}</div>
           </td>
           <td>
-            <div>{{m['mission_doer']}}</div>
-          </td>
-          <td>
              <div>{{m['mission_starttime']}}</div>
           </td>
           <td>
              <div>{{m['mission_plan_end_time']}}</div>
           </td>
-<!--           <td>
-             <div>{{m['mission_actuall_end_time']}}</div>
-          </td> -->
           <td>
              <div>{{m['mission_status']}}</div>
           </td>
           <td>
-            <a href="/change_mission_sta/?mission_id={{m['mission_id']}}&mission_status='已提交'" target="navTab" style="color:rgb(0,0,225)">提交</a>
+            <a href="/change_mission_sta/?mission_id={{m['mission_id']}}&type=mission_doer&mission_status=已提交" target="navTab" style="color:rgb(0,0,225)" rel="my_mission_do">提交</a>
           </td>
         </tr>
         {% endfor %}

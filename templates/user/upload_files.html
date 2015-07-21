@@ -8,20 +8,20 @@
 		</tr>
 	</thead>
 	<tbody>
+		{% for m in file_list %}
 		<tr>
-			{% for m in file_list %}
 				<td>
 					     {{m['file_id']}}
 				  </td>	
 				  <td>
-					<a href=" {{m['file_url']}}" target="navTab">
+					<a href=" {{m['file_url']}}">
 						 {{m['file_name']}}
 					</a>
 				  </td>
 				  <td>
 					     {{m['file_upload_time']}}
 				  </td>		  
-			{% endfor %}
 		</tr>
+		{% endfor %}
 	</tbody>
 </table>

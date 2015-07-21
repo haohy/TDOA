@@ -15,6 +15,14 @@
 		  </dd>
 		</dl>
 		<dl class="nowrap">
+			<dt>任务执行者：</dt>
+			<dd>
+				{% for doer in mission_view[0]['mission_doer']%}
+					<a href="#">{{doer}}</a>
+				{%endfor%}
+			</dd>
+		</dl>
+		<dl class="nowrap">
 		  <dt>任务开始时间：</dt>
 		  <dd>
 			{{mission_view[0]['mission_starttime']}}
@@ -23,7 +31,7 @@
 		<dl class="nowrap">
 		  <dt>任务实际完成时间：</dt>
 		  <dd>
-			{{mission_view[0]['mission_actuall_end_time']}}
+			{{mission_view[0]['mission_plan_end_time']}}
 		  </dd>
 		</dl>
 		<dl class="nowrap">
@@ -52,19 +60,36 @@
 			<div>
 			</div>
 		</div>
-		<div class="tabsFooter">
-			<div class="tabsFooterContent"></div>
+		<div class="tabs">
+			<div class="tabsHeader">
+				<div class="tabsHeaderContent">
+					<ul><li><span>留言</span></li></ul>
+				</div>
+			</div>
+			<div class="tabsContent">
+				<textarea name="msg" id="msg" cols="100" rows="1" placeholder="说点什么吧。。。"></textarea>
+				<br>
+				<div>
+					{{mission_view[0]['mission_publisher']}}:
+				</div>
+				<div>好好干！</div>
+				<!-- <dt>
+				{{mission_view[0]['mission_publisher']}}:
+				  </dt>
+				  <dd>
+				  	好好干！
+				  </dd> -->
+			</div>
 		</div>
 	</div>
 	
   </div>
   <div class="formBar">
     <ul>
-      <li><div class="buttonActive"><div><a class="edit" href="/modify_mission/?mission_id={{mission_view[0]['mission_id']}}" target="navTab"><span>修改任务</span></a></d	iv></div></li>
+      <li><div class="buttonActive"><div><a class="edit" href="/modify_mission/?mission_id={{mission_view[0]['mission_id']}}" target="navTab"><span>修改任务</span></a></div></div></li>
       <li><div class="button"><div><a class="delete" href="/delete_mission/?mission_id={{mission_view[0]['mission_id']}}" target="ajaxTodo" title="确定要删除吗?"><span>删除</span></a></div></div></li>
-      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='已完成'" target="navTab"><span>审核通过</span></a></div></div></li>
-      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='未通过'" target="navTab"><span>不通过</span></a></div></div></li>
+      <!-- <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='已完成'" target="navTab"><span>审核通过</span></a></div></div></li>
+      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='未通过'" target="navTab"><span>不通过</span></a></div></div></li> -->
     </ul>
   </div>  
-
 </div>
