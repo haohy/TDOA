@@ -519,30 +519,40 @@ class change_mission_sta(object):
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
 class search(object):
- 	"""搜索
- 	"""
- 	def GET(self):
- 		if session.login == 1:
- 			if session.user:
- 				return render_template(
- 					type=session.type,
- 					template_name='search.html',
- 					mission_list = mission.mission_search_list(session.user, 'all'),
- 					account_list = account.account_list()
- 					)
- 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
- 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-	def POST():
-		pass
+	"""搜索
+	"""
+	def GET(self):
+		if session.login == 1:
+			if session.user:
+				mission_list = mission.mission_search_list(session.user, 'all')
+				return render_template(
+					type=session.type,
+					template_name='search.html',
+					mission_list = mission_list[0:19],
+					account_list = account.account_list(),
+					count = len(mission_list),
+					arg = [{'page':1}]
+					)
+			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 	def POST(self):
 		if session.login == 1:
 			if session.user:
 				arg = web.input()
+				mission_list = mission.mission_search_list(session.user, arg)
+				if 'page' in arg:
+					page = arg.page - 1
+					mission_list_cut = mission_list[page*20:arg.page*20]
+				else:
+					arg['page'] = 1
+					mission_list_cut = mission_list[0:19]
 				return render_template(
 					type=session.type,
 					template_name='search.html',
-					mission_list = mission.mission_search_list(session.user, arg),
-					account_list = account.account_list()
+					mission_list = mission_list_cut,
+					account_list = account.account_list(),
+					count = len(mission_list),
+					arg = arg
 					)
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})

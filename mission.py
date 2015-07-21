@@ -2,8 +2,10 @@
 import MySQLdb
 import re
 import time
-
+import account
+import datetime
 import data
+
 
 def mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time):
 	#检查新建任务信息是否合法
@@ -343,102 +345,56 @@ def mission_sta_change(mission_id ,mission_status,mission_doer):
 	conn.close()
 
 def mission_search_list(user, arg):
- 	c = data.SQLconn()
- 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
- 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
- 
- 	account_list = account.account_list()
- 	account_list = list(account_list)
- 	for i in account_list:
-		#if not data.permission_check(user, i['account_name'], 'mission'):
-		if not data.permission_check(user, i['account_username'], 'mission'):
-			account_list.remove(i)
-	account_list.append({'account_username':'user'})
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 
-	mission_list = list()
+	account_list = account.account_list()
+	account_list = list(account_list)
+	for i in account_list:
+		if data.permission_check(user, i['account_username'], 'mission') == False:
+			account_list.remove(i)
+		if i['account_name'] == 'admin':
+			account_list.remove(i)
+
+	# print 'account_list', len(account_list)
 	search_list = []
 	for i in account_list:
-		cursor.execute("SELECT mission_id, mission_status FROM missions_doers WHERE\
-			mission_doer = '%s'" % i['account_name'])
-		mission_id_list = list(cursor.fetchall())
-		mission_list_temp = list()
-		for j in mission_id_list:
-			if j['mission_status'] == '已完成':
-				cursor.execute("SELECT mission_name, mission_publisher, mission_starttime,\
-				mission_plan_end_time FROM history_MISSION WHERE misison_id = '%s'" % j['mission_id'])
-			else:
-				cursor.execute("SELECT mission_name, mission_publisher, mission_starttime,\
-				mission_plan_end_time FROM MISSION WHERE misison_id = '%s'" % j['mission_id'])
-			mission_list_temp += list(cursor.fetchall())
-		print 'mission_list_temp:', mission_list_temp
-		for k in mission_list_temp:
-			k['mission_doer'] = i['account_name']
-		mission_list += mission_list_temp
-
-		print 'mission_list:', mission_list
-	return mission_list
-	cursor.execute("SELECT mission_name, mission_publisher, mission_doer, mission_status,\
-					mission_starttime, mission_plan_end_time\
-					FROM mission INNER JOIN missions_doers\
-					WHERE (mission_doer='%s' OR mission_publisher='%s')\
-					AND mission.mission_id=missions_doers.mission_id ;"%\
-					(i['account_username'],i['account_username']))
-	search_list += list(cursor.fetchall())
-	cursor.execute("SELECT mission_name, mission_publisher, mission_doer,\
-					mission_starttime, mission_plan_end_time\
-					FROM history_MISSION\
-					WHERE (mission_doer='%s' or mission_publisher='%s')"\
-					%(i['account_username'], i['account_username']))
-	search_list += list(cursor.fetchall())
-
-	print search_list
+		cursor.execute("SELECT mission_name, mission_publisher, mission_doer, mission_status,\
+						mission_starttime, mission_plan_end_time\
+						FROM mission JOIN missions_doers\
+						ON mission.mission_id=missions_doers.mission_id\
+						WHERE mission_doer='%s' OR mission_publisher='%s'"%\
+						(i['account_username'],i['account_username']))
+		search_list += list(cursor.fetchall())
+		cursor.execute("SELECT mission_name, mission_publisher, mission_doer,\
+						mission_starttime, mission_plan_end_time\
+						FROM history_MISSION\
+						WHERE (mission_doer='%s' or mission_publisher='%s')"\
+						%(i['account_username'], i['account_username']))
+		search_list += list(cursor.fetchall())
+	# 去除重复,一点处理
+	mlist = search_list
+	search_list = list()
+	for m in mlist:
+		if m not in search_list:
+			if not m['mission_status']:
+				m['mission_status'] = '已完成'
+			search_list.append(m);
 
 	if arg == 'all':
+		# print search_list
 		return search_list
 
-	if arg.search_str != '':
-		for m in search_list:
-			if  arg.search_str not in m['mission_username']:
-				search_list.remove(m)
-	if arg.mission_doer != '':
-		for m in search_list:
-			if arg.mission_doer != m['mission_doer']:
-				search_list.remove(m)
-	if arg.mission_publisher != '':
-		for m in search_list:
-			if arg.mission_publisher != m['mission_publisher']:
-				search_list.remove(m)
-	if arg.mission_status != '':
-		for m in search_list:
-			if arg.mission_doer != m['mission_doer']:
-				search_list.remove(m)
-	if arg.mission_start_time != '':
-		for m in search_list:
-			if arg.mission_start_time < m['mission_starttime']:
-				search_list.remove(m)
-	if arg.mission_end_time != '':
-		for m in search_list:
-			if arg.mission_end_time > m['mission_plan_end_time']:
-				search_list.remove(m)
+	mlist = list()
+	for m in search_list:
+		if arg.search_str == '' or arg.search_str in m['mission_name']:
+			if arg.mission_publisher == '' or arg.mission_publisher == m['mission_publisher']:
+				if arg.mission_doer == '' or arg.mission_doer == m['mission_doer']:
+					if arg.mission_status == '' or arg.mission_status == m['mission_status']:
+						if arg.mission_start_time == '' or datetime.datetime.strptime(arg.mission_start_time,"%Y-%m-%d").date() < m['mission_starttime']:
+							if arg.mission_end_time == '' or datetime.datetime.strptime(arg.mission_end_time,"%Y-%m-%d").date() > m['mission_plan_end_time']:
+								mlist.append(m)
 
-		# print 'account:', i['account_name']
-		# cursor.execute("SELECT mission_id, mission_status FROM missions_doers WHERE\
-		# 	mission_doer = '%s'" % i['account_name'])
-		# mission_id_list = list(cursor.fetchall())
-		# mission_list_temp = list()
-		# for j in mission_id_list:
-		# 	if j['mission_status'] == '已完成':
-		# 		cursor.execute("SELECT mission_name, mission_publisher, mission_starttime,\
-		# 		mission_plan_end_time FROM history_MISSION WHERE misison_id = '%s'" % j['mission_id'])
-		# 	else:
-		# 		cursor.execute("SELECT mission_name, mission_publisher, mission_starttime,\
-		# 		mission_plan_end_time FROM MISSION WHERE misison_id = '%s'" % j['mission_id'])
-		# 	mission_list_temp += list(cursor.fetchall())
-		# print 'mission_list_temp:', mission_list_temp
-		# for k in mission_list_temp:
-		# 	k['mission_doer'] = i['account_name']
-		# mission_list += mission_list_temp
 
-		# print 'mission_list:', mission_list
-
-	return search_list
+	return mlist

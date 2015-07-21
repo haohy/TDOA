@@ -55,39 +55,40 @@ def permission_check(user, account, type):
 	c = SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursors.execute(
+	cursor.execute(
 		"SELECT account_department, account_power\
 		FROM ACCOUNT WHERE account_username = '%s'" % user
 		)
 	user_power = list(cursor.fetchall())
-	cursors.execute(
+	cursor.execute(
 		"SELECT account_department FROM account WHERE account_username = '%s'" % account
 		)
 	account_department = list(cursor.fetchall())
 
 	if type == 'mission':
 		#account_power1 == account_power/1000
-		if user_power['account_power']/1000 == 2:
+
+		if user_power[0]['account_power']/1000 == 2:
 			return True
-		if user_power['account_department'] == account_department:
+		if user_power[0]['account_department'] == account_department:
 			return true
 		else:
 			return False
 	if type == 'calendar':
 		#account_power2 == account_power%1000/100
-		if user_power['account_power']%1000/100 == 2:
+		if user_power[0]['account_power']%1000/100 == 2:
 			return True
-		if user_power['account_department'] == account_department:
+		if user_power[0]['account_department'] == account_department:
 			return True
 		else:
 			return False
 	if type == 'history_mission_modify':
 		#account_power3 == account_power%100/10
-		if user_power['account_power']%100/10 == 1:
+		if user_power[0]['account_power']%100/10 == 1:
 			return True
 		return False
 	if type == 'file_manage':
 		#account_power4 == account_power%10
-		if user_power['account_power']%10 == 1:
+		if user_power[0]['account_power']%10 == 1:
 			return True
 		return False

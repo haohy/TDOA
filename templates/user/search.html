@@ -1,74 +1,105 @@
-<form id="pagerForm" method="post" action="demo_page1.html">
-  <input type="hidden" name="status" value="${param.status}">
-  <input type="hidden" name="keywords" value="${param.keywords}" />
-  <input type="hidden" name="pageNum" value="1" />
-  <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
-  <input type="hidden" name="orderField" value="${param.orderField}" />
+<form id="pagerForm" method="post" action="search">
+<!--         <input type="hidden" name="status" value="${param.status}">
+        <input type="hidden" name="keywords" value="${param.keywords}" /> -->
+        <input type="hidden" name="pageNum" value="1" />
+        <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
+<!--         <input type="hidden" name="orderField" value="${param.orderField}" /> -->
 </form>
+<div class="pageHeader">
+  <form rel="pagerForm" onsubmit="return navTabSearch(this);" action="search" method="post" >
+  <div class="searchBar">
+    <table class="searchContent" style="width:600px;float:left;">
+      <tr>
+        <td>
+          <div class="gridCol" title="任务名">任务名：<input name="search_str" type="text" class="textInput" value="{{arg.search_str}}"></div>
+        </td>
+        <td>
+            <div class="gridCol">
+                发布者
+                <select name="mission_publisher" id="mission_doer">
+                    <option value="{{arg.mission_publisher}}">{{arg.mission_publisher}}</option>
+                    <option value="">全部</option>
+                    {% for i in account_list %}
+                        <option value="{{i['account_username']}}">{{i['account_username']}}</option>
+                    {% endfor  %}
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="gridCol">
+                执行者
+                <select name="mission_doer" id="mission_doer">
+                    <option value="{{arg.mission_doer}}">{{arg.mission_doer}}</option>
+                    <option value="">全部</option>
+                    {% for i in account_list %}
+                        <option value="{{i['account_username']}}">{{i['account_username']}}</option>
+                    {% endfor  %}
+                </select>
+            </div>
+            
+        </td>
+        <td>
+            状态：
+            <select name="mission_status">
+                <option value="{{arg.mission_status}}">{{arg.mission_status}}</option>
+                <option value="">全部</option>
+                <option value="待接受">待接受</option>
+                <option value="执行中">执行中</option>
+                <option value="已提交">已提交</option>
+                <option value="未通过">未通过</option>
+                <option value="已完成">已完成</option>
+            </select>
+        </td>
+        <td>
+            开始时间：<input name="mission_start_time" type="text" class="date textInput readonly" readonly="true" value="{{arg.mission_start_time}}" style="width:70px">
+        </td>
+        <td>
+            结束时间：<input name="mission_end_time" type="text" class="date textInput readonly" readonly="true" value="{{arg.mission_end_time}}" style="width:70px">
+        </td>
+        <td><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></td>
+      </tr>
+    </table>
+  </div>
+  </form>
+</div>
+<div class="pageContent">
+        <table class="table" width="100%" layoutH="86">
+                <thead>
+                      <tr class="center">
+                        <th>任务名称</th>
+                        <th width="100">发布者</th>
+                        <th width="100">执行者</th>
+                        <th width="100">任务状态</th>
+                        <th width="100">开始时间</th>
+                        <th width="100">结束时间</th>
+                      </tr>
+                    </thead>
+                <tbody>
+                {% for m in mission_list %}
+                    <tr target="sid_user" rel="1" >
+                        <td class="mission_name center"><a href="/view_mission/?mission_id={{m['mission_id']}}&mission_status={{m['mission_status']}}&type=mission_publisher&mission_sta=m" target="dialog"><div>{{m['mission_name']}}</div></a></td>
+                        <td class="account center"><a href="{账号}" target="dialog" width="800" height="600"><div>{{m['mission_publisher']}}</div></a></td>
+                        <td class="account center"><a href="{账号}" target="dialog" width="800" height="600"><div>{{m['mission_doer']}}</div></a></td>
+                        <td class="center"><div class="mission_status">{{m['mission_status']}}</div></td>
+                        <td class="center"><div class="mission_start_time">{{m['mission_starttime']}}</div></td>
+                        <td class="center"><div class="mission_end_time">{{m['mission_plan_end_time']}}</div></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+        </table>
+        <div class="panelBar">
+                <div class="pages">
+                        <span>每页显示</span>
+                        <!-- <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                        </select> -->
+                        <span>20条，共{{count}}条</span>
+                </div>
+                
+                <div class="pagination" targetType="navTab" totalCount="{{count}}" numPerPage="20" pageNumShown="count/20" currentPage="{{arg.page}}"></div>
 
-<div class="grid">
-		<div class="gridHeader"><div class="gridThead"><table style="width:1067px;"><thead>
-			<tr>
-				<th style="width: 70px;"><div class="gridCol" title=""></div></th>
-				<th style="width: 119px;"><div class="gridCol" title="客户号">客户号</div></th>
-				<th style="width: 345px; cursor: default;" class=""><div class="gridCol" title="客户名称">客户名称</div></th>
-				<th style="width: 88px;"><div class="gridCol" title="客户类型">客户类型</div></th>
-				<th style="width: 134px;"><div class="gridCol" title="证件号码">证件号码</div></th>
-				<th class="center" style="width: 70px;"><div class="gridCol" title="信用等级">信用等级</div></th>
-				<th style="width: 70px;"><div class="gridCol" title="所属行业">所属行业</div></th>
-				<th style="width: 70px;"><div class="gridCol" title="建档日期">建档日期</div></th>
-			</tr>
-		</thead></table></div></div>
-		<div class="gridScroller" layouth="138" style="width: 1087px; height: 62px; overflow: auto;"><div class="gridTbody"><table style="width:1067px;"><tbody>
-			<tr target="sid_user" rel="1" class="">
-				<td style="width: 70px;"><div>天津农信社</div></td>
-				<td style="width: 119px;"><div>A120113196309052434</div></td>
-				<td style="width: 345px;"><div>天津市华建装饰工程有限公司</div></td>
-				<td style="width: 88px;"><div>联社营业部</div></td>
-				<td style="width: 134px;"><div>29385739203816293</div></td>
-				<td class="center" style="width: 70px;"><div>5级</div></td>
-				<td style="width: 70px;"><div>政府机构</div></td>
-				<td style="width: 70px;"><div>2009-05-21</div></td>
-			</tr>
-			<tr target="sid_user" rel="7">
-				<td><div>天津农信社</div></td>
-				<td><div>A120113196309052434</div></td>
-				<td><div>天津市华建装饰工程有限公司</div></td>
-				<td><div>联社营业部</div></td>
-				<td><div>29385739203816293</div></td>
-				<td class="center"><div>5级</div></td>
-				<td><div>政府机构</div></td>
-				<td><div>2009-05-21</div></td>
-			</tr>
-			<tr target="sid_user" rel="8">
-				<td><div>天津农信社</div></td>
-				<td><div>A120113196309052434</div></td>
-				<td><div>天津市华建装饰工程有限公司</div></td>
-				<td><div>联社营业部</div></td>
-				<td><div>29385739203816293</div></td>
-				<td class="center"><div>5级</div></td>
-				<td><div>政府机构</div></td>
-				<td><div>2009-05-21</div></td>
-			</tr>
-			<tr target="sid_user" rel="9">
-				<td><div>天津农信社</div></td>
-				<td><div>A120113196309052434</div></td>
-				<td><div>天津市华建装饰工程有限公司</div></td>
-				<td><div>联社营业部</div></td>
-				<td><div>29385739203816293</div></td>
-				<td class="center"><div>5级</div></td>
-				<td><div>政府机构</div></td>
-				<td><div>2009-05-21</div></td>
-			</tr>
-			<tr target="sid_user" rel="10">
-				<td><div>天津农信社</div></td>
-				<td><div>A120113196309052434</div></td>
-				<td><div>天津市华建装饰工程有限公司</div></td>
-				<td><div>联社营业部</div></td>
-				<td><div>29385739203816293</div></td>
-				<td class="center"><div>5级</div></td>
-				<td><div>政府机构</div></td>
-				<td><div>2009-05-21</div></td>
-			</tr>
-		</tbody></table></div></div>
-	<div class="resizeMarker" style="height:300px; left:57px;display:none;"></div><div class="resizeProxy" style="height:300px; left:377px;display:none;"></div></div>
+        </div>
+</div>
