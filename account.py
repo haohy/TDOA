@@ -148,4 +148,6 @@ def save_info(args):
 					WHERE account_id=%s\
 					"% (args.username,args.work,args.position,args.phone,\
 										args.address,args.email,args.department,args.id))
+	conn.commit()
+	conn.close()
 	return True
