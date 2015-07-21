@@ -5,6 +5,7 @@ import time
 import account
 import datetime
 import data
+import difflib
 
 
 def mission_check(mission_name, mission_content, mission_starttime, mission_plan_end_time):
@@ -414,3 +415,29 @@ def get_mission_content(mission_id, mission_doer):
 					WHERE mission_doer = '%s' AND mission_id='%s'"%(mission_doer, mission_id))
 	mission += list(cursor.fetchall())
 	return mission
+
+
+def get_mission_reference(args):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursor.execute("SELECT mission_id, mission_name, mission_starttime, file_name, file_id\
+					FROM history_MISSION left JOIN FILE\
+					ON mission_id=file_linkmission\
+					")
+	mission_list_all = list(cursor.fetchall())
+	print mission_list_all
+	mission_list = list()
+	if 'mission_name' in args and args.mission_name != '':
+		for m in mission_list_all:
+			num = difflib.SequenceMatcher(None, args.mission_name, m['mission_name']).ratio()
+			print 'similer:', num
+			if num > 0.7:
+				mission_list.append += m
+	elif 'file_name' in args and arg.file_name != '':
+		for m in mission_list_all:
+			num = difflib.SequenceMatcher(None, args.file_name, m['mission_name']).ratio()
+			print 'similer:', num
+			if num > 0.7:
+				mission_list.append += m
+	return mission_list

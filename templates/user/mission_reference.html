@@ -1,0 +1,40 @@
+<div class="pageHeader">
+	<form  onsubmit="return navTabSearch(this);" action="/mission_reference" method="get">
+		<div class="searchBar">
+			<ul class="searchContent">
+				<li>
+					<label>任务名称：</label>
+					<input type="text" name="mission_name"/>
+				</li>
+				<li>
+					<label>附件名称：</label>
+					<input type="text" name="file_name"/>
+				</li>
+				<li><div><div class="buttonContent"><button type="submit">手动搜索</button></div></div></li>
+			</ul>
+		</div>
+		</form>
+</div>
+<div class="pageContent">
+	<table class="table" width="100%">
+		<thead>
+			<tr class="center">
+				<th width="20">序号</th>
+				<th width="120">任务名</th>
+				<th width="100">附件</th>
+				<th width="100">创建时间</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr target="sid_user" rel="1">
+			{% set i = 1 %}
+			{% for i in range(mission_list|length) %}
+				<td>{{ i }}</td>
+				<td>{{mission_list[i]['mission_name']}}</td>
+				<td>{{mission_list[i]['file_name']}}</td>
+				<td>{{mission_list[i]['mission_starttime']}}</td>
+			{% endfor %}
+			</tr>
+		</tbody>
+	</table>
+</div>

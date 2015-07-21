@@ -40,13 +40,14 @@ urls= (
 	'/mission_audit/(.*)','mission_audit',
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
+	#日历
 	'/calendar/(.*)', 'calendar',
 	'/calendar_view/(.*)', 'calendar_view',
-
-	#日历
 	'/calendar_data/(.*)', 'calendar_data',
+
 	'/mission_content/(.*)', 'mission_content',
 	'/mission_state/(.*)','mission_state',
+	'/mission_reference/(.*)', 'mission_reference',
 	#######admin账号
 	'/new_account', 'new_account',
 	'/account_list/(.*)', 'account_list',
@@ -489,11 +490,8 @@ class view_mission(object):
 				print role
 				print mission_status
 				print mission_id
-<<<<<<< HEAD
 				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
-=======
-				#m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
->>>>>>> cb47ca53a21db8251b3dfb6659e5d1c5dd6f80c2
+
 				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
 				print "m is :"
 				print m
@@ -703,6 +701,21 @@ class mission_content(object):
 			arg = web.input()	
 			mission_content = mission.get_mission_content(arg.mission_id)
 			return '任务名称：%s 任务内容：%s'%(mission_content[0]['mission_name'],mission_content[0]['mission_content'])
+
+
+class mission_reference(object):
+	"""docstring for mission_reference"""
+	def GET(self, args):
+		if session.login == 1:
+			args = web.input()
+			mission_list = mission.get_mission_reference(args)
+			return render_template(
+					type = session.type,
+					template_name = 'mission_reference.html',
+					mission_list = mission_list
+				)
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 
 ######################## admin 账号 #####################################
 class new_account(object):
