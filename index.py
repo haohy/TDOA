@@ -35,7 +35,7 @@ urls= (
 	'/change_mission_sta/(.*)', 'change_mission_sta',
 	'/modify_mission/(.*)',  'modify_mission',
 	'/apply_modify_mission', 'apply_modify_mission',
-	'/delete_mission','delete_mission',
+	'/delete_mission/','delete_mission',
 	'/mission_audit/(.*)','mission_audit',
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
@@ -326,13 +326,13 @@ class delete_mission(object):
 	"""删除任务"""
 	def POST(self):
 		mission_id = web.input().mission_id
+		#mission_status = web.input().mission_status
 		print mission_id
 		if session.login==1:
 			if session.user:
 				result = mission.mission_delete(mission_id)
-				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher',mission_status='执行中')
-				return render_template(type=session.type, template_name='my_mission.html', 
-					user=session.user, mission_list=mission_list)
+				#mission_list = mission.mission_list(account_name=session.user, role='mission_publisher',mission_status=mission_status)
+				return json.dumps({"statusCode":"200", "message":"删除成功！"})
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
@@ -347,6 +347,7 @@ class modify_mission(object):
 			if session.user:
 				arg = web.input()
 				m = mission.mission_view(arg.mission_id)
+				print "m = mission.mission_view(arg.mission_id)"
 				return render_template(
 					type=session.type,
 					template_name='modify_mission.html',
@@ -413,7 +414,7 @@ class apply_modify_mission(object):
 						web.input().mission_plan_end_time, mission_duplicate)
 					mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
 					#return render.my_mission(session.user, mission_list)
-					ajax_result = {"statusCode":"200", "message":"任修改成功", "callbackType":"closeCurrent"}
+					ajax_result = {"statusCode":"200", "message":"任务修改成功", "callbackType":"closeCurrent"}
 
 					try:
 						result_del = mission.mission_delete(mission_id)
@@ -470,6 +471,7 @@ class view_mission(object):
 				mission_id = web.input().mission_id
 				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
 				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
+				print m
 				return render_template(
 					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,

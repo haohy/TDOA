@@ -43,7 +43,13 @@
              <div>{{m['mission_status']}}</div>
           </td>
           <td>
-            <a href="/delete_mission/?mission_id={{m['mission_id']}}" target="navTab" style="color:rgb(0,0,225)">删除</a>
+          <a href="/delete_mission/?mission_id={{m['mission_id']}}&type=mission_publisher&mission_status=执行中" target="navTab" style="color:rgb(0,0,225)" rel="my_mission_publisher">删除</a>
+            <!-- <div>
+              <a class="delete" href="/delete_mission/?mission_id={{m['mission_id']}}&mission_status={{m['mission_status']}}&type=mission_publisher" target="ajaxTodo" title="确定要删除吗?">
+                <span>删除</span>
+              </a>
+            </div> -->
+           <!--  <a href="/delete_mission/?mission_id={{m['mission_id']}}&mission_status={{m['mission_status']}}&type=mission_publisher" target="navTab" style="color:rgb(0,0,225)"  title="确定要删除吗?" >删除</a> -->
           </td>
         </tr>
         {% endfor %}
