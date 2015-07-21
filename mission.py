@@ -244,6 +244,8 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 		cursor.execute("select mission.mission_id,mission.mission_name,mission.mission_content,mission.mission_publisher,mission.mission_starttime,mission.mission_plan_end_time,missions_doers.mission_doer,missions_doers.mission_status \
 			from mission,missions_doers where missions_doers.mission_id = mission.mission_id AND missions_doers.mission_status = '%s' and mission.mission_publisher = '%s';"%(mission_status,account_name))
 		m_list_publisher = cursor.fetchall()
+		print "mission_view.mission_publisher.m_list_publisher   :"
+		print m_list_publisher
 		conn.close()
 		m_list_publisher = list(m_list_publisher)
 		m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_starttime'], reverse=True)

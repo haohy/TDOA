@@ -237,6 +237,10 @@ class mission_state(object):
 				sission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已提交')
 				wission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='未通过')
 				yission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已完成')
+				print "mission_state.m,s,w,yission_list    :"
+				print mission_list
+				if not mission_list and not sission_list and not wission_list and not yission_list :
+					mission_list=sission_list=wission_list=yission_list=[{}]
 				return render_template(type=session.type, \
 					template_name='mission_state.html', \
 					user=session.user, \
