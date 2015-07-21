@@ -39,12 +39,12 @@
 				<div class="tabsHeaderContent">
 					<ul>
 						<li>
-							<a href="/upload_files/?type=0" class="j-ajax">
+							<a href="/upload_files/?type=0&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_publisher']}}" class="j-ajax">
 								<span>初始参考附件</span>
 							</a>
 						</li>
 						<li>
-							<a href="/upload_files/?type=1" class="j-ajax">
+							<a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_doer']}}" class="j-ajax">
 								<span>任务完成提交附件</span>
 							</a>
 						</li>
@@ -88,43 +88,44 @@
 	</div>
 	<div class="formBar">
 		<ul>
-			<li>
-				<div class="buttonActive">
-					<div>
-						<a class="edit" href="/modify_mission/?mission_id={{mission_view[0]['mission_id']}}" target="navTab">
-							<span>修改任务</span>
-						</a>
-					</div>
+			<!-- <li>
+			<div class="buttonActive">
+				<div>
+					<a class="edit" href="/modify_mission/?type=mission_publisher&mission_id={{mission_view[0]['mission_id']}}" target="navTab">
+						<span>修改任务</span>
+					</a>
 				</div>
-			</li>
-			<li>
-				<div class="button">
-					<div>
-						<a class="delete" href="/delete_mission/?mission_id={{mission_view[0]['mission_id']}}" target="ajaxTodo" title="确定要删除吗?">
-							<span>删除</span>
-						</a>
-					</div>
+			</div>
+		</li>
+		-->
+		<li>
+			<div class="button">
+				<div>
+					<a class="delete" href="/delete_mission/?type=mission_publisher&mission_id={{mission_view[0]['mission_id']}}" target="ajaxTodo" title="确定要删除吗?">
+						<span>删除</span>
+					</a>
 				</div>
-			</li>
-			<li>
-				<div class="buttonActive">
-					<div>
-						<a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='已完成'" target="navTab">
-							<span>审核通过</span>
-						</a>
-					</div>
+			</div>
+		</li>
+		<li>
+			<div class="buttonActive">
+				<div>
+					<a class="edit" href="/change_mission_sta/?type=mission_publisher&mission_id={{mission_view[0]['mission_id']}}&mission_status=已完成" target="navTab">
+						<span>审核通过</span>
+					</a>
 				</div>
-			</li>
-			<li>
-				<div class="buttonActive">
-					<div>
-						<a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&mission_status='未通过'" target="navTab">
-							<span>不通过</span>
-						</a>
-					</div>
+			</div>
+		</li>
+		<li>
+			<div class="buttonActive">
+				<div>
+					<a class="edit" href="/change_mission_sta/?type=mission_publisher&mission_id={{mission_view[0]['mission_id']}}&mission_status=未通过" target="navTab">
+						<span>不通过</span>
+					</a>
 				</div>
-			</li>
-		</ul>
-	</div>
+			</div>
+		</li>
+	</ul>
+</div>
 
 </div>

@@ -215,7 +215,6 @@ class logout(object):
 		session.kill()
 		return render_template(type=0,template_name='login.html', error="请重新登录")
 
-
 class my_mission(object):
 	"""任务列表"""
 	def GET(self, args):
@@ -223,7 +222,6 @@ class my_mission(object):
 			if session.user:
 				#找到当前账户所有任务
 				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
-				print "my_mission()"
 				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
 					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
 			else:
@@ -261,6 +259,7 @@ class new_mission(object):
 			if session.user:
 				#返回给多选执行者下拉条
 				account_list = account.account_list(account_department ='*')
+				print account_list
 				return render_template(type=session.type, \
 					template_name='new_mission.html', \
 					user=session.user,\
@@ -279,6 +278,7 @@ class new_mission(object):
 		#登陆控制
 		if session.login == 1:
 			if session.user:
+				x = web.input(myfile={})
 				mission_name = web.input().mission_name
 				mission_content = web.input().mission_content
 				mission_starttime = web.input().mission_starttime
@@ -292,8 +292,23 @@ class new_mission(object):
 				mission_pubtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 				if result == "no error":
 					mission.mission_save(mission_name, mission_content, mission_starttime, mission_plan_end_time, session.user, mission_doers,mission_pubtime)
-					ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
-					return json.dumps(ajax_result)
+					#获取到mission_id的值
+					mission_id = mission.mission_id_get(session.user, mission_pubtime)
+					file_type = 0
+					user = session.user
+					filedir = 'uploads/'+user # change this to the directory you want to store the file in.
+					file.create_dir(filedir) #create dir if the dir is not exist
+					if 'myfile' in x:
+						file_url=x.myfile.filename.replace('\\','/')
+						file_name=file_url.split('/')[-1] # splits the and chooses the last part (the filename with extension)
+						file_url = './uploads/'+user+'/'+file_name
+						fout = open(filedir +'/'+ file_name,'wb') # creates the file where the uploaded file should be stored
+						fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.
+						fout.close() # closes the file, upload complete.
+						file_upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+						file.upload(mission_id,file_name,file_url, user,file_upload_time,file_type)
+						ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
+						return json.dumps(ajax_result)
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面
 				"""
 				else:
@@ -460,9 +475,13 @@ class view_mission(object):
 				mission_status = web.input().mission_status
 				role = web.input().type
 				mission_sta = web.input().mission_sta
+				print account_name
+				print role
+				print mission_status
+				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
 				m = mission.mission_view(account_name,role,mission_status)
-				print "this is m : "
-				print  m
+				print "m is :"
+				print m
 				return render_template(
 					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
@@ -483,6 +502,9 @@ class change_mission_sta(object):
 				print args.mission_id, unquote(args.mission_status)
 				#更改任务动态
 				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),session.user)
+				#ws_file
+				if args.mission_status == ('已完成').decode('utf-8'):
+					file.file_type_change(args.mission_id)
 				#更改后跳转
 				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
 				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
@@ -492,13 +514,33 @@ class change_mission_sta(object):
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 class search(object):
-	"""搜索
-	"""
-	def GET(self):
+ 	"""搜索
+ 	"""
+ 	def GET(self):
+ 		if session.login == 1:
+ 			if session.user:
+ 				return render_template(
+ 					type=session.type,
+ 					template_name='search.html',
+ 					mission_list = mission.mission_search_list(session.user, 'all'),
+ 					account_list = account.account_list()
+ 					)
+ 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+ 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+	def POST():
+		pass
+	def POST(self):
 		if session.login == 1:
 			if session.user:
-				return render_template(type=session.type, template_name='search.html')
+				arg = web.input()
+				return render_template(
+					type=session.type,
+					template_name='search.html',
+					mission_list = mission.mission_search_list(session.user, arg),
+					account_list = account.account_list()
+					)
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
@@ -528,19 +570,20 @@ class upload(object):
 		
 	def POST(self,arg):
 		x = web.input(myfile={})
-		print x
 		mission_id = web.input().mission_id
-		file_type = web.input().file_type
-		filedir = './uploads' # change this to the directory you want to store the file in.
+		file_type = 1
+		user = session.user
+		filedir = 'uploads/'+user # change this to the directory you want to store the file in.
+		file.create_dir(filedir) #create dir if the dir is not exist
 		if 'myfile' in x:
 			file_url=x.myfile.filename.replace('\\','/')
 			file_name=file_url.split('/')[-1] # splits the and chooses the last part (the filename with extension)
-			fout = open(filedir +'/'+ file_name,'w') # creates the file where the uploaded file should be stored
+			file_url = './uploads/'+user+'/'+file_name
+			fout = open(filedir +'/'+ file_name,'wb') # creates the file where the uploaded file should be stored
 			fout.write(x.myfile.file.read()) # writes the uploaded file to the newly created file.
 			fout.close() # closes the file, upload complete.
 			file_upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-			mission_id = 1
-			file.upload(mission_id,file_name,file_url,file_upload_time,file_type)
+			file.upload(mission_id,file_name,file_url, user,file_upload_time,file_type)
 		return json.dumps({"statusCode":"200", "message":"文件上传成功"})
 		
 
@@ -550,9 +593,21 @@ class upload_files(object):
 		file_type = arg.type
 		if session.login == 1:
 			if session.user:
-				list = file.file_list(type=file_type)
-				#render = creat_render(type=session.type)
-				return render_template(type=session.type, template_name='upload_files.html',file_list=list)
+				print file_type
+				if file_type == '0' or file_type == '1':
+					mission_id = arg.mission_id
+					role = arg.role.rstrip(',')
+					print "role = arg.role.rstrip(',')   :"+role
+					list = file.file_list(file_type, mission_id, role)
+					print "list = file.file_list(file_type, mission_id, role)    :"
+					print  list 
+					return render_template(type=session.type, template_name='upload_files.html',file_list=list)
+
+				elif file_type == '2':
+					mission_name = arg.mission_name
+					#这里需要从mission表中搜索与mission_name类似的mission_id
+					#再带着mission_id搜索file表
+					return json.dumps({"statusCode":"200","message":"历史任务参考搜索算法没定"})
 
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -560,7 +615,6 @@ class upload_files(object):
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		
-
 class calendar(object):
 	"""docstring for calendar"""
 	def GET(self, arg):
