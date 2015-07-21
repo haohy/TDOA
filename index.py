@@ -28,6 +28,7 @@ urls= (
 	'/login_dialog.html','login_dialog',
 	'/logout', 'logout',
 	#######一般用户
+	'/user_setting', 'user_setting',
 	'/search', 'search',
 	'/search_view_mission/(.*)', 'search_view_mission',
 	'/new_mission', 'new_mission',
@@ -218,6 +219,33 @@ class logout(object):
 		session.login=0
 		session.kill()
 		return render_template(type=0,template_name='login.html', error="请重新登录")
+
+class user_setting(object):
+	"""docstring for user_setting"""
+	def GET(self):
+		if session.login == 1:
+			if session.user:
+				user_info = account.get_account_info(session.user)
+				return render_template(
+						type = session.type,
+						template_name = 'user_setting.html',
+						user_info = user_info
+					)
+			else:
+				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:
+			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+	def POST(self):
+		if session.login == 1:
+			if session.user:
+				account.save_info(web.input())
+				return json.dumps({"statusCode":"200", "message":"修改成功"})
+				
+			else:
+				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:
+			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 
 class my_mission(object):
 	"""任务列表"""
@@ -699,7 +727,7 @@ class mission_content(object):
 	def GET(self, arg):
 		if session.login == 1:
 			arg = web.input()	
-			mission_content = mission.get_mission_content(arg.mission_id)
+			mission_content = mission.get_mission_simple_content(arg.mission_id)
 			return '任务名称：%s 任务内容：%s'%(mission_content[0]['mission_name'],mission_content[0]['mission_content'])
 
 

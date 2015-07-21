@@ -123,3 +123,29 @@ def account_update(account_id, account_name, account_username, account_work, acc
 	conn.commit()
 	conn.close()
 
+def get_account_info(user):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+
+	cursor.execute("SELECT * FROM account WHERE account_username='%s'"%user)
+	account_info = cursor.fetchone()
+	return account_info
+
+def save_info(args):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+
+	cursor.execute("update account SET \
+					account_username='%s', \
+					account_work='%s', \
+					account_position='%s', \
+					account_phone='%s', \
+					account_address='%s', \
+					account_email='%s', \
+					account_department='%s' \
+					WHERE account_id=%s\
+					"% (args.username,args.work,args.position,args.phone,\
+										args.address,args.email,args.department,args.id))
+	return True

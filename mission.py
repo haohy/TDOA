@@ -329,7 +329,7 @@ def mission_audit(mission_id):
 	conn.commit()
 	conn.close()
 
-def get_mission_content(mission_id):
+def get_mission_simple_content(mission_id):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursors = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
