@@ -18,8 +18,6 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 web.config.debug = False
 
-#render = web.template.render('templates/')
-
 urls= (
 	#######登陆
 	'/', 'login',
@@ -82,39 +80,6 @@ session = web.session.Session(app, web.session.DiskStore('sessions'),\
     initializer={'login':'', 'user':'', 'type':''})
 
 w = app.wsgifunc(StaticMiddleware)
-
-
-"""
-def logged():
-	if session.login == 1:
-		return True
-	else:
-		return False
-
-def creat_render(type):
-	if session.login == 1 :
-		if type == 1:
-			render = render_jinja(
-				'templates/user',
-				encoding = 'utf-8',
-				)
-		elif type == 2:
-			render = web.template.render(
-				'template/admin',
-				encoding = 'utf-8',
-				)
-		elif type == 3:
-			render = web.template.render(
-				'template/super_admin',
-				encoding = 'utf-8',
-				)
-	else:
-		render = web.template.render(
-			'template/communs',
-			encoding = 'utf-8',
-			)
-	return render
-"""
 
 render = web.template.render('templates/')
 
@@ -194,7 +159,6 @@ class login_dialog(object):
 		#md5加密存储密码
 		passwd = data.md5(web.input().passwd)
 		ident = data.checkin(user)
-		print 'passwd is ' + passwd + 'and' + ident[0]['account_password']
 		try:
 			if len(ident)==0 :
 				session.login = 0
@@ -210,8 +174,6 @@ class login_dialog(object):
 		except :
 			session.login = 0
 			return render_template(type=0,template_name='login.html',error="系统错误")
-
-
 
 class logout(object):
 	"""注销"""
@@ -246,7 +208,6 @@ class user_setting(object):
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
-
 class my_mission(object):
 	"""任务列表"""
 	def GET(self, args):
@@ -260,8 +221,9 @@ class my_mission(object):
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 class mission_state(object):
-	"""docstring for mission_state"""
+	"""所有任务动态"""
 	def GET(self ,args):
 		if session.login == 1:
 			if session.user:
@@ -269,8 +231,6 @@ class mission_state(object):
 				sission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已提交')
 				wission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='未通过')
 				yission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已完成')
-				print "mission_state.m,s,w,yission_list    :"
-				print mission_list
 				#当已建任务动态为空时，防止卡死
 				if not mission_list and not sission_list and not wission_list and not yission_list :
 					mission_list=sission_list=wission_list=yission_list=[{}]
@@ -286,8 +246,6 @@ class mission_state(object):
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-		
-		
 
 class new_mission(object):
 	"""创建任务"""
@@ -296,7 +254,6 @@ class new_mission(object):
 			if session.user:
 				#返回给多选执行者下拉条
 				account_list = account.account_list(account_department ='*')
-				print account_list
 				return render_template(type=session.type, \
 					template_name='new_mission.html', \
 					user=session.user,\
@@ -390,7 +347,6 @@ class modify_mission(object):
 			if session.user:
 				arg = web.input()
 				m = mission.mission_view(arg.mission_id)
-
 				return render_template(
 					type=session.type,
 					template_name='modify_mission.html',
@@ -499,7 +455,6 @@ class apply_modify_mission(object):
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
-
 class view_mission(object):
 	"""任务详情
 	链接放在my_mission对应的任务名中, mission_id直接跟在/view_mission
@@ -513,16 +468,8 @@ class view_mission(object):
 				role = web.input().type
 				mission_sta = web.input().mission_sta
 				mission_id = web.input().mission_id
-				print "index.py.view_mission(object)"
-				print account_name
-				print role
-				print mission_status
-				print mission_id
 				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
-
 				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
-				print "m is :"
-				print m
 				return render_template(
 					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
@@ -537,10 +484,6 @@ class change_mission_sta(object):
 		if session.login == 1:
 			if session.user:
 				args = web.input()
-				# role = web.input().type
-				# mission_status = web.input().mission_status
-				# account_name = session.user
-				print args.mission_id, unquote(args.mission_status)
 				#更改任务动态
 				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),session.user)
 				#ws_file
@@ -613,12 +556,9 @@ class mission_audit(object):
 	def GET(self,arg):
 		if session.login == 1:
 			if session.user:
-
 				arg = web.input()
-
 				mission_id = arg.mission_id
 				mission.mission_audit(mission_id)
-
 				mission_list = mission.mission_list(account_name=session.user, role='mission_publisher')
 				return render_template(type=session.type, template_name='my_mission_publisher.html', 
 					user=session.user, mission_list=mission_list)
@@ -649,7 +589,6 @@ class upload(object):
 			file_upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 			file.upload(mission_id,file_name,file_url, user,file_upload_time,file_type)
 		return json.dumps({"statusCode":"200", "message":"文件上传成功"})
-		
 
 class upload_files(object):
 	def GET(self,arg):
@@ -657,23 +596,16 @@ class upload_files(object):
 		file_type = arg.type
 		if session.login == 1:
 			if session.user:
-				print file_type
 				if file_type == '0' or file_type == '1':
 					mission_id = arg.mission_id
 					role = arg.role.rstrip(',')
-					print "role = arg.role.rstrip(',')   :"+role
-					print mission_id
 					list = file.file_list(file_type, mission_id, role)
-					print "list = file.file_list(file_type, mission_id, role)    :"
-					print  list 
 					return render_template(type=session.type, template_name='upload_files.html',file_list=list)
-
 				elif file_type == '2':
 					mission_name = arg.mission_name
 					#这里需要从mission表中搜索与mission_name类似的mission_id
 					#再带着mission_id搜索file表
 					return json.dumps({"statusCode":"200","message":"历史任务参考搜索算法没定"})
-
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 				#return render_template(type=0,template_name='login.html',error="请重新登录")
@@ -691,7 +623,6 @@ class calendar(object):
 					template_name = 'calendar.html',
 					account_username = arg.account
 					)
-
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
 
@@ -706,7 +637,6 @@ class calendar_view(object):
 					template_name = 'calendar_dialog.html',
 					user = arg.account
 					)
-
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		
 		
@@ -814,7 +744,6 @@ class view_account(object):
 			if session.user:
 				args = web.input()
 				a = account.account_view(args.account_id)
-
 				return render_template(
 					type=session.type,template_name='view_account.html',
 					user=session.user,
@@ -846,7 +775,6 @@ class modify_account(object):
 			if session.user:
 				args = web.input()
 				a = account.account_view(args.account_id)
-
 				return render_template(
 					type=session.type,
 					template_name='modify_account.html',
@@ -903,7 +831,6 @@ class apply_modify_account(object):
 				account_power = int(account_power1)*1000+int(account_power2)*100+int(account_power3)*10+int(account_power4)
 				#检查输入信息
 				result = account.account_check(account_name, account_username, account_work, account_email, account_phone,account_position,account_department, account_power)
-
 				if result == "no error":
 					#存储任务信息
 					account.account_update(account_id, account_name, account_username, account_work, account_email, account_phone, account_position, account_department, account_power)

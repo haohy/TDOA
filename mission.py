@@ -266,31 +266,19 @@ def mission_view_status(account_name, role, mission_id,mission_status):
 		m_list_user = cursor.fetchall()
 		print "mission_view_status,if role = mission_doer :"
 		print m_list_user
-		#将获取的m_list_user中的id存储到list_id列表中
-		# list_id = []
-		# for i in range(len(m_list_user)):
-		# 	list_id.append(m_list_user[i]['mission_id'])
-		# #将missions_doers中与mission中相同id对应的多执行者放到一个字典doerDict中，key为id，value为doers
 		doerDict = {}
-		# for i in list_id:
-		# print m_list_user[0]['mission_id']
 		cursor.execute("select mission_doer from missions_doers where mission_id = %s ;"%(m_list_user[0]['mission_id']))
 		m_list_doers = cursor.fetchall()
 		m_list_doers_list = []
 		for j in range(len(m_list_doers)):
 			m_list_doers_list.append(m_list_doers[j]['mission_doer'])
 		doerDict[m_list_user[0]['mission_id']]=m_list_doers_list
-		#将doerDict和之前只缺少doers信息的m_list_mission合并起来，构成最后返回的m_list_user
-		# for i in range(len(m_list_user)):
 		m_list_user[0]['mission_doer']=doerDict[m_list_user[0]['mission_id']]
 		m_list_user[0]['user'] = account_name
 		conn.close()
 		print "mission_view_status,if role = mission_doer.m_list_user :"
 		print m_list_user
-		# m_list_user = list(m_list_user)
-		# m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_starttime'])
 		return m_list_user
-		
 		
 	elif str(role) == 'mission_publisher':
 		cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
@@ -353,9 +341,9 @@ def mission_search_list(user, arg):
 	account_list = account.account_list()
 	account_list = list(account_list)
 	for i in account_list:
-		if data.permission_check(user, i['account_username'], 'mission') == False:
+		if data.permission_check(user, i, 'mission') == False:
 			account_list.remove(i)
-		if i['account_name'] == 'admin':
+		if i == 'admin':
 			account_list.remove(i)
 
 	# print 'account_list', len(account_list)
@@ -366,13 +354,13 @@ def mission_search_list(user, arg):
 						FROM mission JOIN missions_doers\
 						ON mission.mission_id=missions_doers.mission_id\
 						WHERE mission_doer='%s' OR mission_publisher='%s'"%\
-						(i['account_username'],i['account_username']))
+						(i,i))
 		search_list += list(cursor.fetchall())
 		cursor.execute("SELECT mission_name, mission_publisher, mission_doer,\
 						mission_starttime, mission_plan_end_time, mission_id\
 						FROM history_MISSION\
 						WHERE (mission_doer='%s' or mission_publisher='%s')"\
-						%(i['account_username'], i['account_username']))
+						%(i, i))
 		search_list += list(cursor.fetchall())
 	# 去除重复,一点处理
 	mlist = search_list
