@@ -1,0 +1,27 @@
+<div class="clear"></div>
+<table class="list" width="100%">
+	<thead>
+		<tr>
+			<th width="80">序号</th>
+			<th>文件名</th>
+			<th>上传时间</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for m in file_list %}
+		<tr>
+				<td>
+					     {{m['file_id']}}
+				  </td>	
+				  <td>
+					<a href=" {{m['file_url']}}">
+						 {{m['file_name']}}
+					</a>
+				  </td>
+				  <td>
+					     {{m['file_upload_time']}}
+				  </td>		  
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

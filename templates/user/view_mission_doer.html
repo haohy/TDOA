@@ -1,0 +1,95 @@
+<h2 class="contentTitle">{{mission_view[0]['mission_name']}}</h2>
+<div class="pageContent">
+  <div class="pageFormContent" layoutH="97">
+  	<div>
+		<dl class="nowrap">
+		  <dt>任务详情：</dt>
+		  <dd>
+			{{mission_view[0]['mission_content']}}
+		  </dd>
+		</dl>
+		<dl class="nowrap">
+		  <dt>任务发布者：</dt>
+		  <dd>
+			{{mission_view[0]['mission_publisher']}}
+		  </dd>
+		</dl>
+		<dl class="nowrap">
+		  <dt>任务执行者：</dt>
+		  <dd>
+			<tbody>
+				<tr>
+				{% for doer in mission_view[0]['mission_doer']%}
+					<a href="#">{{doer}}</a>
+				{%endfor%}
+				</tr>
+			</tbody>
+		  </dd>
+		</dl>
+		<dl class="nowrap">
+		  <dt>任务开始时间：</dt>
+		  <dd>
+			{{mission_view[0]['mission_starttime']}}
+		  </dd>
+		</dl>
+		<dl class="nowrap">
+		  <dt>任务完成时间：</dt>
+		  <dd>
+			{{mission_view[0]['mission_plan_end_time']}}
+		  </dd>
+		</dl>
+		<dl class="nowrap">
+		  <dt>任务状态：</dt>
+		  <dd>
+			{{mission_view[0]['mission_status']}}
+		  </dd>
+		</dl>
+	</div>
+	
+    <div class="divider"></div>
+    
+    <div class="tabs" currentIndex="0" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<li><a href="/upload_files/?type=2" class="j-ajax"><span>历史任务参考</span></a></li>
+					<li><a href="/upload_files/?type=0" class="j-ajax"><span>初始参考附件</span></a></li>
+					<li><a href="/upload_files/?type=1" class="j-ajax"><span>任务完成提交附件</span></a></li>
+					<li><a href="/upload/?mission_id={{mission_view[0]['mission_id']}}" target="dialog"><span>上传附件</span></a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent" style="height:150px;">
+			<div>
+			</div>
+			<div>
+			</div>
+		</div>
+		<div class="tabsFooter">
+			<div class="tabsFooterContent"></div>
+		</div>
+	</div>
+	<div class="tabs">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul><li><span>留言</span></li></ul>
+			</div>
+		</div>
+		<div class="tabsContent">
+			<textarea name="msg" id="msg" cols="100" rows="1" placeholder="说点什么吧。。。"></textarea>
+			<dt style="display: block">
+			{{mission_view[0]['mission_publisher']}}:
+			  </dt>
+			  <dd style="display: block">
+			  	好好干！
+			  </dd>
+		</div>
+	</div>
+  </div>
+  <div class="formBar">
+    <ul>
+      <li><div class="buttonActive"><div><a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&type=mission_doer&mission_status=已提交" target="navTab" rel="my_mission_do"><span>提交</span></a></div></div></li>
+    </ul>
+  </div>  
+
+</div>
