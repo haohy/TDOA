@@ -72,7 +72,7 @@ def account_list(account_department = '*'):
 		account_department = int(account_department)
 		cursor.execute("select * from account where account_department='%s';"%account_department)
 	elif account_department =='*':
-		cursor.execute("select * from account")
+		cursor.execute("select * from account where account_name='user';")
 	a = cursor.fetchall()
 	conn.close()
 	return a

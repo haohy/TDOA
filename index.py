@@ -239,6 +239,7 @@ class mission_state(object):
 				yission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已完成')
 				print "mission_state.m,s,w,yission_list    :"
 				print mission_list
+				#当已建任务动态为空时，防止卡死
 				if not mission_list and not sission_list and not wission_list and not yission_list :
 					mission_list=sission_list=wission_list=yission_list=[{}]
 				return render_template(type=session.type, \
@@ -485,7 +486,7 @@ class view_mission(object):
 				print role
 				print mission_status
 				print mission_id
-				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
+				#m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
 				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
 				print "m is :"
 				print m
