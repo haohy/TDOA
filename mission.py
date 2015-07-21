@@ -181,7 +181,7 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if str(role) == 'mission_doer':
-		cursor.execute("select mission.mission_name,mission.mission_id, mission.mission_publisher, mission.mission_content, mission.mission_starttime, mission.mission_plan_end_time, missions_doers.mission_status \
+		cursor.execute("select mission.mission_name,mission.mission_id, mission.mission_publisher, mission.mission_content, mission.mission_starttime, mission.mission_plan_end_time, missions_doers.mission_status,mission.mission_pubtime \
 			from missions_doers, mission \
 			where missions_doers.mission_doer = '%s' and missions_doers.mission_status = '%s' and missions_doers.mission_id = mission.mission_id;\
 			"%(account_name, mission_status))
@@ -207,7 +207,7 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 			m_list_user[i]['user'] = account_name
 		conn.close()
 		m_list_user = list(m_list_user)
-		m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_starttime'], reverse=True)
+		m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_pubtime'], reverse=True)
 		return m_list_user
 		print "m_list_user"
 		print m_list_user
@@ -242,12 +242,12 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 	# 	print "m_list_publisher"
 	# 	print m_list_publisher
 		cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-		cursor.execute("select mission.mission_id,mission.mission_name,mission.mission_content,mission.mission_publisher,mission.mission_starttime,mission.mission_plan_end_time,missions_doers.mission_doer,missions_doers.mission_status \
+		cursor.execute("select mission.mission_id,mission.mission_name,mission.mission_content,mission.mission_publisher,mission.mission_starttime,mission.mission_plan_end_time,missions_doers.mission_doer,missions_doers.mission_status,mission.mission_pubtime \
 			from mission,missions_doers where missions_doers.mission_id = mission.mission_id AND missions_doers.mission_status = '%s' and mission.mission_publisher = '%s';"%(mission_status,account_name))
 		m_list_publisher = cursor.fetchall()
 		conn.close()
 		m_list_publisher = list(m_list_publisher)
-		m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_starttime'], reverse=True)
+		m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_pubtime'], reverse=True)
 		return m_list_publisher
 	else:
 		print "no user and no publisher"+"role="+role
