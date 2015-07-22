@@ -379,7 +379,7 @@ def mission_search_list(user, arg):
 	search_list = list()
 	for m in mlist:
 		if m not in search_list:
-			if not m['mission_status']:
+			if 'mission_status' not in m:
 				m['mission_status'] = '已完成'
 			search_list.append(m);
 
@@ -404,16 +404,20 @@ def get_mission_content(mission_id, mission_doer):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursor.execute("SELECT *\
+	 				FROM history_mission\
+					WHERE mission_id='%s'"%mission_id)
+	mission = list(cursor.fetchall())
+
+	if mission_doer == 'nobody':
+		return mission
 
 	cursor.execute("SELECT *\
 	 				FROM mission JOIN missions_doers\
 	 				ON mission.mission_id=missions_doers.mission_id\
 					WHERE mission_doer = '%s' AND mission.mission_id='%s'"%(mission_doer, mission_id))
-	mission = list(cursor.fetchall())
-	cursor.execute("SELECT *\
-	 				FROM history_mission\
-					WHERE mission_doer = '%s' AND mission_id='%s'"%(mission_doer, mission_id))
 	mission += list(cursor.fetchall())
+
 	return mission
 
 
@@ -433,11 +437,11 @@ def get_mission_reference(args):
 			num = difflib.SequenceMatcher(None, args.mission_name, m['mission_name']).ratio()
 			print 'similer:', num
 			if num > 0.7:
-				mission_list.append += m
+				mission_list.append(m)
 	elif 'file_name' in args and arg.file_name != '':
 		for m in mission_list_all:
 			num = difflib.SequenceMatcher(None, args.file_name, m['mission_name']).ratio()
 			print 'similer:', num
 			if num > 0.7:
-				mission_list.append += m
+				mission_list.append(m)
 	return mission_list

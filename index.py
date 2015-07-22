@@ -532,6 +532,9 @@ class view_mission(object):
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
+
+
 class change_mission_sta(object):
 	def GET(self, args):
 		if session.login == 1:
