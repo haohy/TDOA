@@ -217,12 +217,39 @@ class my_mission(object):
 			if session.user:
 				#找到当前账户所有任务
 				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
-				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
-					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
+				page_info = {'page':1}
+				page_info['count'] = len(mission_list)
+				mission_list = mission_list[0:30]
+				return render_template(type=session.type, \
+					template_name='my_'+web.input().type+'.html', 
+					user=session.user, mission_list=mission_list, \
+					page_info = page_info)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+	def POST(self, args):
+		if session.login == 1:
+			if session.user:
+				#找到当前账户所有任务
+				args = web.input()
+				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
+				page_info = {}
+				page_info['page'] = pagenum = int(args.pageNum)
+				page_info['count'] = len(mission_list)
+				mission_list = mission_list[(pagenum-1)*30:pagenum*30]
+				mission_list = mission_list[0:30]
+				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
+				return render_template(type=session.type, \
+					template_name='my_'+web.input().type+'.html', 
+					user=session.user, \
+					mission_list=mission_list, \
+					page_info = page_info)
+			else:
+				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:
+			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 
 class mission_state(object):
 	"""所有任务动态"""
