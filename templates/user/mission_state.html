@@ -116,7 +116,7 @@
 							<tbody>
 							{% for y in yission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_status=已完成&mission_id={{y['mission_id']}}&type=mission_doer&mission_sta=m" target="dialog"><div>{{y['mission_name']}}</div></a></td>
+									<td><a href="/view_mission/?mission_status=已完成&mission_id={{y['mission_id']}}&type={{role}}&mission_sta=y&mission_doer={{y['mission_doer']}}" target="dialog"><div>{{y['mission_name']}}</div></a></td>
 									<td>{{y['mission_publisher']}}</td>
 									<td>
 									{% for m_doer in y.mission_doer %}

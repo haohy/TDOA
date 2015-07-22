@@ -2,6 +2,7 @@
 import MySQLdb
 import re
 import data
+import cnsort
 
 #检查新建帐户信息是否合法
 def account_check(account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power):
@@ -72,8 +73,12 @@ def account_list(account_department = '*'):
 		account_department = int(account_department)
 		cursor.execute("select * from account where account_department='%s';"%account_department)
 	elif account_department =='*':
-		cursor.execute("select * from account where account_name='user';")
-	a = cursor.fetchall()
+		cursor.execute("select account_username from account where account_name='user';")
+	account_username = cursor.fetchall()
+	a = []
+	for i in range(len(account_username)):
+		a.append(account_username[i]['account_username'])
+	a = cnsort.cnsort(a)
 	conn.close()
 	return a
 def account_view(account_id):
@@ -123,3 +128,31 @@ def account_update(account_id, account_name, account_username, account_work, acc
 	conn.commit()
 	conn.close()
 
+def get_account_info(user):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+
+	cursor.execute("SELECT * FROM account WHERE account_username='%s'"%user)
+	account_info = cursor.fetchone()
+	return account_info
+
+def save_info(args):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+
+	cursor.execute("update account SET \
+					account_username='%s', \
+					account_work='%s', \
+					account_position='%s', \
+					account_phone='%s', \
+					account_address='%s', \
+					account_email='%s', \
+					account_department='%s' \
+					WHERE account_id=%s\
+					"% (args.username,args.work,args.position,args.phone,\
+										args.address,args.email,args.department,args.id))
+	conn.commit()
+	conn.close()
+	return True

@@ -11,6 +11,18 @@
 				<dd>{{mission_view[0]['mission_publisher']}}</dd>
 			</dl>
 			<dl class="nowrap">
+				<dt>任务执行者：</dt>
+				<dd>
+					<tbody>
+						<tr>
+							{% for doer in mission_view[0]['mission_doer']%}
+							<a href="#">{{doer}}</a>
+							{%endfor%}
+						</tr>
+					</tbody>
+				</dd>
+			</dl>
+			<dl class="nowrap">
 				<dt>任务开始时间：</dt>
 				<dd>{{mission_view[0]['mission_starttime']}}</dd>
 			</dl>
@@ -32,7 +44,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{user}}" class="j-ajax">
+							<a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_doer']}}" class="j-ajax">
 								<span>任务完成提交附件</span>
 							</a>
 						</li>
@@ -96,7 +108,7 @@
 		<li>
 			<div class="button">
 				<div>
-					<a class="delete" href="/delete_mission/?mission_id={{mission_view[0]['mission_id']}}" target="ajaxTodo" title="确定要删除吗?">
+					<a class="delete" href="/delete_mission/?mission_id={{mission_view[0]['mission_id']}}&mission_status={{mission_view[0]['mission_status']}}&type=mission_publisher" target="ajaxTodo" title="确定要删除吗?">
 						<span>删除</span>
 					</a>
 				</div>

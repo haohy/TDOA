@@ -39,7 +39,7 @@
 				<div class="tabsHeaderContent">
 					<ul>
 						<li>
-							<a href="/upload_files/?type=2&mission_id={{mission_view[0]['mission_id']}}&mission_name={{mission_view[0]['mission_name']}}" class="j-ajax">
+							<a href="/mission_reference/?mission_name={{mission_view[0]['mission_name']}}" class="j-ajax">
 								<span>历史任务参考</span>
 							</a>
 						</li>
@@ -96,7 +96,7 @@
 			<li>
 				<div class="buttonActive">
 					<div>
-						<a class="edit" href="/change_mission_sta/?type=mission_doer&mission_id={{mission_view[0]['mission_id']}}&mission_status=执行中" target="navTab">
+						<a class="edit" href="/change_mission_sta/?type=mission_doer&mission_id={{mission_view[0]['mission_id']}}&mission_status=执行中&mission_doer={{mission_doer}}" target="navTab">
 							<span>接受</span>
 						</a>
 					</div>
