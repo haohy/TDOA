@@ -359,9 +359,9 @@ def get_mission_reference(args):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("SELECT mission_id, mission_name, mission_starttime, file_name, file_id\
+	cursor.execute("SELECT history_mission.mission_id, mission_name, mission_starttime, file_name, file_id\
 					FROM history_MISSION left JOIN FILE\
-					ON mission_id=file_linkmission\
+					ON history_mission.mission_id=file.mission_id\
 					")
 	mission_list_all = list(cursor.fetchall())
 	mission_list = list()
@@ -371,7 +371,7 @@ def get_mission_reference(args):
 			print 'similer:', num
 			if num > 0.7:
 				mission_list.append(m)
-	elif 'file_name' in args and arg.file_name != '':
+	elif 'file_name' in args and args.file_name != '':
 		for m in mission_list_all:
 			num = difflib.SequenceMatcher(None, args.file_name, m['mission_name']).ratio()
 			print 'similer:', num

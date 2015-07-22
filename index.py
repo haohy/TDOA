@@ -651,6 +651,8 @@ class calendar(object):
 					template_name = 'calendar.html',
 					account_username = arg.account
 					)
+			else:
+				return json.dumps({"statusCode":"300", "message":"对不起，您没有查看权限"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
 
@@ -665,6 +667,8 @@ class calendar_view(object):
 					template_name = 'calendar_dialog.html',
 					user = arg.account
 					)
+			else:
+				return json.dumps({"statusCode":"300", "message":"对不起，您没有查看权限"})
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		
 		
@@ -701,7 +705,16 @@ class mission_reference(object):
 					mission_list = mission_list
 				)
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
-
+	def POST(self, args):
+		if session.login == 1:
+			args = web.input()
+			mission_list = mission.get_mission_reference(args)
+			return render_template(
+					type = session.type,
+					template_name = 'mission_reference.html',
+					mission_list = mission_list
+				)
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
 ######################## admin 账号 #####################################
 class new_account(object):
