@@ -337,10 +337,15 @@ def get_mission_content(mission_id):
 
 def mission_sta_change(mission_id ,mission_status,mission_doer):
 	c = data.SQLconn()
+	print "mission_id,mission_status  :"
+	print mission_id
+	print mission_status
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("update missions_doers set mission_status = '%s' WHERE mission_id = '%s' AND mission_doer = '%s' ;"%(mission_status.encode('utf-8'), mission_id,mission_doer))
-	print mission_status
+	cursor.execute("update missions_doers set mission_status = '%s' WHERE mission_id = '%s' AND mission_doer = '%s' ;"\
+		%(mission_status.encode('utf-8'), mission_id, mission_doer.encode('utf-8')))
+	print "Here is mission.py.mission_sta.change"
+	print mission_doer
 	conn.commit()
 	conn.close()
 

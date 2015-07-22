@@ -10,6 +10,7 @@ import data
 import mission
 import account
 import file
+import message
 #from web.contrib.template import render_jinja
 from jinja2 import Environment,FileSystemLoader
 import sys
@@ -40,6 +41,8 @@ urls= (
 	'/mission_audit/(.*)','mission_audit',
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
+	'/download_file/(.*)','download_file',
+	'/leave_message','leave_message',
 	'/calendar/(.*)', 'calendar',
 	'/calendar_view/(.*)', 'calendar_view',
 
@@ -479,23 +482,36 @@ class view_mission(object):
 	def GET(self,arg):
 		if session.login == 1:
 			if session.user:
-				account_name = session.user
 				mission_status = web.input().mission_status
 				role = web.input().type
 				mission_sta = web.input().mission_sta
 				mission_id = web.input().mission_id
-				print "index.py.view_mission(object)"
-				print account_name
+				if role == 'mission_doer':
+					mission_doer = session.user
+				elif role == 'mission_publisher':
+					if mission_status == '已提交' or mission_status == '待接受':
+						role = 'mission_doer'
+					mission_doer = web.input().mission_doer
+				else:
+					print "not mission_doer and not mission_publisher"
+				print "m = mission.mission_view_status(mission_doer, role, mission_id, mission_status)"
+				# print account_name
+				print mission_doer
+				print mission_id
 				print role
 				print mission_status
-				print mission_id
-				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
-				print "m is :"
-				print m
+
+				m = mission.mission_view_status(mission_doer,role,mission_id,mission_status)
+				length = len(m)
+				# message_list = message.message_list(mission_id, web.input().type, session.user, m[0]['mission_publisher'])
+				message_list = message.message_list(mission_id)
 				return render_template(
 					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
-					mission_view=m)
+					mission_view=m,
+					length = length,
+					mission_doer = mission_doer,
+					message_list = message_list)
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -506,12 +522,15 @@ class change_mission_sta(object):
 		if session.login == 1:
 			if session.user:
 				args = web.input()
-				# role = web.input().type
-				# mission_status = web.input().mission_status
-				# account_name = session.user
-				print args.mission_id, unquote(args.mission_status)
+				print 
 				#更改任务动态
-				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),session.user)
+				if str(args.type) == 'mission_doer':
+					mission_doer = session.user
+				elif str(args.type) == 'mission_publisher':
+					mission_doer = args.mission_doer
+				else:
+					print "not mission_doer and not mission_publisher"
+				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),mission_doer)
 				#ws_file
 				if args.mission_status == ('已完成').decode('utf-8'):
 					file.file_type_change(args.mission_id)
@@ -648,6 +667,36 @@ class upload_files(object):
 				#return render_template(type=0,template_name='login.html',error="请重新登录")
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+class download_file(object):
+	#实现文件下载
+	def GET(self,arg):
+		if session.login == 1:
+			if session.user:
+				file_url = web.input().file_url
+				file_name = web.input().file_name				
+				try:
+					file_obj = open(file_url,'rb')
+					web.header('Content-Type','application/octet-stream')
+					web.header('Content-disposition','attachment;filename="%s"'%file_name)
+					f = file_obj.read()
+					return f
+				except:
+					print 'error'
+				finally:
+					file_obj.close()
+				#大文件下载使用下面方法
+				# 	while True:
+				# 		BUF_SIZE = 1024
+				# 		c = file_obj.read(BUF_SIZE)
+				# 		if c:
+				# 			yield c
+				# 		else:
+				# 			break
+				# except Exception, e:
+				# 	print e
+				# 	yield 'Error'
+				# finally:
+				# 	file_obj.close()
 		
 class calendar(object):
 	"""docstring for calendar"""
@@ -698,6 +747,25 @@ class mission_content(object):
 			arg = web.input()	
 			mission_content = mission.get_mission_content(arg.mission_id)
 			return '任务名称：%s 任务内容：%s'%(mission_content[0]['mission_name'],mission_content[0]['mission_content'])
+class leave_message(object):
+	def POST(self):
+		if session.login == 1:
+			if session.user:
+				message_content = web.input().msg
+				mission_id = web.input().mission_id
+				message_type = web.input().message_type
+				# message_obj = web.input().message_obj
+				# if privacy in web.input():
+				# 	privacy = web.input().privacy
+				# elif privacy = 0
+				message_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+				if message_content.strip() == '':
+					return json.dumps({"statusCode":"302", "message":"留言不能为空"})
+
+				message.message_save(mission_id, message_content, message_time, session.user, message_type)
+				return json.dumps({"statusCode":"200", "message": "留言成功"})
+			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
 ######################## admin 账号 #####################################
 class new_account(object):
