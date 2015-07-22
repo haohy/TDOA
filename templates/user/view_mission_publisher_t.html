@@ -11,6 +11,18 @@
 				<dd>{{mission_view[0]['mission_publisher']}}</dd>
 			</dl>
 			<dl class="nowrap">
+				<dt>任务执行者：</dt>
+				<dd>
+					<tbody>
+						<tr>
+							{% for doer in mission_view[0]['mission_doer']%}
+							<a href="#">{{doer}}</a>
+							{%endfor%}
+						</tr>
+					</tbody>
+				</dd>
+			</dl>
+			<dl class="nowrap">
 				<dt>任务开始时间：</dt>
 				<dd>{{mission_view[0]['mission_starttime']}}</dd>
 			</dl>

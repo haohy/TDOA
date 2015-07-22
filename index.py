@@ -294,6 +294,8 @@ class new_mission(object):
 					file.create_dir(filedir) #create dir if the dir is not exist
 					if 'myfile' in x:
 						file_url=x.myfile.filename.replace('\\','/')
+						print "file_url = x.myfile.filename = :"
+						print file_url
 						file_name=file_url.split('/')[-1] # splits the and chooses the last part (the filename with extension)
 						file_url = './uploads/'+user+'/'+file_name
 						fout = open(filedir +'/'+ file_name,'wb') # creates the file where the uploaded file should be stored
@@ -471,11 +473,12 @@ class view_mission(object):
 				mission_id = web.input().mission_id
 				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
 				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
-				print m
+				length = len(m)
 				return render_template(
 					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
-					mission_view=m)
+					mission_view=m,
+					length=length)
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
