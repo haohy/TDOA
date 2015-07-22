@@ -1,9 +1,10 @@
-<form id="pagerForm" method="post" action="demo_page1.html">
+<form id="pagerForm" method="post" action="/my_mission/">
   <input type="hidden" name="status" value="${param.status}">
   <input type="hidden" name="keywords" value="${param.keywords}" />
   <input type="hidden" name="pageNum" value="1" />
   <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
   <input type="hidden" name="orderField" value="${param.orderField}" />
+  <input type="hidden" name="type" value="mission_doer">
 </form>
 
 <div class="pageContent">
@@ -48,17 +49,17 @@
   </table>
   <div class="panelBar">
     <div class="pages">
-      <span>显示</span>
-      <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+      <span>每页显示</span>
+      <!-- <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
         <option value="20">20</option>
         <option value="50">50</option>
         <option value="100">100</option>
         <option value="200">200</option>
-      </select>
-      <span>条，共{{totalCount}}条</span>
+      </select> -->
+      <span>30条，共{{page_info['count']}}条</span>
     </div>
     
-    <div class="pagination" targetType="navTab" totalCount="200" numPerPage="20" pageNumShown="10" currentPage="1"></div>
+    <div class="pagination" targetType="navTab" totalCount="{{page_info['count']}}" numPerPage="30" pageNumShown="{{page_info['count']/30}}" currentPage="{{page_info['page']}}"></div>
 
   </div>
 </div>
