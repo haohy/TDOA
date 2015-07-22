@@ -537,7 +537,7 @@ class search(object):
 				return render_template(
 					type=session.type,
 					template_name='search.html',
-					mission_list = mission_list[0:19],
+					mission_list = mission_list[0:30],
 					account_list = account.account_list(),
 					count = len(mission_list),
 					arg = [{'page':1}]
@@ -548,19 +548,19 @@ class search(object):
 		if session.login == 1:
 			if session.user:
 				arg = web.input()
-				mission_list = mission.mission_search_list(session.user, arg)
-				if 'page' in arg:
-					page = arg.page - 1
-					mission_list_cut = mission_list[page*20:arg.page*20]
+				mission_list_all = mission.mission_search_list(session.user, arg)
+				if arg.has_key('pageNum'):
+					page = int(arg.pageNum) - 1
+					mission_list_cut = mission_list_all[page*30:int(arg.pageNum)*30]
 				else:
-					arg['page'] = 1
-					mission_list_cut = mission_list[0:19]
+					arg['pageNum'] = 1
+					mission_list_cut = mission_list_all[0:30]
 				return render_template(
 					type=session.type,
 					template_name='search.html',
 					mission_list = mission_list_cut,
 					account_list = account.account_list(),
-					count = len(mission_list),
+					count = len(mission_list_all),
 					arg = arg
 					)
 			else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
