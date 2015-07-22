@@ -2,6 +2,7 @@
 import MySQLdb
 import re
 import data
+import cnsort
 
 #检查新建帐户信息是否合法
 def account_check(account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power):
@@ -72,8 +73,12 @@ def account_list(account_department = '*'):
 		account_department = int(account_department)
 		cursor.execute("select * from account where account_department='%s';"%account_department)
 	elif account_department =='*':
-		cursor.execute("select * from account where account_name='user';")
-	a = cursor.fetchall()
+		cursor.execute("select account_username from account where account_name='user';")
+	account_username = cursor.fetchall()
+	a = []
+	for i in range(len(account_username)):
+		a.append(account_username[i]['account_username'])
+	a = cnsort.cnsort(a)
 	conn.close()
 	return a
 def account_view(account_id):
@@ -148,4 +153,6 @@ def save_info(args):
 					WHERE account_id=%s\
 					"% (args.username,args.work,args.position,args.phone,\
 										args.address,args.email,args.department,args.id))
+	conn.commit()
+	conn.close()
 	return True
