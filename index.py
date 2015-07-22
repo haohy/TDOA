@@ -466,19 +466,33 @@ class view_mission(object):
 	def GET(self,arg):
 		if session.login == 1:
 			if session.user:
-				account_name = session.user
 				mission_status = web.input().mission_status
 				role = web.input().type
 				mission_sta = web.input().mission_sta
 				mission_id = web.input().mission_id
+				if role == 'mission_doer':
+					mission_doer = session.user
+				elif role == 'mission_publisher':
+					if mission_status == '已提交' or mission_status == '待接受':
+						role = 'mission_doer'
+					mission_doer = web.input().mission_doer
+				else :
+					print "not mission_doer and not mission_publisher"
+				print "m = mission.mission_view_status(mission_doer,role,mission_id,mission_status)"
+				print mission_doer
+				print mission_id
+				print role 
+				print mission_status
+
 				# m为包含字典的元组，且元组中只包含一个字典，字典中key=mession_doer的value为以列表存储的所有执行者
-				m = mission.mission_view_status(account_name,role,mission_id,mission_status)
+				m = mission.mission_view_status(mission_doer,role,mission_id,mission_status)
 				length = len(m)
 				return render_template(
 					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
 					mission_view=m,
-					length=length)
+					length=length,
+					mission_doer=mission_doer)
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -490,7 +504,13 @@ class change_mission_sta(object):
 			if session.user:
 				args = web.input()
 				#更改任务动态
-				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),session.user)
+				if str(args.type) == 'mission_doer':
+					mission_doer = session.user
+				elif str(args.type) == 'mission_publisher':
+					mission_doer = args.mission_doer
+				else:
+					print "not mission_doer and not mission_publisher"
+				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),mission_doer)
 				#ws_file
 				if args.mission_status == ('已完成').decode('utf-8'):
 					file.file_type_change(args.mission_id)
