@@ -515,7 +515,9 @@ class change_mission_sta(object):
 				mission.mission_sta_change(args.mission_id, unquote(args.mission_status),mission_doer)
 				#ws_file
 				if args.mission_status == ('已完成').decode('utf-8'):
-					file.file_type_change(args.mission_id)
+					print "mission_doer...........................mission_doer"
+					print mission_doer
+					file.file_type_change(args.mission_id,mission_doer)
 				#更改后跳转
 				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
 				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 

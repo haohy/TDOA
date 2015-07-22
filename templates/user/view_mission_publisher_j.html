@@ -16,7 +16,9 @@
 					<tbody>
 						<tr>
 							{% for i in range(length)%}
-							<a href="#">{{mission_view[i]['mission_doer']}}</a>
+								{% for doer in mission_view[i]['mission_doer']%}
+									{{doer}}
+								{% endfor %}
 							{%endfor%}
 						</tr>
 					</tbody>

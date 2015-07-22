@@ -21,7 +21,7 @@
 				<tbody>
 				{% for m in mission_list %}
 					<tr>
-						<td><a href="/view_mission/?mission_status=待接受&type={{role}}&mission_id={{m['mission_id']}}&mission_sta=j&mission_doer={{m['mission_doer']}}" target="dialog"><div>{{m['mission_name']}}</div></a></td>
+						<td><a href="/view_mission/?mission_status=待接受&type={{role}}&mission_id={{m['mission_id']}}&mission_sta=j&mission_doer={{m['mission_doer']}}" target="navTab" rel="newstate"><div>{{m['mission_name']}}</div></a></td>
 						<td>{{m['mission_publisher']}}</td>
 						<td>
 						{% for m_doer in m.mission_doer %}
@@ -53,7 +53,7 @@
 							<tbody>
 							{% for s in sission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_status=已提交&mission_id={{s['mission_id']}}&type={{role}}&mission_sta=m&mission_doer={{s['mission_doer']}}" target="dialog"><div>{{s['mission_name']}}</div></a></td>
+									<td><a href="/view_mission/?mission_status=已提交&mission_id={{s['mission_id']}}&type={{role}}&mission_sta=m&mission_doer={{s['mission_doer']}}" target="navTab" rel="submit"><div>{{s['mission_name']}}</div></a></td>
 									<td>{{s['mission_publisher']}}</td>
 									<td>
 									{% for m_doer in s.mission_doer %}
@@ -84,7 +84,7 @@
 							<tbody>
 							{% for w in wission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_status=未通过&mission_id={{w['mission_id']}}&type={{role}}&mission_sta=j&mission_doer={{w['mission_doer']}}" target="dialog"><div>{{w['mission_name']}}</div></a></td>
+									<td><a href="/view_mission/?mission_status=未通过&mission_id={{w['mission_id']}}&type={{role}}&mission_sta=j&mission_doer={{w['mission_doer']}}" target="navTab" rel="notdone"><div>{{w['mission_name']}}</div></a></td>
 									<td>{{w['mission_publisher']}}</td>
 									<td>
 									{% for m_doer in w.mission_doer %}
@@ -116,7 +116,7 @@
 							<tbody>
 							{% for y in yission_list %}
 								<tr>
-									<td><a href="/view_mission/?mission_status=已完成&mission_id={{y['mission_id']}}&type={{role}}&mission_sta=y&mission_doer={{y['mission_doer']}}" target="dialog"><div>{{y['mission_name']}}</div></a></td>
+									<td><a href="/view_mission/?mission_status=已完成&mission_id={{y['mission_id']}}&type={{role}}&mission_sta=y&mission_doer={{y['mission_doer']}}" target="navTab" rel="done"><div>{{y['mission_name']}}</div></a></td>
 									<td>{{y['mission_publisher']}}</td>
 									<td>
 									{% for m_doer in y.mission_doer %}
