@@ -5,8 +5,8 @@ import re
 
 def SQLconn():
 	#SQL连接参数
+	conn = {"host":"localhost", "user":"root", "passwd":"3635", "charset":"utf8", "db":"hhy_tdoa"}
 
-	conn = {"host":"127.0.0.1", "user":"root", "passwd":"lihang", "charset":"utf8", "db":"tdoa"}
 	return conn
 
 def checkin(user):

@@ -215,11 +215,15 @@ def mission_view_status(account_name, role, mission_id,mission_status):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if str(role) == 'mission_doer':
+		print "account_name, mission_status, mission_id:::::::::"
+		print account_name, mission_status, mission_id
 		cursor.execute("select mission.mission_name,mission.mission_id, mission.mission_publisher, mission.mission_content, mission.mission_starttime, mission.mission_plan_end_time, missions_doers.mission_status \
 			from missions_doers, mission \
 			where missions_doers.mission_doer = '%s' and missions_doers.mission_status = '%s' and missions_doers.mission_id = '%s' and missions_doers.mission_id = mission.mission_id;\
 			"%(account_name, mission_status, mission_id))
 		m_list_user = cursor.fetchall()
+		print "m_list_user.............m_list_user"
+		print m_list_user
 		doerDict = {}
 		cursor.execute("select mission_doer from missions_doers where mission_id = %s ;"%(m_list_user[0]['mission_id']))
 		m_list_doers = cursor.fetchall()
@@ -240,6 +244,10 @@ def mission_view_status(account_name, role, mission_id,mission_status):
 			where missions_doers.mission_id = mission.mission_id AND missions_doers.mission_status = '%s' and mission.mission_publisher = '%s' AND missions_doers.mission_id = '%s' ;"\
 			%(mission_status,account_name,mission_id))
 		m_list_publisher = cursor.fetchall()
+
+		#类型转换
+		m_list_publisher = list(m_list_publisher)
+
 		conn.close()
 		return m_list_publisher
 	else:
@@ -273,9 +281,13 @@ def get_mission_simple_content(mission_id):
 
 def mission_sta_change(mission_id ,mission_status,mission_doer):
 	c = data.SQLconn()
+	print "mission_id,mission_status  :"
+	print mission_id
+	print mission_status
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("update missions_doers set mission_status = '%s' WHERE mission_id = '%s' AND mission_doer = '%s' ;"%(mission_status.encode('utf-8'), mission_id,mission_doer))
+	cursor.execute("update missions_doers set mission_status = '%s' WHERE mission_id = '%s' AND mission_doer = '%s' ;"\
+		%(mission_status.encode('utf-8'), mission_id, mission_doer.encode('utf-8')))
 	conn.commit()
 	conn.close()
 

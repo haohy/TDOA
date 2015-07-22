@@ -20,7 +20,7 @@
                     <option value="{{arg.mission_publisher}}">{{arg.mission_publisher}}</option>
                     <option value="">全部</option>
                     {% for i in account_list %}
-                        <option value="{{i['account_username']}}">{{i['account_username']}}</option>
+                        <option value="{{i}}">{{i}}</option>
                     {% endfor  %}
                 </select>
             </div>
@@ -32,7 +32,7 @@
                     <option value="{{arg.mission_doer}}">{{arg.mission_doer}}</option>
                     <option value="">全部</option>
                     {% for i in account_list %}
-                        <option value="{{i['account_username']}}">{{i['account_username']}}</option>
+                        <option value="{{i}}">{{i}}</option>
                     {% endfor  %}
                 </select>
             </div>

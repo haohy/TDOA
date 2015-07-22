@@ -44,7 +44,7 @@
 							</a>
 						</li>
 						<li>
-							<a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_doer']}}" class="j-ajax">
+							<a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{mission_doer}}" class="j-ajax">
 								<span>任务完成提交附件</span>
 							</a>
 						</li>
@@ -69,19 +69,27 @@
 				</div>
 			</div>
 			<div class="panelContent">
-				<textarea name="msg" id="msg" cols="100" rows="2" placeholder="说点什么吧。。。"></textarea>
+				<form action="/leave_message" method="post" onsubmit="return iframeCallback(this);">
+					<textarea name="msg" id="msg" cols="100" rows="2" placeholder="说点什么吧。。。"></textarea>
+					<input type="text" name="mission_id" value="{{mission_view[0]['mission_id']}}" style="display: none">
+					<input type="text" name="message_type" value="1" style="display: none">
+					<!-- <input type="text" name="message_obj" value="{{mission_view[0]['mission_doer']}}" id="message_obj" style="display: none">
+					<input type="checkbox" name="privacy" id="privacy">私密 -->
+					<input type="submit" id="message" value="发送" style="margin-top: 15px; margin-left: 15px">	
+				</form>
+			{% for msg in message_list %}
 				<dl class="nowrap">
 					<dt>
-						<p>{{mission_view[0]['mission_publisher']}}:</p>
+						{{msg['message_time']}}:
+					</dt>
+					<dt>
+						{{msg['message_leaver']}}:
 					</dt>
 					<dd>
-						<p>好好干！</p>
+						{{msg['message_content']}}
 					</dd>
 				</dl>
-				<dl class="nowrap">
-					<dt>{{mission_view[0]['mission_doer']}}:</dt>
-					<dd>好的！</dd>
-				</dl>
+			{% endfor %}
 			</div>
 		</div>
 
