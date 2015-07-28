@@ -244,7 +244,8 @@ def mission_view_status(account_name, role, mission_id,mission_status):
 			where missions_doers.mission_id = mission.mission_id AND missions_doers.mission_status = '%s' and mission.mission_publisher = '%s' AND missions_doers.mission_id = '%s' ;"\
 			%(mission_status,account_name,mission_id))
 		m_list_publisher = cursor.fetchall()
-
+		print "m_list_publisher uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
+		print m_list_publisher
 		#类型转换
 		m_list_publisher = list(m_list_publisher)
 

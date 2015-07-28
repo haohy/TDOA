@@ -14,6 +14,17 @@
 			{{mission_view[0]['mission_publisher']}}
 		  </dd>
 		</dl>
+		<!-- <a href="/doer_info?doer={{doer}}" target="dialog" s>{{doer}}</a> -->
+		<dl class="nowrap">
+				<dt>任务执行者：</dt>
+				<dd>
+					<tbody>
+						<tr>
+							<a href="/doer_info?doer={{mission_view[0]['mission_doer']}}" target="dialog" s>{{mission_view[0]['mission_doer']}}</a>
+						</tr>
+					</tbody>
+				</dd>
+			</dl>
 		<dl class="nowrap">
 		  <dt>任务开始时间：</dt>
 		  <dd>
@@ -50,7 +61,7 @@
 			<div class="tabsHeaderContent">
 				<ul>
 					<li><a href="/upload_files/?type=0&role={{mission_view[0]['mission_publisher']}}&mission_id={{mission_view[0]['mission_id']}}" class="j-ajax"><span>初始参考附件</span></a></li>
-					<li><a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_doer']}}" class="j-ajax"><span>任务完成提交附件</span></a></li>
+					<li><a href="/upload_files/?type=2&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_doer']}}" class="j-ajax"><span>任务完成提交附件</span></a></li>
 				</ul>
 			</div>
 		</div>
