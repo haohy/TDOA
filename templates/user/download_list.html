@@ -1,15 +1,15 @@
 
-<form id="pagerForm" method="post" action="demo_page1.html">
-	<input type="hidden" name="status" value="${param.status}">
-	<input type="hidden" name="keywords" value="${param.keywords}" />
+<form id="pagerForm" method="post" action="download_list">
+<!-- 	<input type="hidden" name="status" value="${param.status}">
+	<input type="hidden" name="keywords" value="${param.keywords}" /> -->
 	<input type="hidden" name="pageNum" value="1" />
-	<input type="hidden" name="numPerPage" value="${model.numPerPage}" />
-	<input type="hidden" name="orderField" value="${param.orderField}" />
+<!-- 	<input type="hidden" name="numPerPage" value="${model.numPerPage}" />
+	<input type="hidden" name="orderField" value="${param.orderField}" /> -->
 </form>
 
 
 <div class="pageHeader">
-	<form onsubmit="return navTabSearch(this);" action="demo_page1.html" method="post">
+	<form rel="pagerForm" onsubmit="return navTabSearch(this);" action="download_list" method="post">
 	<div class="searchBar">
 		<!--<ul class="searchContent">
 			<li>
@@ -31,10 +31,16 @@
 		<table class="searchContent">
 			<tr>
 				<td>
-					文件名：<input type="text" name="keyword" />
+					选择查询对象：
+					<select name="type">
+						<option value="{{args.type}}">{{args.type}}</option>
+						<option value="文件名">文件名</option>
+						<option value="任务名">任务名</option>
+					</select>
+					<input type="text" name="search_str" value="{{args.search_str}}" />
 				</td>
 				<td>
-					上传时间：<input type="text" class="date" readonly="true" />
+					上传时间：<input name="upload_time" type="text" class="date" readonly="true" value="{{args.upload_time}}">
 				</td>
 				<td>
 					<div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div>
@@ -58,42 +64,37 @@
 		<thead class="center">
 			<tr>
 				<th>文件名称</th>
-				<th width="260"><a href="/view_mission/?mission_id={任务id}" target="dialog"><div>任务名称</div></a></th>
+				<th width="260">任务名称</th>
 				<th width="120">上传者</th>
 				<th width="100">上传时间</th>
 				<th width="120">下载链接</th>
 			</tr>
 		</thead>
 		<tbody class="center">
-			<tr target="sid_user" rel="1">
-				<td>文件名称</td>
-				<td><a href="/view_mission/?mission_id={任务id}" target="dialog"><div>任务名称</div></a></td>
-				<td>张三</td>
-				<td>2014-09-04</td>
-				<td><a href="下载链接">下载</a></td>
-			</tr>
-			<tr target="sid_user" rel="1">
-				<td>文件名称</td>
-				<td><a href="/view_mission/?mission_id={任务id}" target="dialog"><div>任务名称</div></a></td>
-				<td>张三</td>
-				<td>2014-09-04</td>
-				<td><a href="下载链接">下载</a></td>
-			</tr>
+			{% for m in files %}
+				<tr target="sid_user" rel="1">
+					<td>{{m['file_name']}}</td>
+					<td><a href="/search_view_mission/?mission_id={{m['mission_id']}}&mission_doer={{m['mission_doer']}}&missioion_status={{m['mission_status']}}" target="dialog"><div>{{m['mission_name']}}</div></a></td>
+					<td>{{m['file_uploader']}}</td>
+					<td>{{m['file_upload_time']}}</td>
+					<td><a href="/download_file/?file_url={{m['file_url']}}&file_name={{m['file_name']}}">下载</a></td>
+				</tr>
+			{% endfor %}
 		</tbody>
 	</table>
 	<div class="panelBar">
 		<div class="pages">
 			<span>每页显示</span>
-			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+<!-- 			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
 				<option value="20">20</option>
 				<option value="50">50</option>
 				<option value="100">100</option>
 				<option value="200">200</option>
-			</select>
-			<span>页，当前是第{totalCount}页</span>
+			</select> -->
+			<span>30页，共{{count_num}}条</span>
 		</div>
 		
-		<div class="pagination" targetType="navTab" totalCount="200" numPerPage="20" pageNumShown="10" currentPage="1"></div>
+		<div class="pagination" targetType="navTab" totalCount="{{count_num}}" numPerPage="30" pageNumShown="{{count_num//30+1}}" currentPage="{{page_num}}"></div>
 
 	</div>
 </div>

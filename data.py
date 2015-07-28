@@ -5,7 +5,7 @@ import re
 
 def SQLconn():
 	#SQL连接参数
-	conn = {"host":"localhost", "user":"root", "passwd":"3635", "charset":"utf8", "db":"hhy_tdoa"}
+	conn = {"host":"localhost", "user":"root", "passwd":"1234", "charset":"utf8", "db":"tdoa"}
 
 
 	return conn

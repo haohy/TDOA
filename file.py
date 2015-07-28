@@ -4,6 +4,7 @@ import re
 import time
 import os
 import data
+import datetime
 
 
 
@@ -59,3 +60,24 @@ def file_type_change(mission_id, mission_doer):
 	conn.close()
 	
 
+def get_download_list(type, args=None):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursor.execute("SELECT file_name, mission_name, file_uploader, file_upload_time, mission_name, file.mission_id \
+					FROM file LEFT JOIN history_mission \
+					ON file.mission_id = history_mission.mission_id")
+	file_list_all = list(cursor.fetchall())
+	file_list_search = list()
+	cursor.close()
+	if type == 'all':
+		return file_list_all
+	for m in file_list_all:
+		if args.upload_time == '' or datetime.datetime.strptime(args.upload_time,"%Y-%m-%d").date() <= m['file_upload_time'].date():
+			if args.type == '':
+				file_list_search.append(m)
+			if args.type == '文件名' and args.search_str in m['file_name']:
+				file_list_search.append(m)
+			if args.type == '任务名' and 'mission_name' in m and args.search_str in m['mission_name']:
+				file_list_search.append(m)
+	return file_list_search

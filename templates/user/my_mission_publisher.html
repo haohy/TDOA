@@ -68,7 +68,7 @@
       <span>30条，共{{page_info['count']}}条</span>
     </div>
     
-    <div class="pagination" targetType="navTab" totalCount="{{page_info['count']}}" numPerPage="30" pageNumShown="{{page_info['count']/30}}" currentPage="{{page_info['page']}}"></div>
+    <div class="pagination" targetType="navTab" totalCount="{{page_info['count']}}" numPerPage="30" pageNumShown="{{page_info['count']//30+1}}" currentPage="{{page_info['page']}}"></div>
 
   </div>
 </div>

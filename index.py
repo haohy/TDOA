@@ -26,7 +26,7 @@ urls= (
 	'/login', 'login',
 	'/login_dialog.html','login_dialog',
 	'/logout', 'logout',
-	#######一般用户
+	# 一般用户
 	'/user_setting', 'user_setting',
 	'/search', 'search',
 	'/search_view_mission/(.*)', 'search_view_mission',
@@ -38,18 +38,20 @@ urls= (
 	'/apply_modify_mission', 'apply_modify_mission',
 	'/delete_mission/','delete_mission',
 	'/mission_audit/(.*)','mission_audit',
+	'/leave_message','leave_message',
+	# 文件操作
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
 	'/download_file/(.*)','download_file',
-	'/leave_message','leave_message',
-	#日历
+	'/download_list', 'download_list',
+	# 日历
 	'/calendar/(.*)', 'calendar',
 	'/calendar_view/(.*)', 'calendar_view',
 	'/calendar_data/(.*)', 'calendar_data',
 	'/mission_content/(.*)', 'mission_content',
 	'/mission_state/(.*)','mission_state',
 	'/mission_reference/(.*)', 'mission_reference',
-	#######admin账号
+	# admin账号
 	'/new_account', 'new_account',
 	'/account_list/(.*)', 'account_list',
 	'/view_account/(.*)', 'view_account',
@@ -617,7 +619,7 @@ class search_view_mission(object):
 			return render_template(
 					type = session.type,
 					template_name = 'search_view_mission.html',
-					mission_view = mission.get_mission_content(arg.mission_id, arg.mission_doer)
+					mission_view = mission.get_mission_content(arg.mission_id, arg.mission_doer, arg.mission_status)
 				)
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 
@@ -711,6 +713,38 @@ class download_file(object):
 				# 	yield 'Error'
 				# finally:
 				# 	file_obj.close()
+
+
+class download_list(object):
+	"""docstring for file"""
+	def GET(self):
+		if session.login:
+			file_list = file.get_download_list(type='all')
+			return render_template(
+									type = session.type,
+									template_name='download_list.html',
+									files = file_list[0:30],
+									args = '',
+									page_num = 1, count_num = len(file_list)
+									)
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+	def POST(self):
+		if session.login:
+			args = web.input()
+			file_list = file.get_download_list('search', args=args)
+			if 'pageNum' not in args:
+				page = 1
+			else:
+				page = int(args.pageNum)
+			return render_template(
+									type = session.type,
+									template_name='download_list.html',
+									files = file_list[(page-1)*30:page*30],
+									args = args,
+									page_num = page, count_num = len(file_list)
+									)
+		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 		
 class calendar(object):
 	"""docstring for calendar"""

@@ -340,23 +340,22 @@ def mission_search_list(user, arg):
 			if arg.mission_publisher == '' or arg.mission_publisher == m['mission_publisher']:
 				if arg.mission_doer == '' or arg.mission_doer == m['mission_doer']:
 					if arg.mission_status == '' or arg.mission_status == m['mission_status']:
-						if arg.mission_start_time == '' or datetime.datetime.strptime(arg.mission_start_time,"%Y-%m-%d").date() < m['mission_starttime']:
-							if arg.mission_end_time == '' or datetime.datetime.strptime(arg.mission_end_time,"%Y-%m-%d").date() > m['mission_plan_end_time']:
+						if arg.mission_start_time == '' or datetime.datetime.strptime(arg.mission_start_time,"%Y-%m-%d").date() <= m['mission_starttime']:
+							if arg.mission_end_time == '' or datetime.datetime.strptime(arg.mission_end_time,"%Y-%m-%d").date() >= m['mission_plan_end_time']:
 								mlist.append(m)
 
 
 	return mlist
 
-def get_mission_content(mission_id, mission_doer):
+def get_mission_content(mission_id, mission_doer,mission_status):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("SELECT *\
-	 				FROM history_mission\
-					WHERE mission_id='%s'"%mission_id)
-	mission = list(cursor.fetchall())
-
-	if mission_doer == 'nobody':
+	if mission_status == '已完成':
+		cursor.execute("SELECT *\
+	 					FROM history_mission\
+						WHERE mission_id='%s'"%mission_id)
+		mission = list(cursor.fetchall())
 		return mission
 
 	cursor.execute("SELECT *\
