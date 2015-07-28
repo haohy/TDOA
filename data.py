@@ -7,6 +7,7 @@ def SQLconn():
 	#SQL连接参数
 	conn = {"host":"localhost", "user":"root", "passwd":"3635", "charset":"utf8", "db":"hhy_tdoa"}
 
+
 	return conn
 
 def checkin(user):

@@ -42,7 +42,8 @@ def message_save(mission_id, message_content, message_time, message_leaver, mess
 
 def message_list(mission_id):
 	#role是用户所在页面的角色 执行者或发布者，user是当前用户名
-
+	print "mission_idmission_idmission_idmission_idmission_idmission_idmission_idmission_idmission_idmission_id"
+	print mission_id
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
@@ -55,6 +56,8 @@ def message_list(mission_id):
 	# 		"%(mission_id, user))
 	# message_list = cursor.fetchall()
 	conn.close()
+	print "message_list"
+	print message_list
 	message_list = list(message_list)
 	#按照message_time排序
 	message_list = sorted(message_list, key=lambda message_list: message_list['message_time'])

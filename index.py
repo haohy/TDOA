@@ -56,7 +56,8 @@ urls= (
 	'/delete_account/(.*)','delete_account',
 	'/modify_account/(.*)','modify_account',
 	'/apply_modify_account','apply_modify_account',
-	'/demo_page1.html','account_list'
+	'/demo_page1.html','account_list',
+	'/doer_info','doer_info'
 	)
 
 '''
@@ -507,10 +508,20 @@ class view_mission(object):
 					mission_doer = web.input().mission_doer
 				else:
 					print "not mission_doer and not mission_publisher"
+				print "mission_doer,role,mission_id,mission_status"
+				print mission_doer
+				print role
+				print mission_id
+				print mission_status
 				m = mission.mission_view_status(mission_doer,role,mission_id,mission_status)
 				length = len(m)
+				print "message_list = message.message_list(mission_id)iiiiiiiiiiiiiiiiiiiiiiiii"
 				# message_list = message.message_list(mission_id, web.input().type, session.user, m[0]['mission_publisher'])
 				message_list = message.message_list(mission_id)
+				#当任务无留言记录时赋空值
+				if not message_list :
+					message_list = [{}]
+				print ".....mmmmmmmmmmmmmmmmmmmmmmmm."
 				return render_template(
 					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
@@ -547,8 +558,11 @@ class change_mission_sta(object):
 					file.file_type_change(args.mission_id,mission_doer)
 				#更改后跳转
 				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
+				page_info = {'page':1}
+				page_info['count'] = len(mission_list)
+				mission_list = mission_list[0:30]
 				return render_template(type=session.type, template_name='my_'+web.input().type+'.html', 
-					user=session.user, mission_list=mission_list, totalCount=len(mission_list))
+					user=session.user, mission_list=mission_list, page_info = page_info)
 				#返回m，m[0]['mission_name'], m[0]['mission_content']等等
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -652,16 +666,16 @@ class upload_files(object):
 		file_type = arg.type
 		if session.login == 1:
 			if session.user:
-				if file_type == '0' or file_type == '1':
-					mission_id = arg.mission_id
-					role = arg.role.rstrip(',')
-					list = file.file_list(file_type, mission_id, role)
-					return render_template(type=session.type, template_name='upload_files.html',file_list=list)
-				elif file_type == '2':
-					mission_name = arg.mission_name
+				# if file_type == '0' or file_type == '1':
+				mission_id = arg.mission_id
+				role = arg.role.rstrip(',')
+				list = file.file_list(file_type, mission_id, role)
+				return render_template(type=session.type, template_name='upload_files.html',file_list=list)
+				# elif file_type == '2':
+				# 	mission_name = arg.mission_name
 					#这里需要从mission表中搜索与mission_name类似的mission_id
 					#再带着mission_id搜索file表
-					return json.dumps({"statusCode":"200","message":"历史任务参考搜索算法没定"})
+					# return json.dumps({"statusCode":"200","message":"历史任务参考搜索算法没定"})
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 				#return render_template(type=0,template_name='login.html',error="请重新登录")
@@ -841,12 +855,12 @@ class account_list(object):
 		if session.login == 1:
 			if session.user:
 				args = web.input()
-				a = account.account_list(args.type)
+				a = account.account_list_view(args.type)
 				return render_template(type = session.type,\
 					template_name = 'account_list.html',\
 					user=session.user,\
-					account_list=a,\
-					length=len(a))
+					account_list=a,
+					length = len(a))
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 				#return render_template(type=0,template_name='login.html',error="请重新登录")
@@ -863,9 +877,24 @@ class view_account(object):
 				args = web.input()
 				a = account.account_view(args.account_id)
 				return render_template(
-					type=session.type,template_name='view_account.html',
+					type=session.type,
+					template_name='view_account.html',
 					user=session.user,
 					account_view=a)
+			else:
+				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:
+			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+	def POST(self,args):
+		if session.login == 1:
+			if session.user:
+				args = web.input()
+				a = account.account_list_view(account_department = '*')
+				return render_template(type = session.type,\
+					template_name = 'account_list.html',\
+					user=session.user,\
+					account_list=a,
+					length = len(a))
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
@@ -873,14 +902,14 @@ class view_account(object):
 
 class delete_account(object):
 	"""删除帐号"""
-	def POST(self, args):
-		account_id = web.input().account_id
+	def POST(self, arg):
+		args = web.input()
+		print args
 		if session.login == 1:
 			if session.user:
-				account.account_delete(account_id)
-				account_list = account.account_list(account_department = '*')
-				ajax_result = {"statusCode":"200", "message":"账号删除成功", "callbackType":"closeCurrent"}
-				return json.dumps(ajax_result)
+				result = account.account_delete(args.account_id)
+				print result
+				return json.dumps({"statusCode":"200", "message":"账号删除成功"})
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
@@ -892,12 +921,12 @@ class modify_account(object):
 		if session.login == 1:
 			if session.user:
 				args = web.input()
-				a = account.account_view(args.account_id)
+				account_view = account.account_view(args.account_id)
 				return render_template(
 					type=session.type,
 					template_name='modify_account.html',
 					user=session.user,
-					account_view=a,
+					account_view=account_view,
 					error="")
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -935,12 +964,14 @@ class apply_modify_account(object):
 		if session.login == 1:
 			if session.user:
 				account_id = web.input().account_id
+				account_sex = web.input().account_sex
 				account_name = web.input().account_name
 				account_username = web.input().account_username
 				account_work = web.input().account_work
 				account_email = web.input().account_email
 				account_phone = web.input().account_phone
 				account_position = web.input().account_position
+				account_address = web.input().account_address
 				account_department = web.input().account_department
 				account_power1 = web.input().account_power1
 				account_power2 = web.input().account_power2
@@ -948,10 +979,10 @@ class apply_modify_account(object):
 				account_power4 = web.input().account_power4
 				account_power = int(account_power1)*1000+int(account_power2)*100+int(account_power3)*10+int(account_power4)
 				#检查输入信息
-				result = account.account_check(account_name, account_username, account_work, account_email, account_phone,account_position,account_department, account_power)
+				result = account.account_check(account_name, account_sex, account_username, account_work,account_position,account_phone, account_address, account_email, account_department, account_power)
 				if result == "no error":
 					#存储任务信息
-					account.account_update(account_id, account_name, account_username, account_work, account_email, account_phone, account_position, account_department, account_power)
+					account.account_update(account_name, account_sex, account_username, account_work,account_position,account_phone, account_address, account_email, account_department, account_power,account_id)
 					account_list = account.account_list('*')
 					ajax_result = {"statusCode":"200", "message":"账号修改成功", "callbackType":"closeCurrent"}
 					return json.dumps(ajax_result)
@@ -959,5 +990,23 @@ class apply_modify_account(object):
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
 			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
+class doer_info(object):
+	"'点击姓名查看执行者信息'"
+	def GET(self):
+		if session.login == 1:
+			if session.user:
+				account_info = account.get_account_info(web.input().doer)
+				print "account_info"
+				print account_info
+				return render_template(
+					type=session.type,
+					template_name='doer_info.html',
+					account_view=account_info)
+			else:
+				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+		else:
+			return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
 if __name__ == "__main__":
 	app.run()

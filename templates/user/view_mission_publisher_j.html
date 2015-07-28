@@ -17,7 +17,7 @@
 						<tr>
 							{% for i in range(length)%}
 								{% for doer in mission_view[i]['mission_doer']%}
-									{{doer}}
+									<a href="/doer_info?doer={{doer}}" target="dialog" s>{{doer}}</a>
 								{% endfor %}
 							{%endfor%}
 						</tr>

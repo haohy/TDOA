@@ -61,7 +61,7 @@ def account_save(account_name, account_sex, account_username, account_work, acco
 	cursor.execute("insert into account \
 		(account_password, account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power)\
 		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
-		"%(account_password, account_name.encode('utf-8'), account_sex.encode('utf-8'), account_username.encode('utf-8'), account_work.encode('utf-8'), account_position.encode('utf-8'), account_phone.encode('utf-8'),account_address.encode('utf-8'),account_email.encode('utf-8'),account_department,account_power))
+		"%(account_password, account_name.encode('utf-8'), account_sex.encode('utf-8'), account_username.encode('utf-8'), account_work.encode('utf-8'), account_position.encode('utf-8'), account_phone.encode('utf-8'),account_address.encode('utf-8'),account_email.encode('utf-8'),account_department.encode('utf-8'),account_power))
 	conn.commit()
 	conn.close()
 def account_list(account_department = '*'):
@@ -81,6 +81,20 @@ def account_list(account_department = '*'):
 	a = cnsort.cnsort(a)
 	conn.close()
 	return a
+
+def account_list_view(account_department = '*'):
+	#搜索对应科室部门的所有账号
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	if account_department != '*':
+		cursor.execute("select * from account where account_department='%s';"%account_department)
+	elif account_department =='*':
+		cursor.execute("select * from account where account_name='user';")
+	a = cursor.fetchall()
+	conn.close()
+	return a
+
 def account_view(account_id):
 	#搜索对应account_id所对应的信息
 	c = data.SQLconn()
@@ -90,7 +104,9 @@ def account_view(account_id):
 	a = cursor.fetchall()
 	conn.close()
 	return a
+
 def account_structure(account_name, account_username, account_work, account_email, account_phone, account_position, account_department, account_power):
+	"'将账户信息存储在字典中'"
 	a = ({\
 		'account_name': account_name, \
 		'account_username': account_username, \
@@ -102,6 +118,7 @@ def account_structure(account_name, account_username, account_work, account_emai
 		'account_power': account_power \
 		},)
 	return a
+
 def account_delete(account_id):
 	#删除对应account_id的全部信息
 	c = data.SQLconn()
@@ -110,21 +127,25 @@ def account_delete(account_id):
 	cursor.execute("delete from account where account_id = '%s';"%account_id)
 	conn.commit()
 	conn.close()
-def account_update(account_id, account_name, account_username, account_work, account_email, account_phone, account_position, account_department, account_power):
+	return "账号删除成功"
+
+def account_update(account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power,account_id):
 	#跟新account_id 对应账号的信息
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	cursor.execute("update account set \
 			account_name = '%s', \
+			account_sex = '%s',\
 			account_username = '%s', \
 			account_work = '%s', \
 			account_email = '%s', \
 			account_phone = '%s', \
 			account_position = '%s', \
 			account_department = '%s', \
+			account_address = '%s',\
 			account_power = '%s' \
-			where account_id = '%s';"%(account_name.encode('utf-8'), account_username.encode('utf-8'), account_work.encode('utf-8'), account_email.encode('utf-8'), account_phone.encode('utf-8'), account_position.encode('utf-8'), account_department, account_power, account_id))
+			where account_id = '%s';"%(account_name.encode('utf-8'), account_sex.encode('utf-8'), account_username.encode('utf-8'), account_work.encode('utf-8'), account_email.encode('utf-8'), account_phone.encode('utf-8'), account_position.encode('utf-8'), account_department.encode('utf-8'),account_address.encode('utf-8'), account_power, account_id))
 	conn.commit()
 	conn.close()
 
@@ -144,15 +165,13 @@ def save_info(args):
 
 	cursor.execute("update account SET \
 					account_username='%s', \
-					account_work='%s', \
-					account_position='%s', \
+					account_sex = '%s',\
 					account_phone='%s', \
-					account_address='%s', \
 					account_email='%s', \
-					account_department='%s' \
-					WHERE account_id=%s\
-					"% (args.username,args.work,args.position,args.phone,\
-										args.address,args.email,args.department,args.id))
+					account_address = '%s'\
+					WHERE account_id = %s\
+					;"% (args.username, args.account_sex,args.phone,\
+					args.email,str(args.account_address).encode('utf-8'), args.id))
 	conn.commit()
 	conn.close()
 	return True
