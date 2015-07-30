@@ -17,7 +17,7 @@ import sys
 reload(sys)
 
 sys.setdefaultencoding('utf8')
-web.config.debug = True
+web.config.debug = False
 
 urls= (
 	#######登陆
@@ -84,6 +84,8 @@ app = web.application(urls, globals())
 #session config，定义session能存储login,user,type三个值
 session = web.session.Session(app, web.session.DiskStore('sessions'),\
     initializer={'login':'', 'user':'', 'type':'', 'checkcode':''})
+web.config.session_parameters['cookie_path'] = '/'
+
 
 w = app.wsgifunc(StaticMiddleware)
 
@@ -138,7 +140,7 @@ class login(object):
 		checkcode = web.input().checkcode
 
 		try:
-			if checkcode != session['checkcode']:
+			if checkcode != session.checkcode:
 				session.login = 0
 				return render_template(type=0,template_name='login.html',error="验证码错误")
 			elif len(ident)==0 :
