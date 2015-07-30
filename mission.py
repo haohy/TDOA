@@ -357,7 +357,7 @@ def get_mission_content(mission_id, mission_doer,mission_status):
 						WHERE mission_id='%s'"%mission_id)
 		mission = list(cursor.fetchall())
 		return mission
-
+	mission = list()
 	cursor.execute("SELECT *\
 	 				FROM mission JOIN missions_doers\
 	 				ON mission.mission_id=missions_doers.mission_id\

@@ -26,6 +26,7 @@ urls= (
 	'/login', 'login',
 	'/login_dialog.html','login_dialog',
 	'/logout', 'logout',
+	'/checkcode', 'checkcode',
 	# 一般用户
 	'/user_setting', 'user_setting',
 	'/search', 'search',
@@ -82,7 +83,7 @@ app = web.application(urls, globals())
 
 #session config，定义session能存储login,user,type三个值
 session = web.session.Session(app, web.session.DiskStore('sessions'),\
-    initializer={'login':'', 'user':'', 'type':''})
+    initializer={'login':'', 'user':'', 'type':'', 'checkcode':''})
 
 w = app.wsgifunc(StaticMiddleware)
 
@@ -134,9 +135,13 @@ class login(object):
 		#md5加密存储密码
 		passwd = data.md5(web.input().passwd)
 		ident = data.checkin(user)
+		checkcode = web.input().checkcode
 
 		try:
-			if len(ident)==0 :
+			if checkcode != session['checkcode']:
+				session.login = 0
+				return render_template(type=0,template_name='login.html',error="验证码错误")
+			elif len(ident)==0 :
 				session.login = 0
 				return render_template(type=0,template_name='login.html',error="用户名不存在")
 			elif passwd == ident[0]['account_password']:
@@ -148,7 +153,7 @@ class login(object):
 				session.login = 0
 				return render_template(type=0,template_name='login.html',error="密码错误")
 		except Exception, e:
-			print 'loging error', e
+			print 'login error', e
 			session.login = 0
 			return render_template(type=0,template_name='login.html',error="系统错误")
 
@@ -164,8 +169,13 @@ class login_dialog(object):
 		#md5加密存储密码
 		passwd = data.md5(web.input().passwd)
 		ident = data.checkin(user)
+		checkcode = web.input().checkcode
 		try:
-			if len(ident)==0 :
+			if user.checkcode != session.checkcode:
+				session.login = 0
+				return render_template(type=0,template_name='login.html',error="验证码错误")
+
+			elif len(ident)==0 :
 				session.login = 0
 				return render_template(type=0,template_name='login.html',error="用户名不存在")
 			elif passwd == ident[0]['account_password']:
@@ -186,6 +196,14 @@ class logout(object):
 		session.login=0
 		session.kill()
 		return render_template(type=0,template_name='login.html', error="请重新登录")
+
+
+class checkcode(object):
+	def GET(self):
+		web.header("Content-Type",'image/gif')
+		session.checkcode, pic = data.make_check_code_image()
+		return pic
+
 
 class user_setting(object):
 	"""docstring for user_setting"""

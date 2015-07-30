@@ -2,6 +2,9 @@
 import os
 import MySQLdb
 import re
+import random, md5, datetime, StringIO
+from PIL import Image, ImageFont, ImageDraw, ImageColor
+
 
 def SQLconn():
 	#SQL连接参数
@@ -105,3 +108,51 @@ def permission_check(user, account, type):
 		if user_power[0]['account_power']%10 == 1:
 			return True
 		return False
+
+
+
+# get random color
+def get_color():
+	colors = ['Black','Orange','Red','Brown','DarkBlue','Purple','DarkCyan','DarkBlue']
+	return ImageColor.getrgb(colors[random.randrange(1,9)-1])
+
+# get random font-size
+def get_font():
+	return ImageFont.truetype("arial.ttf", random.randrange(15,25,5))
+
+# make code image
+def make_check_code_image(image=''):
+
+	color = ImageColor.getrgb('white')
+	#im = Image.open(image)
+	im = Image.new('RGB',(60,20), color) 
+	draw = ImageDraw.Draw(im)
+	import hashlib
+	mp = hashlib.md5()
+	mp_src = mp.update(str(datetime.datetime.now())) 
+	mp_src = mp.hexdigest()
+
+	rand_str = mp_src[0:4] 
+	#print rand_str
+	color = ImageColor.getrgb('LightGray')
+	for i in range(200):
+		x = random.randrange(1,60)
+		y = random.randrange(1,20)
+		draw.point((x, y), fill=color)
+    
+	draw.text((5,1), rand_str[0], fill=get_color(), font=get_font())
+	draw.text((15,1), rand_str[1], fill=get_color(), font=get_font())
+	draw.text((30,1), rand_str[2], fill=get_color(), font=get_font())
+	draw.text((45,1), rand_str[3], fill=get_color(), font=get_font())
+	
+	draw.line((0,10,60,15), fill=get_color())
+	
+	del draw 
+	
+	# session['checkcode'] = rand_str 
+	#print request.session['checkcode'] 
+	buf = StringIO.StringIO()   
+	im.save(buf, 'gif')
+	buf.closed
+	if image: im.save(image) 
+	return rand_str, buf.getvalue()
