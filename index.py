@@ -17,14 +17,14 @@ import sys
 reload(sys)
 
 sys.setdefaultencoding('utf8')
-web.config.debug = False
+web.config.debug = True
 
 urls= (
 	#######登陆
 	'/', 'login',
 	'/index', 'index',
 	'/login', 'login',
-	'/login_dialog.html','login_dialog',
+	'/login_dialog','login_dialog',
 	'/logout', 'logout',
 	'/checkcode', 'checkcode',
 	# 一般用户
@@ -163,7 +163,7 @@ class login_dialog(object):
 		if session.login==1:
 			return render_template(type=session.type,template_name='index.html',user=session.user)
 		else:
-			return render_template(type=0,template_name='login_dialog.html')
+			return render_template(type=session.type,template_name='login_dialog.html')
 	def POST(self):
 		user = web.input().user
 		#md5加密存储密码
@@ -171,7 +171,7 @@ class login_dialog(object):
 		ident = data.checkin(user)
 		checkcode = web.input().checkcode
 		try:
-			if user.checkcode != session.checkcode:
+			if checkcode != session.checkcode:
 				session.login = 0
 				return render_template(type=0,template_name='login.html',error="验证码错误")
 
@@ -186,7 +186,7 @@ class login_dialog(object):
 			else:
 				session.login = 0
 				return render_template(type=0,template_name='login.html',error="密码错误")
-		except :
+		except:
 			session.login = 0
 			return render_template(type=0,template_name='login.html',error="系统错误")
 
