@@ -54,7 +54,7 @@ def file_type_change(mission_id, mission_doer):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("update file set file_type = '2' WHERE mission_id = '%s' and file_uploader = '%s' and file_type = '1';\
+	cursor.execute("update FILE set file_type = '2' WHERE mission_id = '%s' and file_uploader = '%s' and file_type = '1';\
 		"%(mission_id, mission_doer))
 	conn.commit()
 	conn.close()
@@ -64,9 +64,9 @@ def get_download_list(type, args=None):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("SELECT file_name, mission_name, file_uploader, file_upload_time, mission_name, file.mission_id \
-					FROM file LEFT JOIN history_mission \
-					ON file.mission_id = history_mission.mission_id")
+	cursor.execute("SELECT file_name, mission_name, file_uploader, file_upload_time, mission_name, FILE.mission_id \
+					FROM FILE LEFT JOIN HISTORY_MISSION  \
+					ON FILE.mission_id = HISTORY_MISSION .mission_id")
 	file_list_all = list(cursor.fetchall())
 	file_list_search = list()
 	cursor.close()

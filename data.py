@@ -8,8 +8,7 @@ from PIL import Image, ImageFont, ImageDraw, ImageColor
 
 def SQLconn():
 	#SQL连接参数
-	conn = {"host":"localhost", "user":"root", "passwd":"1234", "charset":"utf8", "db":"tdoa"}
-
+	conn = {"host":"qdm157632221.my3w.com", "user":"qdm157632221", "passwd":"hongyan0408", "charset":"utf8", "db":"qdm157632221_db"}
 
 	return conn
 
@@ -19,7 +18,7 @@ def checkin(user):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	print "connect mysql"
-	cursor.execute("SELECT account_password,account_name FROM account WHERE account_username='%s';"%user)
+	cursor.execute("SELECT account_password,account_name FROM ACCOUNT WHERE account_username='%s';"%user)
 	print "select passwd in mysql"
 	passwd = cursor.fetchall()
 	conn.close()
@@ -37,17 +36,17 @@ def get_calendar_data(arg):
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	# print "connect mysql"
 	print arg.account, arg.start, arg.end
-	cursor.execute("SELECT mission.mission_name, mission.mission_id, mission.mission_starttime,\
-							mission.mission_plan_end_time\
-	 				FROM mission JOIN missions_doers\
-	 				ON mission.mission_id=missions_doers.mission_id\
-					WHERE missions_doers.mission_doer = '%s'\
-					AND (mission.mission_starttime BETWEEN '%s' AND '%s'\
-					OR mission.mission_plan_end_time BETWEEN '%s' AND '%s')"\
+	cursor.execute("SELECT MISSION.mission_name, MISSION.mission_id, MISSION.mission_starttime,\
+							MISSION.mission_plan_end_time\
+	 				FROM MISSION JOIN MISSIONS_DOERS \
+	 				ON MISSION.mission_id=MISSIONS_DOERS.mission_id\
+					WHERE MISSIONS_DOERS.mission_doer = '%s'\
+					AND (MISSION.mission_starttime BETWEEN '%s' AND '%s'\
+					OR MISSION.mission_plan_end_time BETWEEN '%s' AND '%s')"\
 		 			%(arg.account, arg.start, arg.end, arg.start, arg.end))
 	calendar_data = cursor.fetchall()
 	cursor.execute("SELECT mission_name, mission_id, mission_starttime, mission_endtime\
-	 				FROM history_mission\
+	 				FROM HISTORY_MISSION \
 					WHERE mission_doer = '%s'\
 					AND (mission_starttime BETWEEN '%s' AND '%s'\
 					OR mission_endtime BETWEEN '%s' AND '%s')"\
@@ -77,7 +76,7 @@ def permission_check(user, account, type):
 		)
 	user_power = list(cursor.fetchall())
 	cursor.execute(
-		"SELECT account_department FROM account WHERE account_username = '%s'" % account
+		"SELECT account_department FROM ACCOUNT WHERE account_username = '%s'" % account
 		)
 	account_department = list(cursor.fetchall())
 
@@ -118,7 +117,7 @@ def get_color():
 
 # get random font-size
 def get_font():
-	return ImageFont.truetype("arial.ttf", random.randrange(15,25,5))
+	return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", random.randrange(15,25,5))
 
 # make code image
 def make_check_code_image(image=''):
@@ -152,7 +151,7 @@ def make_check_code_image(image=''):
 	# session['checkcode'] = rand_str 
 	#print request.session['checkcode'] 
 	buf = StringIO.StringIO()   
-	im.save(buf, 'gif')
+	im.save(buf, 'png')
 	buf.closed
 	if image: im.save(image) 
 	return rand_str, buf.getvalue()

@@ -15,9 +15,7 @@
 				<dd>
 					<tbody>
 						<tr>
-							{% for doer in mission_view[0]['mission_doer']%}
-							<a href="/doer_info?doer={{doer}}" target="dialog" s>{{doer}}</a>
-							{%endfor%}
+									<a href="/doer_info?doer={{mission_view[0]['mission_doer']}}" target="dialog" s>{{mission_view[0]['mission_doer']}}</a>
 						</tr>
 					</tbody>
 				</dd>

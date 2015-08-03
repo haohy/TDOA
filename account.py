@@ -58,7 +58,7 @@ def account_save(account_name, account_sex, account_username, account_work, acco
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("insert into account \
+	cursor.execute("insert into ACCOUNT \
 		(account_password, account_name, account_sex, account_username, account_work, account_position, account_phone,account_address,account_email,account_department, account_power)\
 		value ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');\
 		"%(account_password, account_name.encode('utf-8'), account_sex.encode('utf-8'), account_username.encode('utf-8'), account_work.encode('utf-8'), account_position.encode('utf-8'), account_phone.encode('utf-8'),account_address.encode('utf-8'),account_email.encode('utf-8'),account_department.encode('utf-8'),account_power))
@@ -71,9 +71,9 @@ def account_list(account_department = '*'):
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if account_department != '*':
 		account_department = int(account_department)
-		cursor.execute("select * from account where account_department='%s';"%account_department)
+		cursor.execute("select * from ACCOUNT where account_department='%s';"%account_department)
 	elif account_department =='*':
-		cursor.execute("select account_username from account where account_name='user';")
+		cursor.execute("select account_username from ACCOUNT where account_name='user';")
 	account_username = cursor.fetchall()
 	a = []
 	for i in range(len(account_username)):
@@ -88,9 +88,9 @@ def account_list_view(account_department = '*'):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if account_department != '*':
-		cursor.execute("select * from account where account_department='%s';"%account_department)
+		cursor.execute("select * from ACCOUNT where account_department='%s';"%account_department)
 	elif account_department =='*':
-		cursor.execute("select * from account where account_name='user';")
+		cursor.execute("select * from ACCOUNT where account_name='user';")
 	a = cursor.fetchall()
 	conn.close()
 	return a
@@ -100,7 +100,7 @@ def account_view(account_id):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("select * from account where account_id='%s';"%account_id)
+	cursor.execute("select * from ACCOUNT where account_id='%s';"%account_id)
 	a = cursor.fetchall()
 	conn.close()
 	return a
@@ -124,7 +124,7 @@ def account_delete(account_id):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("delete from account where account_id = '%s';"%account_id)
+	cursor.execute("delete from ACCOUNT where account_id = '%s';"%account_id)
 	conn.commit()
 	conn.close()
 	return "账号删除成功"
@@ -134,7 +134,7 @@ def account_update(account_name, account_sex, account_username, account_work, ac
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("update account set \
+	cursor.execute("update ACCOUNT set \
 			account_name = '%s', \
 			account_sex = '%s',\
 			account_username = '%s', \
@@ -154,7 +154,7 @@ def get_account_info(user):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 
-	cursor.execute("SELECT * FROM account WHERE account_username='%s'"%user)
+	cursor.execute("SELECT * FROM ACCOUNT WHERE account_username='%s'"%user)
 	account_info = cursor.fetchone()
 	return account_info
 
@@ -163,7 +163,7 @@ def save_info(args):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 
-	cursor.execute("update account SET \
+	cursor.execute("update ACCOUNT SET \
 					account_username='%s', \
 					account_sex = '%s',\
 					account_phone='%s', \

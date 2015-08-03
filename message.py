@@ -14,7 +14,7 @@ def message_save(mission_id, message_content, message_time, message_leaver, mess
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 
-	cursor.execute("insert into message \
+	cursor.execute("insert into MESSAGE \
 		(mission_id, message_content, message_time, message_leaver, message_type) values ('%s', '%s', '%s', '%s', '%s');\
 		"%(int(mission_id), message_content.encode('utf-8'), message_time, message_leaver.encode('utf-8'), int(message_type)))
 	conn.commit()
@@ -28,10 +28,10 @@ def message_save(mission_id, message_content, message_time, message_leaver, mess
 # 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 # 	#当 当前用户是发布者时，所有留言可见
 # 	if role == 'mission_publisher':
-# 		cursor.execute("select * from message where mission_id = '%s';"%(mission_id))
+# 		cursor.execute("select * from MESSAGE where mission_id = '%s';"%(mission_id))
 # 		message_list = cursor.fetchall()
 # 	elif role == 'mission_doer':
-# 		cursor.execute("select * from message where mission_id = '%s' and message_leaver in ('%s','%s');\
+# 		cursor.execute("select * from MESSAGE where mission_id = '%s' and message_leaver in ('%s','%s');\
 # 			"%(mission_id, mission_publisher, user))
 # 		message_list = cursor.fetchall()
 # 	conn.close()
@@ -49,10 +49,10 @@ def message_list(mission_id):
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	#当 当前用户是发布者时，所有留言可见
 	# if role == 'mission_publisher':
-	cursor.execute("select * from message where mission_id = '%s';"%(mission_id))
+	cursor.execute("select * from MESSAGE where mission_id = '%s';"%(mission_id))
 	message_list = cursor.fetchall()
 	# elif role == 'mission_doer':
-	# 	cursor.execute("select * from message where mission_id = '%s' and (message_leaver ='%s' or message_type = '1');\
+	# 	cursor.execute("select * from MESSAGE where mission_id = '%s' and (message_leaver ='%s' or message_type = '1');\
 	# 		"%(mission_id, user))
 	# message_list = cursor.fetchall()
 	conn.close()
