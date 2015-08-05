@@ -23,17 +23,12 @@
       {% for m in mission_list %}
         <tr target="sid_user" class="center"> 
           <td>
-            <a href="/view_mission/?type=mission_publisher&mission_id={{m['mission_id']}}&mission_status=执行中&mission_sta=t&mission_doer={{m['mission_doer']}}" target="navTab">
+            <a href="/view_mission/?type=mission_publisher&mission_id={{m['mission_id']}}&mission_status=执行中&mission_sta=doing&mission_doer={{m['mission_doer']}}" target="navTab">
                  <div>{{m['mission_name']}}</div>
             </a>
           </td>
           <td>
-            <div>
-           <!--  {% for m_doer in m.mission_doer %}
-              {{m_doer}}
-            {% endfor %} -->
-            {{m['mission_doer']}}
-            </div>
+            <div>{{m['mission_doer']}}</div>
           </td>
           <td>
              <div>{{m['mission_starttime']}}</div>

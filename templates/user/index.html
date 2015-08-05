@@ -89,7 +89,7 @@ $(function(){
             <li>
               <a href="http://www.tdxy.com.cn/html/jwc/" target="navTab" rel="baidu">通达学院教务处</a>
             </li>
-            <li>
+            <!-- <li>
               <a href="/new_mission" target="navTab" rel="new_mission">新建任务</a>
             </li>
             <li>
@@ -103,14 +103,30 @@ $(function(){
             </li>
             <li>
             <a href="/mission_state/?type=mission_publisher" target="navTab" rel="mission_state_pub">已建任务动态</a>
-            </li>
+            </li> --> 
+              <li><a>接受的任务</a>
+                <ul>
+                  <li><a href="/my_mission/?type=mission_doer" target="navTab" rel="my_mission_pub">执行中任务</a></li>
+                  <li><a href="/mission_state/?type=mission_doer&status=已提交&mission_sta=done" target="navTab" rel="mission_done">已提交任务</a></li>
+                  <li><a href="/mission_state/?type=mission_doer&status=未通过&mission_sta=undone" target="navTab" rel="mission_not">未通过任务</a></li>
+                </ul>
+              </li>
+              <li><a>发布的任务</a>
+                <ul>
+                  <li><a href="/new_mission" target="navTab" rel="new_mission">新建任务</a></li>
+                  <li><a href="/my_mission/?type=mission_publisher" target="navTab" rel="my_mission_pub">执行中任务</a></li>
+                  <li><a href="/mission_state/?type=mission_publisher&status=已提交&mission_sta=done" target="navTab" rel="mission_done">已提交任务</a></li>
+                  <li><a href="/mission_state/?type=mission_publisher&status=未通过&mission_sta=undone" target="navTab" rel="mission_not">未通过任务</a></li>
+                </ul>
+              </li>
+            
             <li>
               <a href="/search" target="navTab" rel="search">高级检索</a>
             </li>
             <li>
               <a href="download_list" target="navTab" rel="download">常用下载</a>
             </li>
-          </ul>
+            </ul>
         </div>
 
       </div>

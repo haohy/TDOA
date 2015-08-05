@@ -12,16 +12,16 @@
 			</dl>
 			<dl class="nowrap">
 				<dt>任务执行者：</dt>
+				<dd><a href="/doer_info?doer={{mission_doer}}" target="dialog" s>{{mission_doer}}</a></dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>所有执行者：</dt>
 				<dd>
-					<tbody>
 						<tr>
-							{% for i in range(length)%}
-								{% for doer in mission_view[i]['mission_doer']%}
-									<a href="/doer_info?doer={{doer}}" target="dialog" s>{{doer}}</a>
-								{% endfor %}
+							{% for doer in mission_view[0]['mission_doer']%}
+								<a href="/doer_info?doer={{doer}}" target="dialog" s>{{doer}}</a>
 							{%endfor%}
 						</tr>
-					</tbody>
 				</dd>
 			</dl>
 			<dl class="nowrap">

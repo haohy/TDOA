@@ -239,15 +239,19 @@ class my_mission(object):
 		if session.login == 1:
 			if session.user:
 				#找到当前账户所有任务
+				#mission_list包含mission_name,mission_id,mission_publisher,mission_starttime,mission_plan_end_time,mission_status,mission_doer
 				mission_list = mission.mission_list(account_name=session.user, role=web.input().type,mission_status='执行中')
+				# if len(mission_list) == 0:
+				# 	mission_list = [{}]
 				print "mission_list on my_mission"
 				print mission_list
 				page_info = {'page':1}
 				page_info['count'] = len(mission_list)
 				mission_list = mission_list[0:30]
 				return render_template(type=session.type, \
-					template_name='my_'+web.input().type+'.html', 
-					user=session.user, mission_list=mission_list, \
+					template_name='my_'+web.input().type+'.html',\
+					user=session.user, \
+					mission_list=mission_list, \
 					page_info = page_info)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -281,21 +285,23 @@ class mission_state(object):
 	def GET(self ,args):
 		if session.login == 1:
 			if session.user:
-				mission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='待接受')
-				sission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已提交')
-				wission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='未通过')
-				yission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status='已完成')
+				mission_list = mission.mission_view(account_name = session.user, role=web.input().type, mission_status=web.input().status)
 				#当已建任务动态为空时，防止卡死
-				if not mission_list and not sission_list and not wission_list and not yission_list :
-					mission_list=sission_list=wission_list=yission_list=[{}]
+				if not mission_list:
+					mission_list = [{'mission_doer':''}]
+				if str(web.input().type) == 'mission_doer':
+					mission_doer = session.user
+				elif str(web.input().type) == 'mission_publisher':
+					mission_doer = mission_list[0]['mission_doer']
+				else:
+					mission_doer = session.user
 				return render_template(type=session.type, \
 					template_name='mission_state.html', \
 					user=session.user, \
 					mission_list = mission_list, \
-					wission_list = wission_list, \
-					sission_list = sission_list, \
-					yission_list = yission_list, \
-					role = web.input().type)
+					role = web.input().type,\
+					mission_sta = web.input().mission_sta,\
+					mission_doer = mission_doer )
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:
@@ -524,21 +530,22 @@ class view_mission(object):
 				role = web.input().type
 				mission_sta = web.input().mission_sta
 				mission_id = web.input().mission_id
-				if role == 'mission_doer':
-					mission_doer = session.user
-				elif role == 'mission_publisher':
-					if mission_status == '已提交' or mission_status == '待接受' or mission_status == '未通过' or mission_status == '已完成':
-						role = 'mission_doer'
-					mission_doer = web.input().mission_doer
-				else:
-					print "not mission_doer and not mission_publisher"
+				mission_doer = web.input().mission_doer
+				# if role == 'mission_doer':
+				# 	mission_doer = session.user
+				# elif role == 'mission_publisher':
+				# 	if mission_status == '已提交' or mission_status == '待接受' or mission_status == '未通过' or mission_status == '已完成':
+				# 		role = 'mission_doer'
+				# 	mission_doer = web.input().mission_doer
+				# else:
+				# 	print "not mission_doer and not mission_publisher"
 				print "mission_doer,role,mission_id,mission_status"
 				print mission_doer
 				print role
 				print mission_id
 				print mission_status
-				m = mission.mission_view_status(mission_doer,role,mission_id,mission_status)
-				length = len(m)
+				mission_view = mission.mission_view_status(mission_doer,role,mission_id,mission_status)
+				length = len(mission_view)
 				print "message_list = message.message_list(mission_id)iiiiiiiiiiiiiiiiiiiiiiiii"
 				# message_list = message.message_list(mission_id, web.input().type, session.user, m[0]['mission_publisher'])
 				message_list = message.message_list(mission_id)
@@ -547,9 +554,10 @@ class view_mission(object):
 					message_list = [{}]
 				print ".....mmmmmmmmmmmmmmmmmmmmmmmm."
 				return render_template(
-					type=session.type,template_name='view_'+web.input().type+'_'+mission_sta+'.html',
+					type=session.type,\
+					template_name='view_'+web.input().type+'_'+mission_sta+'.html',
 					user=session.user,
-					mission_view=m,
+					mission_view=mission_view,
 					length = length,
 					mission_doer = mission_doer,
 					message_list = message_list)

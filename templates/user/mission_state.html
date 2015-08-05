@@ -2,10 +2,10 @@
 <h2 class="contentTitle">任务动态</h2>
 
  -->
-<div class="pageContent sortDrag" selector="h1" layoutH="42">
+<!-- <div class="pageContent sortDrag" selector="h1" layoutH="42">
 
 	<div class="panel" defH="150">
-		<h1>新动态</h1>
+		<h1>新动态</h1> -->
 		<div>
 			<table class="list" width="98%">
 				<thead>
@@ -21,7 +21,7 @@
 				<tbody>
 				{% for m in mission_list %}
 					<tr>
-						<td><a href="/view_mission/?mission_status=待接受&type={{role}}&mission_id={{m['mission_id']}}&mission_sta=j&mission_doer={{m['mission_doer']}}" target="navTab" rel="newstate"><div>{{m['mission_name']}}</div></a></td>
+						<td><a href="/view_mission/?mission_status={{m['mission_status']}}&type={{role}}&mission_id={{m['mission_id']}}&mission_sta={{mission_sta}}&mission_doer={{m['user']}}" target="navTab" rel="newstate"><div>{{m['mission_name']}}</div></a></td>
 						<td>{{m['mission_publisher']}}</td>
 						<td>
 						{% for m_doer in m.mission_doer %}
@@ -36,8 +36,8 @@
 				</tbody>
 			</table>
 		</div>
-	</div>
-	<div class="panel close collapse" minH="100" defH="150">
+	<!-- </div> -->
+	<!-- <div class="panel close collapse" minH="100" defH="150">
 		<h1>已提交</h1>
 		<div>
 			<table class="list" width="98%">
@@ -67,8 +67,8 @@
 							</tbody>
 						</table>
 		</div>
-	</div>
-	<div class="panel close collapse" minH="100" defH="150">
+	</div> -->
+	<!-- <div class="panel close collapse" minH="100" defH="150">
 		<h1>未通过</h1>
 		<div>
 			<table class="list" width="98%">
@@ -98,9 +98,9 @@
 							</tbody>
 						</table>
 		</div>
-	</div>
+	</div> -->
 
-	<div class="panel close collapse" minH="100" defH="150">
+	<!-- <div class="panel close collapse" minH="100" defH="150">
 		<h1>已完成</h1>
 		<div>
 			<table class="list" width="98%">
@@ -130,8 +130,5 @@
 							</tbody>
 						</table>
 		</div>
-	</div>
-
-
-
-</div>
+	</div> -->
+<!-- </div> -->
