@@ -9,7 +9,8 @@ from PIL import Image, ImageFont, ImageDraw, ImageColor
 def SQLconn():
 	#SQL连接参数
 	# conn = {"host":"qdm157632221.my3w.com", "user":"qdm157632221", "passwd":"hongyan0408", "charset":"utf8", "db":"qdm157632221_db"}
-	conn = {"host":"qdm157632221.my3w.com", "db":"qdm157632221_db", "user":"qdm157632221", "passwd":"hongyan0408", "charset":"utf8"}
+	#conn = {"host":"qdm157632221.my3w.com", "db":"qdm157632221_db", "user":"qdm157632221", "passwd":"hongyan0408", "charset":"utf8"}
+	conn = {"host":"127.0.0.1", "db":"tdoa", "user":"root", "passwd":"hongyan0408", "charset":"utf8"}
 
 	return conn
 
@@ -118,9 +119,9 @@ def get_color():
 
 # get random font-size
 def get_font():
-	return ImageFont.truetype("arial.ttf", random.randrange(15,25,5))
+	#return ImageFont.truetype("arial.ttf", random.randrange(15,25,5))
 	
-	# return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", random.randrange(15,25,5))
+	return ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", random.randrange(15,25,5))
 
 # make code image
 def make_check_code_image(image=''):

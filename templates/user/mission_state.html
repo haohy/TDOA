@@ -1,3 +1,11 @@
+<form id="pagerForm" method="post" action="/my_mission/">
+  <input type="hidden" name="status" value="${param.status}">
+  <input type="hidden" name="keywords" value="${param.keywords}" />
+  <input type="hidden" name="pageNum" value="1" />
+  <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
+  <input type="hidden" name="orderField" value="${param.orderField}" />
+  <input type="hidden" name="type" value="mission_doer">
+</form>
 <!-- 
 <h2 class="contentTitle">任务动态</h2>
 
@@ -6,32 +14,34 @@
 
 	<div class="panel" defH="150">
 		<h1>新动态</h1> -->
-		<div>
-			<table class="list" width="98%">
+		<div class="pageContent" >
+			<table class="table" width="98%" layoutH="48">
 				<thead>
-					<tr>
-						<th width="200">任务名称</th>
-       					<th width="120">发布者</th>
-						<th width="100">执行者</th>
-						<th width="110">开始日期</th>
-						<th width="110">预计结束日期</th>
-						<th width="80">任务状态</th>
+					<tr class="center" >
+						<th width="30%">任务名称</th>
+       						<th width="15%">发布者</th>
+						<th width="15%">执行者</th>
+						<th width="15%">开始日期</th>
+						<th width="15%">预计结束日期</th>
+						<th width="10%">任务状态</th>
 					</tr>
 				</thead>
 				<tbody>
 				{% for m in mission_list %}
-					<tr>
+					{% if m['mission_name'] %}
+					<tr class="center">
 						<td><a href="/view_mission/?mission_status={{m['mission_status']}}&type={{role}}&mission_id={{m['mission_id']}}&mission_sta={{mission_sta}}&mission_doer={{m['user']}}" target="navTab" rel="newstate"><div>{{m['mission_name']}}</div></a></td>
 						<td>{{m['mission_publisher']}}</td>
 						<td>
 						{% for m_doer in m.mission_doer %}
-			            	{{m_doer}}
-			            {% endfor %}
-			            </td>
+			            			{{m_doer}}
+			            		{% endfor %}
+	             			        </td>
 						<td>{{m['mission_starttime']}}</td>
 						<td>{{m['mission_plan_end_time']}}</td>
 						<td>{{m['mission_status']}}</td>
 					</tr>
+					{% endif %}
 				{% endfor %}
 				</tbody>
 			</table>

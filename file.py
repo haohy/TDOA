@@ -26,14 +26,27 @@ def file_list(file_type, mission_id, role):
 	print "file_list(file_type, mission_id, role)   :"
 	print  file_list
 	conn.close()
-
 	file_list = list(file_list)
 	#按照file_upload_time排序
 	file_list = sorted(file_list, key=lambda file_list: file_list['file_upload_time'])
-
 	return file_list
 	
-
+def file_all_list(file_type, mission_id):
+	#附件列表
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	print "file_type,file_uploader,mission_id"
+	print file_type,mission_id
+	cursor.execute("select * from FILE WHERE file_type = '%s' and mission_id = '%s' ;"%(file_type, mission_id))
+	file_list = cursor.fetchall()
+	print "file_list(file_type, mission_id, role)   :"
+	print  file_list
+	conn.close()
+	file_list = list(file_list)
+	#按照file_upload_time排序
+	file_list = sorted(file_list, key=lambda file_list: file_list['file_upload_time'])
+	return file_list
 
 def upload(mission_id,file_name,file_url,file_uploader,file_upload_time,file_type):
 	#上传附件

@@ -140,7 +140,7 @@ def mission_delete(mission_id):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor()
 	try:
-		cursor.execute("update MISSIONS_DOERS set mission_status='已关闭' where mission_id = %s;"%(mission_id))
+		cursor.execute("update MISSIONS_DOERS set mission_status='已删除' where mission_id = %s;"%(mission_id))
 		conn.commit()
 	except Exception, e:
 		conn.close()
@@ -307,7 +307,7 @@ def mission_sta_change(mission_id ,mission_status,mission_doer):
 			mission_doers = list(cursor.fetchall())
 			doer_str = ''
 			for doer in mission_doers:
-				doer_str += doer['mission_doer']
+				doer_str = doer_str + doer['mission_doer'] + ','
 			end_time = time.strftime('%Y-%m-%d',time.localtime(time.time()))
 			cursor.execute("SELECT * FROM MISSION WHERE mission_id = '%s'"%mission_id)
 			content = cursor.fetchone()
@@ -390,6 +390,16 @@ def get_mission_content(mission_id, mission_doer,mission_status):
 	 					FROM HISTORY_MISSION \
 						WHERE mission_id='%s'"%mission_id)
 		mission = list(cursor.fetchall())
+		if not mission:
+			cursor.execute("SELECT *\
+                                FROM MISSION JOIN MISSIONS_DOERS\
+                                ON MISSION.mission_id=MISSIONS_DOERS.mission_id\
+                                WHERE mission_doer = '%s' AND MISSION.mission_id='%s'"%(mission_doer, mission_id))
+			mission += list(cursor.fetchall())
+		doer_list = mission[0]['mission_doer']
+		doer_list = doer_list.strip(',')
+		doers = doer_list.split(',')
+		mission[0]['mission_doer'] = doers
 		return mission
 	mission = list()
 	cursor.execute("SELECT *\
@@ -397,7 +407,10 @@ def get_mission_content(mission_id, mission_doer,mission_status):
 	 				ON MISSION.mission_id=MISSIONS_DOERS.mission_id\
 					WHERE mission_doer = '%s' AND MISSION.mission_id='%s'"%(mission_doer, mission_id))
 	mission += list(cursor.fetchall())
-
+	doer_list = mission[0]['mission_doer']
+	doer_list = doer_list.strip(',')
+	doers = doer_list.split(',')
+	mission[0]['mission_doer'] = doers
 	return mission
 
 

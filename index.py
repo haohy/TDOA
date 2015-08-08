@@ -700,8 +700,11 @@ class upload_files(object):
 			if session.user:
 				# if file_type == '0' or file_type == '1':
 				mission_id = arg.mission_id
-				role = arg.role.rstrip(',')
-				list = file.file_list(file_type, mission_id, role)
+				role = arg.role
+				if role == 'all':
+					list = file.file_all_list(file_type,mission_id)
+				else:
+					list = file.file_list(file_type, mission_id, role)
 				return render_template(type=session.type, template_name='upload_files.html',file_list=list)
 				# elif file_type == '2':
 				# 	mission_name = arg.mission_name

@@ -20,7 +20,9 @@
 				<dd>
 					<tbody>
 						<tr>
-							<a href="/doer_info?doer={{mission_view[0]['mission_doer']}}" target="dialog" s>{{mission_view[0]['mission_doer']}}</a>
+							{%for doer in mission_view[0]['mission_doer']%}
+							<a href="/doer_info?doer={{doer}}" target="dialog" s>{{doer}}</a>
+							{%endfor%}
 						</tr>
 					</tbody>
 				</dd>
@@ -61,7 +63,7 @@
 			<div class="tabsHeaderContent">
 				<ul>
 					<li><a href="/upload_files/?type=0&role={{mission_view[0]['mission_publisher']}}&mission_id={{mission_view[0]['mission_id']}}" class="j-ajax"><span>初始参考附件</span></a></li>
-					<li><a href="/upload_files/?type=2&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_doer']}}" class="j-ajax"><span>任务完成提交附件</span></a></li>
+					<li><a href="/upload_files/?type=2&mission_id={{mission_view[0]['mission_id']}}&role=all" class="j-ajax"><span>任务完成提交附件</span></a></li>
 				</ul>
 			</div>
 		</div>
