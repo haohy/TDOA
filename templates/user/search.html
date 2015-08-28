@@ -1,0 +1,105 @@
+<div class="pageHeader">
+  <form rel="pagerForm" onsubmit="return navTabSearch(this);" action="search" method="post" >
+  <div class="searchBar">
+    <table class="searchContent" style="width:600px;float:left;">
+      <tr>
+        <td>
+          <div class="gridCol" title="任务名">任务名：<input name="search_str" type="text" class="textInput" value="{{arg.search_str}}"></div>
+        </td>
+        <td>
+            <div class="gridCol">
+                发布者
+                <select name="mission_publisher" id="mission_doer">
+                    <option value="{{arg.mission_publisher}}">{{arg.mission_publisher}}</option>
+                    <option value="">全部</option>
+                    {% for i in account_list %}
+                        <option value="{{i}}">{{i}}</option>
+                    {% endfor  %}
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="gridCol">
+                执行者
+                <select name="mission_doer" id="mission_doer">
+                    <option value="{{arg.mission_doer}}">{{arg.mission_doer}}</option>
+                    <option value="">全部</option>
+                    {% for i in account_list %}
+                        <option value="{{i}}">{{i}}</option>
+                    {% endfor  %}
+                </select>
+            </div>
+            
+        </td>
+        <td>
+            状态：
+            <select name="mission_status">
+                <option value="{{arg.mission_status}}">{{arg.mission_status}}</option>
+                <option value="">全部</option>
+                <option value="待接受">待接受</option>
+                <option value="执行中">执行中</option>
+                <option value="已提交">已提交</option>
+                <option value="未通过">未通过</option>
+                <option value="已完成">已完成</option>
+            </select>
+        </td>
+        <td>
+            开始时间：<input name="mission_start_time" type="text" class="date textInput readonly" readonly="true" value="{{arg.mission_start_time}}" style="width:70px">
+        </td>
+        <td>
+            结束时间：<input name="mission_end_time" type="text" class="date textInput readonly" readonly="true" value="{{arg.mission_end_time}}" style="width:70px">
+        </td>
+        <td><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></td>
+      </tr>
+    </table>
+  </div>
+  </form>
+</div>
+<div class="pageContent">
+        <table class="table" width="100%" layoutH="86">
+                <thead>
+                      <tr class="center">
+                        <th>任务名称</th>
+                        <th width="100">发布者</th>
+                        <th width="100">执行者</th>
+                        <th width="100">任务状态</th>
+                        <th width="100">开始时间</th>
+                        <th width="100">结束时间</th>
+                      </tr>
+                    </thead>
+                <tbody>
+                {% for m in mission_list %}
+                    <tr target="sid_user" rel="1" >
+                        <td class="mission_name center"><a href="/search_view_mission/?mission_id={{m['mission_id']}}&mission_doer={{m['mission_doer']}}&mission_status={{m['mission_status']}}" target="dialog" width="700" height="500"><div>{{m['mission_name']}}</div></a></td>
+                        <td class="account center"><a href="/calendar_view/?account={{m['mission_publisher']}}" target="dialog" width="800" height="600"><div>{{m['mission_publisher']}}</div></a></td>
+                        <td class="account center"><div>{{m['mission_doer']}}</div></td>
+                        <td class="center"><div class="mission_status">{{m['mission_status']}}</div></td>
+                        <td class="center"><div class="mission_start_time">{{m['mission_starttime']}}</div></td>
+                        <td class="center"><div class="mission_end_time">{{m['mission_plan_end_time']}}</div></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+        </table>
+        <div class="panelBar">
+                <div class="pages">
+                        <span>每页显示</span>
+                        <!-- <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                        </select> -->
+                        <span>30条，共{{count}}条</span>
+                </div>
+                
+                <div class="pagination" targetType="navTab" totalCount="{{count}}" numPerPage="30" pageNumShown="{{count//30+1}}" currentPage="{{arg.pageNum}}"></div>
+
+        </div>
+</div>
+<form id="pagerForm" method="post" action="search">
+<!--         <input type="hidden" name="status" value="${param.status}">
+        <input type="hidden" name="keywords" value="${param.keywords}" /> -->
+        <input type="hidden" name="pageNum" value="1" />
+        <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
+<!--         <input type="hidden" name="orderField" value="${param.orderField}" /> -->
+</form>

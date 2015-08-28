@@ -1,0 +1,98 @@
+<div class="pageContent">
+	<form method="post" action="/new_account" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<div class="pageFormContent" layoutH="56">
+			<p>
+				<label>账号权限</label>
+					<input type="radio" value="user" name="account_name" checked="checked">user
+					<input type="radio" value="admin" name="account_name">admin
+			</p>
+			<p>
+				<label>用户性别</label>
+					<input type="radio" value="男" name="account_sex" checked="checked">男
+					<input type="radio" value="女" name="account_sex">女
+			</p>
+			<p>
+				<label>用户名（真实姓名）</label>
+				<input type="text" size="30" name="account_username" class="textInput valid">
+			</p>
+
+			<p>
+				<label>工号</label>
+				<input type="text" size="30" name="account_work" class="textInput valid">
+			</p>
+			<p>
+				<label>职位</label>
+				<input type="text" size="30" name="account_position" class="textInput valid">
+			</p>
+			<p>
+				<label>手机号</label>
+				<input type="text" size="30" name="account_phone" class="textInput valid">
+			</p>
+			<p>
+				<label>住址</label>
+				<input type="text" size="30" name="account_address" class="textInput valid">
+			</p>
+			<p>
+				<label>邮箱</label>
+				<input type="text" size="30" name="account_email" class="textInput valid">
+			</p>
+			
+			<p>
+				<label>所属科室</label>
+				<select name="account_department" class="required">
+					<option value="0">请选择</option>
+					<option value="教务管理科">教务管理科</option>
+					<option value="考试中心">考试中心</option>
+					<option value="教学研究科">教学研究科</option>
+					<option value="实践教学科">实践教学科</option>
+					<option value="综合管理科">综合管理科</option>
+					<option value="教师教学发展中心">教师教学发展中心</option>
+				</select>
+			</p>
+			<p>
+				<label>查看任务权限</label>
+				<select name="account_power1" class="required">
+					<option value="0">请选择</option>
+					<option value="1">只能查看自己的任务</option>
+					<option value="2">可查看同科室其他人任务</option>
+					<option value="3">可查看同处所有人任务</option>
+				</select>
+			</p>
+			<p>
+				<label>查看日程表权限</label>
+				<select name="account_power2" class="required">
+					<option value="0">请选择</option>
+					<option value="1">只能查看自己的日程表</option>
+					<option value="2">可查看同科室其他人日程表</option>
+					<option value="3">可查看同处所有人日程表</option>
+				</select>
+			</p>
+			<p>
+				<label>修改已保存任务权限？</label>
+				<select name="account_power3" class="required">
+					<option value="0">请选择</option>
+					<option value="1">允许修改</option>
+					<option value="2">不允许修改</option>
+				</select>
+			</p>
+			<p>
+				<label>文件管理权限</label>
+				<select name="account_power4" class="required">
+					<option value="0">请选择</option>
+					<option value="1">允许操作</option>
+					<option value="2">不允许操作</option>
+				</select>
+			</p>
+			
+		</div>
+		<div class="formBar">
+			<ul>
+				<!--<li><a class="buttonActive" href="javascript:;"><span>淇濆瓨</span></a></li>-->
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">提交</button></div></div></li>
+				<li>
+					<div class="button"><div class="buttonContent"><button type="button" class="close">取消</button></div></div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

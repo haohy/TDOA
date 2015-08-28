@@ -1,0 +1,37 @@
+#doerInfo{
+	width: 35%;
+	height: 68px;
+	float: left;
+	margin-left: 20px;
+	padding-left: 20px;
+	background-color: rgb(238,244,245);
+}
+.doer_info{
+	float: left;
+	line-height: 68px;
+	margin: auto;
+	font-size: large;
+	font-family: 微软雅黑;
+}
+.mission_title{
+	font-size: large;
+	font-family: 微软雅黑;
+}
+#missionInfo{
+	width: 35%;
+	height: 500px;
+	position: relative;
+	top: 80px;
+	padding-left: 20px;
+	margin-left: 20px;
+	background-color: rgb(238,244,245);
+}
+.nowrap{
+	font-size: large;
+	font-family: 微软雅黑;
+	margin-bottom: 20px;
+}
+.mission_content{
+	padding: 10px;
+	padding-left: 20px;
+}

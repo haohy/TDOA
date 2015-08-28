@@ -1,0 +1,75 @@
+<h2 class="contentTitle">创建新任务</h2>
+<form method="post" enctype="multipart/form-data" action="/new_mission" class="pageForm required-validate" onsubmit="return iframeCallback(this);">
+  <div class="pageContent">
+
+    <div class="pageFormContent" layoutH="97">
+      <dl>
+        <dt>任务名称：</dt>
+        <dd>
+          <input name="mission_name" class="required" alt="请输入任务名称200字符以内" type="text" value="{{mission_name}}" style="width:600px;"></dd>
+      </dl>
+      <dl class="nowrap">
+        <dt>任务详情：</dt>
+        <dd>
+          <textarea class="editor" name="mission_content" rows="20" cols="90">{{mission_content}}</textarea>
+        </dd>
+      </dl>
+      <dl>
+        <dt>任务开始时间：</dt>
+        <dd>
+          <input name="mission_starttime" class="date" readonly="readonly" value="{{mission_starttime}}" type="text">
+          <a href="javascript:void(0)" class="inputDateButton">选择</a>
+        </dd>
+      </dl>
+      <dl>
+        <dt>任务结束时间：</dt>
+        <dd>
+          <input name="mission_plan_end_time" class="date" readonly="readonly" value="{{mission_plan_end_time}}" type="text">
+          <a href="javascript:void(0)" class="inputDateButton">选择</a>
+        </dd>
+      </dl>
+      <dl id="mission_doerselect">
+        <dt>执行人：</dt>
+        <dd>
+          <input type="text" name="mission_doers" id="doers"></dd>
+        <br>
+        <div id="dddoer">
+          <ul id="doerlist">
+            {% for a in account_list %}
+            <li style="width: 150px; height: 25px">
+              <input type="checkbox" value="{{a}}">{{a}}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </dl>
+      <dl>
+        <dt>上传参考文件：</dt>
+        <dd>
+          <input type="file" name="myfile" />
+        </dd>
+      </dl>
+    </div>
+
+    <div class="formBar">
+      <ul>
+        <li>
+          <div class="buttonActive">
+            <div class="buttonContent">
+              <button type="submit">保存</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="button">
+            <div class="buttonContent">
+              <button type="reset">重置</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</form>
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/diy.js" type="text/javascript"></script>
