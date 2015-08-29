@@ -365,14 +365,15 @@ class new_mission(object):
 						print "file_url = x.myfile.filename = :"
 						print file_url
 						file_name=file_url.split('/')[-1] # splits the and chooses the last part (the filename with extension)
-						file_url = './uploads/'+user+'/'+file_name
-						fout = open(filedir +'/'+ file_name,'wb') # creates the FILEwhere the uploaded FILEshould be stored
-						fout.write(x.myfile.file.read()) # writes the uploaded FILEto the newly created file.
-						fout.close() # closes the file, upload complete.
-						file_upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-						file.upload(mission_id,file_name,file_url, user,file_upload_time,file_type)
+						if file_name != "":
+							file_url = './uploads/'+user+'/'+file_name
+							fout = open(filedir +'/'+ file_name,'wb') # creates the FILEwhere the uploaded FILEshould be stored
+							fout.write(x.myfile.file.read()) # writes the uploaded FILEto the newly created file.
+							fout.close() # closes the file, upload complete.
+							file_upload_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+							file.upload(mission_id,file_name,file_url, user,file_upload_time,file_type)
 						ajax_result = {"statusCode":"200", "message":"任务新添加成功", "callbackType":"closeCurrent"}
-						return json.dumps(ajax_result)
+					return json.dumps(ajax_result)
 				#如果任务不合法，把已填写的表单数据返回给new_mission页面
 				"""
 				else:

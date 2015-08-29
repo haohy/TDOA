@@ -428,12 +428,12 @@ def get_mission_reference(args):
 		for m in mission_list_all:
 			num = difflib.SequenceMatcher(None, args.mission_name, m['mission_name']).ratio()
 			print 'similer:', num
-			if num > 0.7:
+			if args.mission_name in m['mission_name'] or num > 0.6:
 				mission_list.append(m)
 	elif 'file_name' in args and args.file_name != '':
 		for m in mission_list_all:
 			num = difflib.SequenceMatcher(None, args.file_name, m['mission_name']).ratio()
 			print 'similer:', num
-			if num > 0.7:
+			if args.file_name in m['file_name'] or num > 0.6:
 				mission_list.append(m)
 	return mission_list
