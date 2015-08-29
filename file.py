@@ -77,9 +77,13 @@ def get_download_list(type, args=None):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("SELECT file_name, mission_name, file_uploader, file_upload_time, mission_name, FILE.mission_id \
-					FROM FILE LEFT JOIN HISTORY_MISSION  \
-					ON FILE.mission_id = HISTORY_MISSION .mission_id")
+	cursor.execute("SELECT file_url, file_name, HISTORY_MISSION.mission_name, file_uploader, file_upload_time, mission_name, HISTORY_MISSION.mission_id  \
+					FROM FILE, HISTORY_MISSION \
+					WHERE FILE.mission_id = HISTORY_MISSION.mission_id\
+					UNION\
+					SELECT file_url, file_name, MISSION.mission_name, file_uploader, file_upload_time, mission_name, MISSION.mission_id  \
+					FROM FILE, MISSION \
+					WHERE FILE.mission_id = MISSION.mission_id")
 	file_list_all = list(cursor.fetchall())
 	file_list_search = list()
 	cursor.close()

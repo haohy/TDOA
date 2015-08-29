@@ -79,7 +79,11 @@ urls= (
 
 	)
 '''
+
+def my_loadhook():
+	web.header('Content-type', "text/html; charset=utf-8")
 app = web.application(urls, globals())
+app.add_processor(web.loadhook(my_loadhook))
 
 #session config，定义session能存储login,user,type三个值
 session = web.session.Session(app, web.session.DiskStore('sessions'),\
@@ -119,6 +123,7 @@ class index(object):
 	def GET(self):
 		if session.login==1:
 			if session.user:
+
 				return render_template(type=session.type,template_name='index.html',user=session.user)
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
@@ -165,7 +170,8 @@ class login_dialog(object):
 		if session.login==1:
 			return render_template(type=session.type,template_name='index.html',user=session.user)
 		else:
-			return render_template(type=session.type,template_name='login_dialog.html')
+			#return render_template(type=session.type,template_name='login_dialog.html')
+			raise web.seeother('login')
 	def POST(self):
 		user = web.input().user
 		#md5加密存储密码
@@ -225,9 +231,12 @@ class user_setting(object):
 	def POST(self):
 		if session.login == 1:
 			if session.user:
-				account.save_info(web.input())
-				return json.dumps({"statusCode":"200", "message":"修改成功"})
-				
+				if account.save_info(session.user, web.input()):
+					session.login=0
+					session.kill()
+					return json.dumps({"statusCode":"200", "message":"修改成功,请重新登陆"})
+				else:
+					return json.dumps({"statusCode":"300", "message":"请检查输入的密码并重试"})
 			else:
 				return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
 		else:

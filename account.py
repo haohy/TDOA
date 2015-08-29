@@ -158,11 +158,10 @@ def get_account_info(user):
 	account_info = cursor.fetchone()
 	return account_info
 
-def save_info(args):
+def save_info(user, args):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-
 	cursor.execute("update ACCOUNT SET \
 					account_username='%s', \
 					account_sex = '%s',\
@@ -173,5 +172,20 @@ def save_info(args):
 					;"% (args.username, args.account_sex,args.phone,\
 					args.email,str(args.account_address).encode('utf-8'), args.id))
 	conn.commit()
+	if args.get('oldpasswd'):
+		if args.get('newpassword1') == args.get('newpassword2'):
+			passwd = data.checkin(user)
+			newpassword1 = data.md5(args.get('newpassword1'))
+			oldpasswd = data.md5(args.get('oldpasswd'))
+			if oldpasswd == passwd[0]['account_password']:
+				cursor.execute("update ACCOUNT SET \
+						account_password = '%s'\
+						WHERE account_id = '%s'"\
+						%(newpassword1, args.get('id')))
+				conn.commit()
+			else:
+				return False
+		else:
+			return False
 	conn.close()
 	return True
