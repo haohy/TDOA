@@ -5,24 +5,25 @@
 			<th width="80">序号</th>
 			<th>文件名</th>
 			<th>上传时间</th>
-			<th>下载</th>
+			<th>操作</th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for m in file_list %}
+		{% set i = 1 %}
+		{% for i in range(file_list|length) %}
 		<tr>
 				<td>
-					     {{m['file_id']}}
+					     {{i+1}}
 				  </td>	
 				  <td>
 					
-						 {{m['file_name']}}
+						 {{file_list[i]['file_name']}}
 				  </td>
 				  <td>
-					     {{m['file_upload_time']}}
+					     {{file_list[i]['file_upload_time']}}
 				  </td>
 				  <td>
-				  	<a href="/download_file/?file_url={{m['file_url']}}&file_name={{m['file_name']}}">
+				  	<a href="/download_file/?file_url={{file_list[i]['file_url']}}&file_name={{file_list[i]['file_name']}}">
 						 下载
 					</a>
 				  </td>		  

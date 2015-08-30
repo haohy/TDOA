@@ -31,7 +31,7 @@
 			{% set i = 1 %}
 			{% for i in range(mission_list|length) %}
 			<tr target="sid_user" rel="1" class="center">
-				<td>{{ i }}</td>
+				<td>{{ i+1 }}</td>
 				<td class="mission_name center"><a href="/mission_reference_content/?mission_id={{mission_list[i]['mission_id']}}" target="dialog" width="600" height="400"><div>{{mission_list[i]['mission_name']}}</div></a></td>
 				<td>{{mission_list[i]['mission_starttime']}}</td>
 				<td>{{mission_list[i]['file_name']}}</td>
