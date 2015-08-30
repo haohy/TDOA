@@ -1,31 +1,43 @@
 <div class="pageContent">
-	<form method="post" action="/user_setting" class="pageForm required-validate" onsubmit="return iframeCallback(this);">
+	<form method="post" action="/user_setting" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
 		<div class="pageFormContent" layoutH="56">
-			<p>
+			<div class="unit">
 				<label>用户性别</label>
 					<input type="radio" value="男" name="account_sex" checked="checked">男
 					<input type="radio" value="女" name="account_sex">女
-			</p>
-			<p>
+			</div>
+			<div class="unit">
 				<label>用户名（真实姓名）</label>
 				<input type="text" size="30" name="username" class="textInput valid" value="{{user_info['account_username']}}">
-			</p>
-			<p>
+			</div>
+			<div class="unit">
 				<label>手机号</label>
 				<input type="text" size="30" name="phone" class="textInput valid" value="{{user_info['account_phone']}}">
-			</p>
-			<p>
+			</div>
+			<div class="unit">
 				<label>住址</label>
 				<input type="text" size="30" name="account_address" class="textInput valid" value="{{user_info['account_address']}}">
-			</p>
-			<p>
+			</div>
+			<div class="unit">
 				<label>邮箱</label>
 				<input type="text" size="30" name="email" class="textInput valid" value="{{user_info['account_email']}}">
-			</p>
-			<p>
-				<label>密码</label>
-				<input type="button" href="pwd_setting.html" value="修改密码">
-			</p>
+			</div>
+			<div class="unit">
+				<label>如需修改密码,请填写:</label>
+			</div>
+			<div class="unit">
+				<label>输入旧密码</label>
+				<input type="text" size="30" name="oldpasswd" class="textInput valid">
+			</div>
+			<div class="unit">
+				<label>输入新密码</label>
+				<input type="password" id="newpassword1" size="30" name="newpassword1" minlength="6" maxlength="20"/>
+			</div>
+			<div class="unit">
+				<label>再次输入新密码</label>
+				<input type="password" name="newpassword2" size="30" equalTo="#newpassword1"/>
+			</div>
+			<P style="display:none;"><input name="id" value="{{user_info['account_id']}}"></P>
 			
 		</div>
 		<div class="formBar">
