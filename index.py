@@ -40,6 +40,7 @@ urls= (
 	'/delete_mission/','delete_mission',
 	'/mission_audit/(.*)','mission_audit',
 	'/leave_message','leave_message',
+	'/mission_reference_content/(.*)','mission_reference_content',
 	# 文件操作
 	'/upload/(.*)','upload',
 	'/upload_files/(.*)','upload_files',
@@ -882,6 +883,19 @@ class mission_reference(object):
 					mission_list = mission_list
 				)
 		else:return json.dumps({"statusCode":"301", "message":"会话超时，请重新登录"})
+
+class mission_reference_content(object):
+	"""mission_reference_content"""
+	def GET(self,args):
+		if session.login == 1:
+			mission_content = mission.get_mission_by_id(web.input().mission_id)
+			return render_template(
+				type = session.type,
+				template_name = 'mission_reference_content.html',
+				mission_view = mission_content)
+		else:
+			return json.dumps({"statusCode":"301","message":"会话超时，请重新登陆"})
+
 
 ######################## admin 账号 #####################################
 class new_account(object):

@@ -57,7 +57,7 @@
 			{% for m in files %}
 				<tr target="sid_user" rel="1">
 					<td>{{m['file_name']}}</td>
-					<td><a href="/search_view_mission/?mission_id={{m['mission_id']}}&mission_doer={{m['mission_doer']}}&mission_status={{m['mission_status']}}" target="dialog"><div>{{m['mission_name']}}</div></a></td>
+					<td>{{m['mission_name']}}</td>
 					<td>{{m['file_uploader']}}</td>
 					<td>{{m['file_upload_time']}}</td>
 					<td><a href="/download_file/?file_url={{m['file_url']}}&file_name={{m['file_name']}}">下载</a></td>

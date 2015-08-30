@@ -418,7 +418,7 @@ def get_mission_reference(args):
 	c = data.SQLconn()
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-	cursor.execute("SELECT HISTORY_MISSION.mission_id, mission_name, mission_starttime, file_name, file_id\
+	cursor.execute("SELECT HISTORY_MISSION.mission_id, file_url, mission_name, mission_starttime, file_name, file_id\
 					FROM HISTORY_MISSION left JOIN FILE\
 					ON HISTORY_MISSION.mission_id=FILE.mission_id\
 					")
@@ -428,12 +428,26 @@ def get_mission_reference(args):
 		for m in mission_list_all:
 			num = difflib.SequenceMatcher(None, args.mission_name, m['mission_name']).ratio()
 			print 'similer:', num
-			if num > 0.7:
+			if args.mission_name in m['mission_name'] or num > 0.6:
 				mission_list.append(m)
 	elif 'file_name' in args and args.file_name != '':
 		for m in mission_list_all:
 			num = difflib.SequenceMatcher(None, args.file_name, m['mission_name']).ratio()
 			print 'similer:', num
-			if num > 0.7:
+			if args.file_name in m['file_name'] or num > 0.6:
 				mission_list.append(m)
 	return mission_list
+
+def get_mission_by_id(mission_id):
+	c = data.SQLconn()
+	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
+	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
+	cursor.execute("SELECT * FROM HISTORY_MISSION \
+					WHERE mission_id='%d';"%(int(mission_id)))
+	mission_content = list(cursor.fetchall())
+	mission_content[0]["mission_doer"] = list(mission_content[0]["mission_doer"].split(","))
+	print "mission_content"
+	print mission_content
+	#包含mission_id,mission_name,mission_content,mission_starttime,mission_plan_end_time,mission_endtime,\
+	#mission_publisher,mission_doer,mission_message,mission_appendix
+	return mission_content
