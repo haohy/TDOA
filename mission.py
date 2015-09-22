@@ -156,33 +156,34 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if str(role) == 'mission_doer':
 		if mission_status == "已完成":
-			cursor.execute("select '已完成' as mission_status, mission_name,mission_id, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, mission_endtime\
+			cursor.execute("select '已完成' as mission_status, mission_name,mission_id, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, mission_endtime, mission_doer\
 			from HISTORY_MISSION \
 			where instr(mission_doer ,'%s') >0 ;\
 			"%(account_name))
+			m_list_user = cursor.fetchall()
 		else:
 			cursor.execute("select MISSION.mission_name,MISSION.mission_id, MISSION.mission_publisher, MISSION.mission_content, MISSION.mission_starttime, MISSION.mission_plan_end_time, MISSIONS_DOERS.mission_status,MISSION.mission_pubtime \
 			from MISSIONS_DOERS, MISSION \
 			where MISSIONS_DOERS.mission_doer = '%s' and MISSIONS_DOERS.mission_status = '%s' and MISSIONS_DOERS.mission_id = MISSION.mission_id;\
 			"%(account_name, mission_status))
-		m_list_user = cursor.fetchall()
-		#将获取的m_list_user中的id存储到list_id列表中
-		list_id = []
-		for i in range(len(m_list_user)):
-			list_id.append(m_list_user[i]['mission_id'])
-		#将missions_doers中与mission中相同id对应的多执行者放到一个字典doerDict中，key为id，value为doers
-		doerDict = {}
-		for i in list_id:
-			cursor.execute("select mission_doer from MISSIONS_DOERS where mission_id = %s ;"%i)
-			m_list_doers = cursor.fetchall()
-			m_list_doers_list = []
-			for j in range(len(m_list_doers)):
-				m_list_doers_list.append(m_list_doers[j]['mission_doer'])
-			doerDict[i]=m_list_doers_list
-		#将doerDict和之前只缺少doers信息的m_list_mission合并起来，构成最后返回的m_list_user
-		for i in range(len(m_list_user)):
-			m_list_user[i]['mission_doer']=doerDict[m_list_user[i]['mission_id']]
-			m_list_user[i]['user'] = account_name
+			m_list_user = cursor.fetchall()
+			#将获取的m_list_user中的id存储到list_id列表中
+			list_id = []
+			for i in range(len(m_list_user)):
+				list_id.append(m_list_user[i]['mission_id'])
+			#将missions_doers中与mission中相同id对应的多执行者放到一个字典doerDict中，key为id，value为doers
+			doerDict = {}
+			for i in list_id:
+				cursor.execute("select mission_doer from MISSIONS_DOERS where mission_id = %s ;"%i)
+				m_list_doers = cursor.fetchall()
+				m_list_doers_list = []
+				for j in range(len(m_list_doers)):
+					m_list_doers_list.append(m_list_doers[j]['mission_doer'])
+				doerDict[i]=m_list_doers_list
+			#将doerDict和之前只缺少doers信息的m_list_mission合并起来，构成最后返回的m_list_user
+			for i in range(len(m_list_user)):
+				m_list_user[i]['mission_doer']=doerDict[m_list_user[i]['mission_id']]
+				m_list_user[i]['user'] = account_name
 		conn.close()
 		m_list_user = list(m_list_user)
 		if mission_status == '已完成':
