@@ -19,7 +19,7 @@
 				<thead>
 					<tr class="center" >
 						<th width="30%">任务名称</th>
-       						<th width="15%">发布者</th>
+       					<th width="15%">发布者</th>
 						<th width="15%">执行者</th>
 						<th width="15%">开始日期</th>
 						<th width="15%">预计结束日期</th>
@@ -34,9 +34,9 @@
 						<td>{{m['mission_publisher']}}</td>
 						<td>
 						{% for m_doer in m.mission_doer %}
-			            			{{m_doer}}
-			            		{% endfor %}
-	             			        </td>
+			            	{{m_doer}}
+			            {% endfor %}
+	             		</td>
 						<td>{{m['mission_starttime']}}</td>
 						<td>{{m['mission_plan_end_time']}}</td>
 						<td>{{m['mission_status']}}</td>

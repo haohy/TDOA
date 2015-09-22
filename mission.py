@@ -155,7 +155,13 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if str(role) == 'mission_doer':
-		cursor.execute("select MISSION.mission_name,MISSION.mission_id, MISSION.mission_publisher, MISSION.mission_content, MISSION.mission_starttime, MISSION.mission_plan_end_time, MISSIONS_DOERS.mission_status,MISSION.mission_pubtime \
+		if mission_status == "已完成":
+			cursor.execute("select '已完成' as mission_status, mission_name,mission_id, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, mission_endtime\
+			from HISTORY_MISSION \
+			where instr(mission_doer ,'%s') >0 ;\
+			"%(account_name))
+		else:
+			cursor.execute("select MISSION.mission_name,MISSION.mission_id, MISSION.mission_publisher, MISSION.mission_content, MISSION.mission_starttime, MISSION.mission_plan_end_time, MISSIONS_DOERS.mission_status,MISSION.mission_pubtime \
 			from MISSIONS_DOERS, MISSION \
 			where MISSIONS_DOERS.mission_doer = '%s' and MISSIONS_DOERS.mission_status = '%s' and MISSIONS_DOERS.mission_id = MISSION.mission_id;\
 			"%(account_name, mission_status))
@@ -179,19 +185,33 @@ def mission_view(account_name, role, mission_status="待接受|执行中|已提�
 			m_list_user[i]['user'] = account_name
 		conn.close()
 		m_list_user = list(m_list_user)
-		m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_pubtime'], reverse=True)
+		if mission_status == '已完成':
+			m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_starttime'], reverse=True)
+		else:
+			m_list_user = sorted(m_list_user, key=lambda m_list_user: m_list_user['mission_pubtime'], reverse=True)
 		return m_list_user
 		
 	elif str(role) == 'mission_publisher':
 		cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
-		cursor.execute("select MISSION.mission_id,MISSION.mission_name,MISSION.mission_content,MISSION.mission_publisher,MISSION.mission_starttime,MISSION.mission_plan_end_time,MISSIONS_DOERS.mission_doer,MISSIONS_DOERS.mission_status,MISSION.mission_pubtime \
-			from MISSION,MISSIONS_DOERS where MISSIONS_DOERS.mission_id = MISSION.mission_id AND MISSIONS_DOERS.mission_status = '%s' and MISSION.mission_publisher = '%s';"%(mission_status,account_name))
+		if mission_status == '已完成':
+			cursor.execute("select '已完成' as mission_status, mission_name,mission_id, mission_publisher, mission_content, mission_starttime, mission_plan_end_time, mission_endtime, mission_doer\
+			from HISTORY_MISSION \
+			where mission_publisher = '%s' ;\
+			"%(account_name))
+		else:
+			cursor.execute("select MISSION.mission_id,MISSION.mission_name,MISSION.mission_content,MISSION.mission_publisher,MISSION.mission_starttime,MISSION.mission_plan_end_time,MISSIONS_DOERS.mission_doer,MISSIONS_DOERS.mission_status,MISSION.mission_pubtime \
+			from MISSION,MISSIONS_DOERS \
+			where MISSIONS_DOERS.mission_id = MISSION.mission_id AND MISSIONS_DOERS.mission_status = '%s' and MISSION.mission_publisher = '%s';"\
+			%(mission_status,account_name))
 		m_list_publisher = cursor.fetchall()
 		conn.close()
 		for i in range(len(m_list_publisher)):
 			m_list_publisher[i]['user'] = m_list_publisher[i]['mission_doer']
 		m_list_publisher = list(m_list_publisher)
-		m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_pubtime'], reverse=True)
+		if mission_status == '已完成':
+			m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_starttime'], reverse=True)
+		else:
+			m_list_publisher = sorted(m_list_publisher, key=lambda m_list_publisher: m_list_publisher['mission_pubtime'], reverse=True)
 		return m_list_publisher
 	else:
 		return 0
@@ -202,53 +222,53 @@ def mission_view_status(account_name, role, mission_id,mission_status):
 	conn = MySQLdb.connect(host=c["host"], user=c["user"], passwd=c["passwd"], charset=c["charset"], db=c["db"])
 	cursor = conn.cursor(cursorclass = MySQLdb.cursors.DictCursor)
 	if str(role) == 'mission_doer':
-		print "account_name, mission_status, mission_id:::::::::"
-		print account_name, mission_status, mission_id
-		cursor.execute("select MISSION.mission_name,MISSION.mission_id, MISSION.mission_publisher, MISSION.mission_content, MISSION.mission_starttime, MISSION.mission_plan_end_time, MISSIONS_DOERS.mission_status \
-			from MISSIONS_DOERS, MISSION \
-			where MISSIONS_DOERS.mission_doer = '%s' and MISSIONS_DOERS.mission_status = '%s' and MISSIONS_DOERS.mission_id = '%s' and MISSIONS_DOERS.mission_id = MISSION.mission_id;\
-			"%(account_name, mission_status, mission_id))
-		m_list_user = cursor.fetchall()
-		if len(m_list_user) == 0:
-			m_list_user[0]['mission_id'] = 0
-		print "m_list_user.............m_list_user"
-		print m_list_user
-		doerDict = {}
-		cursor.execute("select mission_doer from MISSIONS_DOERS where mission_id = %s ;"%(m_list_user[0]['mission_id']))
-		m_list_doers = cursor.fetchall()
-		m_list_doers_list = []
-		for j in range(len(m_list_doers)):
-			m_list_doers_list.append(m_list_doers[j]['mission_doer'])
-		doerDict[m_list_user[0]['mission_id']]=m_list_doers_list
-		m_list_user[0]['mission_doer']=doerDict[m_list_user[0]['mission_id']]
-		m_list_user[0]['user'] = account_name
+		if mission_status == '已完成':
+			cursor.execute("select * ,'已完成' as mission_status from HISTORY_MISSION where mission_id = '%s'"%(mission_id))
+			m_list_user = cursor.fetchall()
+		else:
+			cursor.execute("select MISSION.mission_name,MISSION.mission_id, MISSION.mission_publisher, MISSION.mission_content, MISSION.mission_starttime, MISSION.mission_plan_end_time, MISSIONS_DOERS.mission_status \
+				from MISSIONS_DOERS, MISSION \
+				where MISSIONS_DOERS.mission_doer = '%s' and MISSIONS_DOERS.mission_status = '%s' and MISSIONS_DOERS.mission_id = '%s' and MISSIONS_DOERS.mission_id = MISSION.mission_id;\
+				"%(account_name, mission_status, mission_id))
+			m_list_user = cursor.fetchall()
+			if len(m_list_user) == 0:
+				m_list_user[0]['mission_id'] = 0
+			doerDict = {}
+			cursor.execute("select mission_doer from MISSIONS_DOERS where mission_id = %s ;"%(m_list_user[0]['mission_id']))
+			m_list_doers = cursor.fetchall()
+			m_list_doers_list = []
+			for j in range(len(m_list_doers)):
+				m_list_doers_list.append(m_list_doers[j]['mission_doer'])
+			doerDict[m_list_user[0]['mission_id']]=m_list_doers_list
+			m_list_user[0]['mission_doer']=doerDict[m_list_user[0]['mission_id']]
+			m_list_user[0]['user'] = account_name
 		conn.close()
 		#m_list_user包含mission_doer(all),user(one),mission_name,mission_id,mission_publisher,mission_content,mission_starttime,mission_plan_end_time,mission_status
 		return m_list_user
 		
 	elif str(role) == 'mission_publisher':
-		print "mission_status ,account_name ,mission_id"
-		print mission_status ,account_name ,mission_id
-		cursor.execute("\
-			select MISSION.mission_id,MISSION.mission_name,MISSION.mission_content,MISSION.mission_publisher,MISSION.mission_starttime,MISSION.mission_plan_end_time,MISSIONS_DOERS.mission_status \
-			from MISSION,MISSIONS_DOERS \
-			where MISSIONS_DOERS.mission_id = MISSION.mission_id AND MISSIONS_DOERS.mission_status = '%s' and MISSIONS_DOERS.mission_doer = '%s' AND MISSIONS_DOERS.mission_id = '%s' ;"\
-			%(mission_status,account_name,mission_id))
-		m_list_publisher = cursor.fetchall()
-		print "m_list_publisher uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu"
-		print m_list_publisher
-		#添加所有执行人
-		if len(m_list_publisher) == 0:
-			m_list_publisher[0]['mission_id'] = 0
-		doerDict = {}
-		cursor.execute("select mission_doer from MISSIONS_DOERS where mission_id = %s ;"%(m_list_publisher[0]['mission_id']))
-		m_list_doers = cursor.fetchall()
-		m_list_doers_list = []
-		for j in range(len(m_list_doers)):
-			m_list_doers_list.append(m_list_doers[j]['mission_doer'])
-		doerDict[m_list_publisher[0]['mission_id']]=m_list_doers_list
-		m_list_publisher[0]['mission_doer']=doerDict[m_list_publisher[0]['mission_id']]
-		m_list_publisher[0]['user'] = account_name
+		if mission_status == '已完成':
+			cursor.execute("select * ,'已完成' as mission_status from HISTORY_MISSION where mission_id = '%s'"%(mission_id))
+			m_list_publisher = cursor.fetchall()
+		else:
+			cursor.execute("\
+				select MISSION.mission_id,MISSION.mission_name,MISSION.mission_content,MISSION.mission_publisher,MISSION.mission_starttime,MISSION.mission_plan_end_time,MISSIONS_DOERS.mission_status \
+				from MISSION,MISSIONS_DOERS \
+				where MISSIONS_DOERS.mission_id = MISSION.mission_id AND MISSIONS_DOERS.mission_status = '%s' and MISSIONS_DOERS.mission_doer = '%s' AND MISSIONS_DOERS.mission_id = '%s' ;"\
+				%(mission_status,account_name,mission_id))
+			m_list_publisher = cursor.fetchall()
+			#添加所有执行人
+			if len(m_list_publisher) == 0:
+				m_list_publisher[0]['mission_id'] = 0
+			doerDict = {}
+			cursor.execute("select mission_doer from MISSIONS_DOERS where mission_id = %s ;"%(m_list_publisher[0]['mission_id']))
+			m_list_doers = cursor.fetchall()
+			m_list_doers_list = []
+			for j in range(len(m_list_doers)):
+				m_list_doers_list.append(m_list_doers[j]['mission_doer'])
+			doerDict[m_list_publisher[0]['mission_id']]=m_list_doers_list
+			m_list_publisher[0]['mission_doer']=doerDict[m_list_publisher[0]['mission_id']]
+			m_list_publisher[0]['user'] = account_name
 		#类型转换
 		m_list_publisher = list(m_list_publisher)
 		conn.close()
@@ -322,8 +342,8 @@ def mission_sta_change(mission_id ,mission_status,mission_doer):
 			conn.commit()
 			cursor.execute("DELETE FROM MISSION WHERE mission_id = '%s'"%mission_id)
 			conn.commit()
-			cursor.execute("DELETE FROM MISSIONS_DOERS WHERE mission_id = '%s'"%mission_id)
-			conn.commit()
+			# cursor.execute("DELETE FROM MISSIONS_DOERS WHERE mission_id = '%s'"%mission_id)
+			# conn.commit()
 	conn.close()
 
 def mission_search_list(user, arg):
