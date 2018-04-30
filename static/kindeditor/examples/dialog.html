@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html>
 	<head>
@@ -39,3 +40,46 @@
 		<input type="button" id="create1" value="打开弹出框" />
 	</body>
 </html>
+=======
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Dialog Examples</title>
+		<link rel="stylesheet" href="../themes/default/default.css" />
+		<script src="../kindeditor.js"></script>
+		<script>
+			KindEditor.ready(function(K) {
+				K('#create1').click(function() {
+					var dialog = K.dialog({
+						width : 500,
+						title : '测试窗口',
+						body : '<div style="margin:10px;"><strong>内容</strong></div>',
+						closeBtn : {
+							name : '关闭',
+							click : function(e) {
+								dialog.remove();
+							}
+						},
+						yesBtn : {
+							name : '确定',
+							click : function(e) {
+								alert(this.value);
+							}
+						},
+						noBtn : {
+							name : '取消',
+							click : function(e) {
+								dialog.remove();
+							}
+						}
+					});
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<input type="button" id="create1" value="打开弹出框" />
+	</body>
+</html>
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97

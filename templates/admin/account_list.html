@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 <form id="pagerForm" method="post" action="/view_account/">
   <input type="hidden" name="status" value="${param.status}">
@@ -75,3 +76,82 @@
 
   </div>
 </div>
+=======
+
+<form id="pagerForm" method="post" action="/view_account/">
+  <input type="hidden" name="status" value="${param.status}">
+  <input type="hidden" name="keywords" value="${param.keywords}" />
+  <input type="hidden" name="pageNum" value="1" />
+  <input type="hidden" name="numPerPage" value="${model.numPerPage}" />
+  <input type="hidden" name="orderField" value="${param.orderField}" />
+</form>
+<div class="pageContent">
+  <table class="table" width="100%" layoutH="48">
+    <thead>
+      <tr class="center">
+        <th>账号</th>
+        <th>职位</th>
+        <th>电话</th>
+        <th>邮箱</th>
+        <th width="100">查看任务权限</th>
+        <th width="140">查看日程权限</th>
+        <th width="140" >已完成任务修改权限</th>
+        <th width="100">附件管理权限</th>
+        <th width="100">操作</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for a in account_list %}
+        <tr target="sid_user" class="center"> 
+          <td>
+            <a href="/view_account/?account_id={{a['account_id']}}" target="navTab">
+                 <div>{{a['account_username']}}</div>
+            </a>
+          </td>
+          <td>
+             <div>{{a['account_position']}}</div>
+          </td>
+          <td>
+            <div>{{a['account_phone']}}</div>
+          </td>
+          <td>
+             <div>{{a['account_email']}}</div>
+          </td>
+          <td>
+             <div>{{a['account_power']//1000}}</div>
+          </td>
+          <td>
+             <div>{{a['account_power']%1000//100}}</div>
+          </td>
+          <td>
+             <div>{{a['account_power']%100//10}}</div>
+          </td>
+          <td>
+              <div>{{a['account_power']%10}}</div>
+          </td>
+          <td>
+            <a href="/modify_account/?account_id={{a['account_id']}}" target="navTab" style="color:rgb(0,0,225)">修改</a>
+            <a href="/delete_account/?account_id={{a['account_id']}}" target="ajaxTodo" title="确认删除吗？" style="color:rgb(0,0,225)">删除</a>
+          </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  <div class="panelBar">
+    <div class="pages">
+      <span>显示</span>
+      <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+      </select>
+      <span>条，共{{length}}条</span>
+    </div>
+    
+    <div class="pagination" targetType="navTab" totalCount="200" numPerPage="20" pageNumShown="10" currentPage="1"></div>
+
+  </div>
+</div>
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .ke-content {
 	font-size: 12px;
 	background-color: #ffffff;
@@ -16,4 +17,24 @@
 .yellow {
 	color: white;
 	background-color: yellow;
+=======
+.ke-content {
+	font-size: 12px;
+	background-color: #ffffff;
+}
+.ke-content table {
+	border-collapse:collapse;
+}
+.red {
+	color: white;
+	background-color: red;
+}
+.green {
+	color: white;
+	background-color: green;
+}
+.yellow {
+	color: white;
+	background-color: yellow;
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97
 }

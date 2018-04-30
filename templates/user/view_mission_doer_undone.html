@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <h2 class="contentTitle">{{mission_view[0]['mission_status']}}</h2>
 <div class="pageContent">
 	<div class="pageFormContent" layoutH="97">
@@ -116,3 +117,119 @@
 	</div>
 
 </div>
+=======
+<h2 class="contentTitle">{{mission_view[0]['mission_status']}}</h2>
+<div class="pageContent">
+	<div class="pageFormContent" layoutH="97">
+		<div>
+			<dl class="nowrap">
+				<dt>任务详情：</dt>
+				<dd>{{mission_view[0]['mission_content']}}</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>任务发布者：</dt>
+				<dd>{{mission_view[0]['mission_publisher']}}</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>任务执行者：</dt>
+				<dd>
+					<tbody>
+						<tr>
+							{% for doer in mission_view[0]['mission_doer']%}
+								<a href="/doer_info?doer={{doer}}" target="dialog" s>{{doer}}</a>
+							{%endfor%}
+						</tr>
+					</tbody>
+				</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>任务开始时间：</dt>
+				<dd>{{mission_view[0]['mission_starttime']}}</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>任务完成时间：</dt>
+				<dd>{{mission_view[0]['mission_plan_end_time']}}</dd>
+			</dl>
+		</div>
+
+		<div class="divider"></div>
+
+		<div class="tabs" currentIndex="0" eventType="click">
+			<div class="tabsHeader">
+				<div class="tabsHeaderContent">
+					<ul>
+						<li>
+							<a href="/mission_reference/?mission_name={{mission_view[0]['mission_name']}}" class="j-ajax">
+								<span>历史任务参考</span>
+							</a>
+						</li>
+						<li>
+							<a href="/upload_files/?type=0&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['mission_publisher']}}" class="j-ajax">
+								<span>初始参考附件</span>
+							</a>
+						</li>
+						<li>
+							<a href="/upload_files/?type=1&mission_id={{mission_view[0]['mission_id']}}&role={{mission_view[0]['user']}}" class="j-ajax">
+								<span>任务完成提交附件</span>
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="tabsContent" style="height:150px;">
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+			<div class="tabsFooter">
+				<div class="tabsFooterContent"></div>
+			</div>
+		</div>
+		<!-- 留言模块 -->
+		<div class="panel collapse">
+			<div class="panelHeader">
+				<div class="panelHeaderContent">
+					<h1 style="cursor: move">留言</h1>
+				</div>
+			</div>
+			<div class="panelContent">
+				<form action="/leave_message" method="post" onsubmit="return iframeCallback(this);">
+					<textarea name="msg" id="msg" cols="100" rows="2" placeholder="说点什么吧。。。"></textarea>
+					<input type="text" name="mission_id" value="{{mission_view[0]['mission_id']}}" style="display: none">
+					<input type="text" name="message_type" value="0" style="display: none">
+					<!-- <input type="text" name="message_obj" value="{{mission_view[0]['mission_publisher']}}" style="display: none">
+					<input type="checkbox" name="privacy" id="privacy" value="1">私密 -->
+					<input type="submit" id="message" value="发送" style="margin-top: 15px; margin-left: 15px">	
+				</form>
+			{% for msg in message_list %}
+				<dl class="nowrap">
+					<dt>
+						{{msg['message_time']}}:
+					</dt>
+					<dt>
+						{{msg['message_leaver']}}:
+					</dt>
+					<dd>
+						{{msg['message_content']}}
+					</dd>
+				</dl>
+			{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li>
+				<div class="buttonActive">
+					<div>
+						<a class="edit" href="/change_mission_sta/?mission_id={{mission_view[0]['mission_id']}}&type=mission_doer&mission_status=已提交" target="navTab" rel="my_mission_do">
+							<span>提交</span>
+						</a>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+</div>
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97

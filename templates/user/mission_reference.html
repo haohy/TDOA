@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="pageHeader">
 	<form  onsubmit="return navTabSearch(this);" action="/mission_reference/" method="post">
 		<div class="searchBar">
@@ -45,3 +46,59 @@
 		</tbody>
 	</table>
 </div>
+=======
+<div class="pageHeader">
+	<form  onsubmit="return navTabSearch(this);" action="/mission_reference/" method="post">
+		<div class="searchBar">
+			<ul class="searchContent">
+				<li>
+					<label style="white-space:nowrap;">任务名称：</label>
+					<input type="text" name="mission_name"/>
+				</li>
+				<li>
+					<label>附件名称：</label>
+					<input type="text" name="file_name"/>
+				</li>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></li>
+			</ul>
+		</div>
+<!-- 		<div class="searchBar">
+		  <table class="searchContent" style="width:600px;float:left;">
+		    <tr>
+		      <td>
+		        	<div class="gridCol" title="任务名">任务名：<input name="mission_name" type="text" class="textInput"></div>
+		      </td>
+		      <td>
+		     	<div class="gridCol" title="附件名称：">附件名称：<input name="file_name" type="text" class="textInput"></div>
+		      </td>
+		      <td><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></td>
+		    </tr>
+		  </table>
+		</div> -->
+		</form>
+</div>
+<div class="pageContent">
+	<table class="table" width="100%">
+		<thead>
+			<tr class="center">
+				<th width="20">序号</th>
+				<th width="120">任务名</th>
+				<th width="100">附件</th>
+				<th width="100">创建时间</th>
+			</tr>
+		</thead>
+		<tbody>
+			
+			{% set i = 1 %}
+			{% for i in range(mission_list|length) %}
+			<tr target="sid_user" rel="1" class="center">
+				<td>{{ i }}</td>
+				<td class="mission_name center"><a href="/search_view_mission/?mission_id={{mission_list[i]['mission_id']}}&mission_doer=nobody" target="dialog" width="600" height="400"><div>{{mission_list[i]['mission_name']}}</div></a></td>
+				<td>{{mission_list[i]['file_name']}}</td>
+				<td>{{mission_list[i]['mission_starttime']}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <h2 class="contentTitle">创建新任务</h2>
 <form method="post" action="/apply_modify_mission" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone)">
 <div class="pageContent">
@@ -47,3 +48,54 @@
 
 </div>
 </form>
+=======
+<h2 class="contentTitle">创建新任务</h2>
+<form method="post" action="/apply_modify_mission" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone)">
+<div class="pageContent">
+            {% if error != "" %}
+                <div class="alert alert-danger alert-dismissable">
+                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>错误!</strong>
+                {{error}}
+                </div>
+            {% endif %}
+                
+  <div class="pageFormContent" layoutH="97">
+    <input type="text" name="mission_id" value="{{mission_view[0]['mission_id']}}" style="display:none;">
+    <dl>
+      <dt>任务名称：</dt><dd><input name="mission_name" class="required" alt="请输入任务名称200字符以内" type="text" value="{{mission_view[0]['mission_name']}}" style="width:600px;"></dd>
+    </dl>
+    <dl class="nowrap">
+      <dt>任务详情：</dt>
+      <dd>
+        <textarea class="editor" name="mission_content" rows="20" cols="90">{{mission_view[0]['mission_content']}}</textarea>
+      </dd>
+    </dl>
+    <dl>
+      <dt>任务开始时间：</dt>
+      <dd>
+        <input name="mission_starttime" class="date" readonly="readonly" value="{{mission_view[0]['mission_starttime']}}" type="text">
+        <a href="javascript:void(0)" class="inputDateButton">选择</a>
+      </dd>
+    </dl>
+    <dl>
+      <dt>任务结束时间：</dt>
+      <dd>
+        <input name="mission_plan_end_time" class="date" readonly="readonly" value="{{mission_view[0]['mission_plan_end_time']}}" type="text">
+        <a href="javascript:void(0)" class="inputDateButton">选择</a>
+      </dd>
+    </dl>
+    <dl>
+      <dt>是否按年重复发生：</dt><dd><input type="radio" name="mission_duplicate" value="on">是 <input type="radio" name="mission_duplicate" value="off">否</dd>
+    </dl>
+  </div>
+  
+  <div class="formBar">
+    <ul>
+      <li><div class="buttonActive"><div class="buttonContent"><button type="submit">保存修改</button></div></div></li>
+      <li><div class="button"><div class="buttonContent"><button type="reset">重置</button></div></div></li>
+    </ul>
+  </div>  
+
+</div>
+</form>
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97

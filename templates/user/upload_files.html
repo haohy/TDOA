@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <div class="clear"></div>
 <table class="list" width="100%">
 	<thead>
@@ -30,4 +31,37 @@
 		</tr>
 		{% endfor %}
 	</tbody>
+=======
+<div class="clear"></div>
+<table class="list" width="100%">
+	<thead>
+		<tr>
+			<th width="80">序号</th>
+			<th>文件名</th>
+			<th>上传时间</th>
+			<th>下载</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for m in file_list %}
+		<tr>
+				<td>
+					     {{m['file_id']}}
+				  </td>	
+				  <td>
+					
+						 {{m['file_name']}}
+				  </td>
+				  <td>
+					     {{m['file_upload_time']}}
+				  </td>
+				  <td>
+				  	<a href="/download_file/?file_url={{m['file_url']}}&file_name={{m['file_name']}}">
+						 下载
+					</a>
+				  </td>		  
+		</tr>
+		{% endfor %}
+	</tbody>
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97
 </table>

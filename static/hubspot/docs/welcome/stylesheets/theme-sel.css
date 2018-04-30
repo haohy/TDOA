@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .theme-selector, .selector {
   margin: 0; }
   .theme-selector li, .selector li {
@@ -6,3 +7,13 @@
     text-decoration: underline;
     cursor: pointer;
     text-transform: capitalize; }
+=======
+.theme-selector, .selector {
+  margin: 0; }
+  .theme-selector li, .selector li {
+    list-style-type: none;
+    color: #43adff;
+    text-decoration: underline;
+    cursor: pointer;
+    text-transform: capitalize; }
+>>>>>>> f41086b3477dec126aff19d257158dc3d3221e97
